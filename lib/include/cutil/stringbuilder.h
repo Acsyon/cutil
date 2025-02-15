@@ -7,6 +7,7 @@
 #ifndef CUTIL_STRINGBUILDER_H_INCLUDED
 #define CUTIL_STRINGBUILDER_H_INCLUDED
 
+#include <cutil/cutil.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -24,6 +25,15 @@ typedef struct {
     size_t bufsiz;
     char *buf;
 } cutil_StringBuilder;
+
+/**
+ * Flags for resize process
+ */
+enum {
+    CUTIL_RESIZE_FLAG_FORCE = (1 << 0),
+    CUTIL_RESIZE_FLAG_STRING = (1 << 1),
+    CUTIL_RESIZE_FLAG_BUFFER = (1 << 2)
+};
 
 /**
  * Creates newly malloc'd cutil_StringBuilder object with initial capacity
@@ -45,62 +55,32 @@ void
 cutil_StringBuilder_free(cutil_StringBuilder *sb);
 
 /**
- * Appends va_list `args` according to printf-like format string `format` to
- * `sb` up to at most `maxlen` bytes.
+ * Clears contents of `sb` and resets sizes.
  *
- * @param[in] sb cutil_StringBuilder to append to
- * @param[in] maxlen maximum length that appended string may have
- * @param[in] format format string for variadic arguments
- * @param[in] args va_list of variadic arguments
- *
- * @return number of bytes appended
+ * @param[in] sb cutil_StringBuilder object to clear
  */
-int
-cutil_StringBuilder_vnappendf(
-  cutil_StringBuilder *sb, size_t maxlen, const char *format, va_list args
-);
+void
+cutil_StringBuilder_clear(cutil_StringBuilder *sb);
 
 /**
- * Appends variadic arguments according to printf-like format string `format` to
- * `sb` up to at most `maxlen` bytes.
+ * Manually resizes (and potentially truncates) string and/or buffer inside `sb`
+ * to new size `target` according to `flags`.
  *
- * @param[in] sb cutil_StringBuilder to append to
- * @param[in] maxlen maximum length that appended string may have
- * @param[in] format format string for variadic arguments
- *
- * @return number of bytes appended
+ * @param[in] sb cutil_StringBuilder to resize
+ * @param[in] target target size of string and buffer
+ * @param[in] flags flags for resize process
  */
-int
-cutil_StringBuilder_nappendf(
-  cutil_StringBuilder *sb, size_t maxlen, const char *format, ...
-);
+void
+cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags);
 
 /**
- * Appends va_list `args` according to printf-like format string `format` to
- * `sb`.
+ * Manually resizes string and buffer inside `sb` to exatcly to current size.
+ * This overrides standard resize algorithm.
  *
- * @param[in] sb cutil_StringBuilder to append to
- * @param[in] format format string for variadic arguments
- * @param[in] args va_list of variadic arguments
- *
- * @return number of bytes appended
+ * @param[in] sb cutil_StringBuilder to shrink to fit
  */
-int
-cutil_StringBuilder_vappendf(
-  cutil_StringBuilder *sb, const char *format, va_list args
-);
-
-/**
- * Appends variadic arguments according to printf-like format string `format` to
- * `sb`.
- *
- * @param[in] sb cutil_StringBuilder to append to
- * @param[in] format format string for variadic arguments
- *
- * @return number of bytes appended
- */
-int
-cutil_StringBuilder_appendf(cutil_StringBuilder *sb, const char *format, ...);
+void
+cutil_StringBuilder_shrink_to_fit(cutil_StringBuilder *sb);
 
 /**
  * Returns length of string in `sb`.
@@ -123,10 +103,252 @@ cutil_StringBuilder_length(const cutil_StringBuilder *sb)
  * @return string in `sb`
  */
 inline const char *
-cutil_StringBuilder_to_string(const cutil_StringBuilder *sb)
+cutil_StringBuilder_get_string(const cutil_StringBuilder *sb)
 {
     return sb->str;
 }
+
+/**
+ * Returns newly malloc'd copy of string in `sb`. Has to be freed.
+ *
+ * @param[in] sb cutil_StringBuilder to get string of
+ *
+ * @return string in `sb`
+ */
+char *
+cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb);
+
+/**
+ * Inserts va_list `args` according to printf-like format string `format` to
+ * `sb` at position `pos` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] maxlen maximum length that inserted string may have
+ * @param[in] format format string for variadic arguments
+ * @param[in] args va_list of variadic arguments
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_vninsertf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT format,
+  va_list args
+);
+
+/**
+ * Inserts variadic arguments according to printf-like format string `format` to
+ * `sb` at position `pos` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] maxlen maximum length that inserted string may have
+ * @param[in] format format string for variadic arguments
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_ninsertf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT format,
+  ...
+);
+
+/**
+ * Inserts string `str` to `sb` at position `pos` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] maxlen maximum length that inserted string may have
+ * @param[in] str string to insert
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_ninsert(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT str
+);
+
+/**
+ * Inserts va_list `args` according to printf-like format string `format` to
+ * `sb` at position `pos` up.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] format format string for variadic arguments
+ * @param[in] args va_list of variadic arguments
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_vinsertf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  const char *CUTIL_RESTRICT format,
+  va_list args
+);
+
+/**
+ * Inserts variadic arguments according to printf-like format string `format` to
+ * `sb` at position `pos` up.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] format format string for variadic arguments
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_insertf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  const char *CUTIL_RESTRICT format,
+  ...
+);
+
+/**
+ * Inserts string `str` to `sb` at position `pos` up.
+ *
+ * @param[in] sb cutil_StringBuilder to insert to
+ * @param[in] pos position to insert string at
+ * @param[in] str string to insert
+ *
+ * @return number of bytes inserted
+ */
+int
+cutil_StringBuilder_insert(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t pos,
+  const char *CUTIL_RESTRICT str
+);
+
+/**
+ * Appends va_list `args` according to printf-like format string `format` to
+ * `sb` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] maxlen maximum length that appended string may have
+ * @param[in] format format string for variadic arguments
+ * @param[in] args va_list of variadic arguments
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_vnappendf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT format,
+  va_list args
+);
+
+/**
+ * Appends variadic arguments according to printf-like format string `format` to
+ * `sb` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] maxlen maximum length that appended string may have
+ * @param[in] format format string for variadic arguments
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_nappendf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT format,
+  ...
+);
+
+/**
+ * Appends string `str` to `sb` up to at most `maxlen` bytes.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] maxlen maximum length that appended string may have
+ * @param[in] str string to append
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_nappend(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  size_t maxlen,
+  const char *CUTIL_RESTRICT str
+);
+
+/**
+ * Appends va_list `args` according to printf-like format string `format` to
+ * `sb`.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] format format string for variadic arguments
+ * @param[in] args va_list of variadic arguments
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_vappendf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb,
+  const char *CUTIL_RESTRICT format,
+  va_list args
+);
+
+/**
+ * Appends variadic arguments according to printf-like format string `format` to
+ * `sb`.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] format format string for variadic arguments
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_appendf(
+  cutil_StringBuilder *CUTIL_RESTRICT sb, const char *CUTIL_RESTRICT format, ...
+);
+
+/**
+ * Appends string `str` to `sb`.
+ *
+ * @param[in] sb cutil_StringBuilder to append to
+ * @param[in] str string to append
+ *
+ * @return number of bytes appended
+ */
+int
+cutil_StringBuilder_append(
+  cutil_StringBuilder *CUTIL_RESTRICT sb, const char *CUTIL_RESTRICT str
+);
+
+/**
+ * Deletes `num` chars from the string in `sb` starting at `pos` (inclusively).
+ *
+ * @param[in] sb cutil_StringBuilder to delete from
+ * @param[in] pos position to start deletion at
+ * @param[in] num number of chars to delete
+ */
+void
+cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num);
+
+/**
+ * Deletes all chars between `begin` and `end` (inclusively) from the string in
+ * `sb` starting at `pos.
+ *
+ * @param[in] sb cutil_StringBuilder to delete from
+ * @param[in] begin position of the first char to delete
+ * @param[in] end position of the last char to delete
+ */
+void
+cutil_StringBuilder_delete_from_to(
+  cutil_StringBuilder *sb, size_t begin, size_t end
+);
 
 #ifdef __cplusplus
 }
