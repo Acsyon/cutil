@@ -26,6 +26,7 @@ endif ()
 include_directories("include/")
 set(SOURCE_FILES
     src/stringbuilder.c
+    src/std/stdio.c
 )
 
 # Compile

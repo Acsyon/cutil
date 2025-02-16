@@ -4,6 +4,9 @@
 
 #include <cutil/stringbuilder.h>
 
+#define LONG_STRING                                                            \
+    "This is a very long string that exceeds the initial and default capacity"
+
 static void
 _test_alloc(void)
 {
@@ -25,15 +28,78 @@ _test_alloc(void)
 }
 
 static void
+_test_from_string(void)
+{
+    /* Arrange */
+    const char *const assert_str = LONG_STRING;
+
+    /* Act */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+
+    /* Assert */
+    const size_t len = cutil_StringBuilder_length(sb);
+    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    const char *const str = cutil_StringBuilder_get_string(sb);
+    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_test_from_file(void)
+{
+    /* Arrange */
+    const char *const assert_str = LONG_STRING;
+    FILE *const in = tmpfile();
+    fwrite(assert_str, 1UL, sizeof LONG_STRING, in);
+
+    /* Act */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_file(in);
+
+    /* Assert */
+    const size_t len = cutil_StringBuilder_length(sb);
+    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    const char *const str = cutil_StringBuilder_get_string(sb);
+    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_test_duplicate(void)
+{
+    /* Arrange */
+    const char *const assert_str = LONG_STRING;
+    cutil_StringBuilder *const sb_assert
+      = cutil_StringBuilder_from_string(assert_str);
+
+    /* Act */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_duplicate(sb_assert);
+
+    /* Assert */
+    const size_t len = cutil_StringBuilder_length(sb);
+    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    const char *const str = cutil_StringBuilder_get_string(sb);
+    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+
+    TEST_ASSERT_EQUAL_size_t(sb_assert->length, sb->length);
+    TEST_ASSERT_EQUAL_STRING(sb_assert->str, sb->str);
+    TEST_ASSERT_EQUAL_size_t(sb_assert->capacity, sb->capacity);
+    TEST_ASSERT_EQUAL_size_t(sb_assert->bufsiz, sb->bufsiz);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
 _test_clear(void)
 {
     /* Arrange */
-    const char *const append_str
-      = "This is a very long string "
-        "that exceeds the initial and default capacity";
-    cutil_StringBuilder *const sb_assert = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, append_str);
+    const char *const append_str = LONG_STRING;
+    cutil_StringBuilder *const sb_assert = cutil_StringBuilder_create();
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(append_str);
 
     /* Act */
     cutil_StringBuilder_clear(sb);
@@ -54,11 +120,38 @@ _test_clear(void)
 }
 
 static void
+_test_copy(void)
+{
+    /* Arrange */
+    const char *const assert_str = LONG_STRING;
+    cutil_StringBuilder *const sb_assert
+      = cutil_StringBuilder_from_string(assert_str);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
+
+    /* Act */
+    cutil_StringBuilder_copy(sb, sb_assert);
+
+    /* Assert */
+    const size_t len = cutil_StringBuilder_length(sb);
+    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    const char *const str = cutil_StringBuilder_get_string(sb);
+    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+
+    TEST_ASSERT_EQUAL_size_t(sb_assert->length, sb->length);
+    TEST_ASSERT_EQUAL_STRING(sb_assert->str, sb->str);
+    TEST_ASSERT_EQUAL_size_t(sb_assert->capacity, sb->capacity);
+    TEST_ASSERT_EQUAL_size_t(sb_assert->bufsiz, sb->bufsiz);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
 _test_append_single(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
 
     /* Act */
     cutil_StringBuilder_append(sb, assert_str);
@@ -80,7 +173,7 @@ _test_append_multiple(void)
     const char *const input_str_1 = "Hello";
     const char *const input_str_2 = ", World!";
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
 
     /* Act */
     cutil_StringBuilder_append(sb, input_str_1);
@@ -102,7 +195,7 @@ _test_append_empty(void)
     /* Arrange */
     const char *const assert_str = "Hello, World!";
     const char *const append_str = "";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
 
     /* Act */
     cutil_StringBuilder_append(sb, assert_str);
@@ -122,10 +215,8 @@ static void
 _test_capacity_expansion(void)
 {
     /* Arrange */
-    const char *const assert_str
-      = "This is a very long string "
-        "that exceeds the initial and default capacity";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    const char *const assert_str = LONG_STRING;
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
     const size_t init_capacity = sb->capacity;
 
     /* Act */
@@ -148,7 +239,7 @@ _test_huge_number_appends(void)
     /* Arrange */
     const size_t num_appends = 1023;
     const char *const append_str = "x";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
 
     /* Act */
     for (size_t i = 0; i < num_appends; ++i) {
@@ -171,10 +262,10 @@ _test_insert(void)
     const char *const input_str_1 = "Hello, World!";
     const char *const input_str_2 = " Beautiful";
     const char *const assert_str = "Hello, Beautiful World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb
+      = cutil_StringBuilder_from_string(input_str_1);
 
     /* Act */
-    cutil_StringBuilder_append(sb, input_str_1);
     cutil_StringBuilder_insert(sb, 6, input_str_2);
 
     /* Assert */
@@ -191,11 +282,8 @@ static void
 _test_resize_shrink(void)
 {
     /* Arrange */
-    const char *const assert_str
-      = "This is a very long string "
-        "that exceeds the initial and default capacity";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    const char *const assert_str = LONG_STRING;
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const size_t before_length = cutil_StringBuilder_length(sb);
     const size_t before_capacity = sb->capacity;
     const size_t before_bufsiz = sb->bufsiz;
@@ -222,11 +310,8 @@ static void
 _test_resize_shrink_force(void)
 {
     /* Arrange */
-    const char *const assert_str
-      = "This is a very long string "
-        "that exceeds the initial and default capacity";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    const char *const assert_str = LONG_STRING;
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const int resize_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER
       | CUTIL_RESIZE_FLAG_FORCE;
 
@@ -253,8 +338,7 @@ _test_resize_expand(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const size_t before_length = cutil_StringBuilder_length(sb);
     const size_t before_capacity = sb->capacity;
     const size_t before_bufsiz = sb->bufsiz;
@@ -286,8 +370,7 @@ _test_resize_expand_force(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const size_t before_length = cutil_StringBuilder_length(sb);
     const int resize_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER
       | CUTIL_RESIZE_FLAG_FORCE;
@@ -315,8 +398,7 @@ _test_shrink_to_fit(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const size_t before_length = cutil_StringBuilder_length(sb);
 
     /* Act */
@@ -337,8 +419,7 @@ _test_duplicate_string(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
-    cutil_StringBuilder_append(sb, assert_str);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
 
     /* Act */
     char *const cpy = cutil_StringBuilder_duplicate_string(sb);
@@ -357,10 +438,9 @@ _test_delete()
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(input_str);
 
     /* Act */
-    cutil_StringBuilder_append(sb, input_str);
     cutil_StringBuilder_delete(sb, 6, 10);
 
     /* Assert */
@@ -379,10 +459,9 @@ _test_delete_large()
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
     const char *const assert_str = "Hello,";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(input_str);
 
     /* Act */
-    cutil_StringBuilder_append(sb, input_str);
     cutil_StringBuilder_delete(sb, 6, 100);
 
     /* Assert */
@@ -401,10 +480,9 @@ _test_delete_from_to()
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
     const char *const assert_str = "Hello, World!";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(input_str);
 
     /* Act */
-    cutil_StringBuilder_append(sb, input_str);
     cutil_StringBuilder_delete_from_to(sb, 6, 15);
 
     /* Assert */
@@ -423,10 +501,9 @@ _test_delete_from_to_large()
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
     const char *const assert_str = "Hello,";
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(input_str);
 
     /* Act */
-    cutil_StringBuilder_append(sb, input_str);
     cutil_StringBuilder_delete_from_to(sb, 6, 100);
 
     /* Assert */
@@ -452,7 +529,11 @@ main(void)
 {
     UNITY_BEGIN();
     RUN_TEST(_test_alloc);
+    RUN_TEST(_test_from_string);
+    RUN_TEST(_test_from_file);
+    RUN_TEST(_test_duplicate);
     RUN_TEST(_test_clear);
+    RUN_TEST(_test_copy);
     RUN_TEST(_test_append_single);
     RUN_TEST(_test_append_multiple);
     RUN_TEST(_test_append_empty);

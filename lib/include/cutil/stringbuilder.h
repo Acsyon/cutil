@@ -7,9 +7,11 @@
 #ifndef CUTIL_STRINGBUILDER_H_INCLUDED
 #define CUTIL_STRINGBUILDER_H_INCLUDED
 
-#include <cutil/cutil.h>
 #include <stdarg.h>
 #include <stdlib.h>
+
+#include <cutil/cutil.h>
+#include <cutil/std/stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +38,15 @@ enum {
 };
 
 /**
+ * Creates newly malloc'd cutil_StringBuilder object with default initial
+ * capacity.
+ *
+ * @return newly malloc'd cutil_StringBuilder object
+ */
+cutil_StringBuilder *
+cutil_StringBuilder_create(void);
+
+/**
  * Creates newly malloc'd cutil_StringBuilder object with initial capacity
  * `size`.
  *
@@ -45,6 +56,37 @@ enum {
  */
 cutil_StringBuilder *
 cutil_StringBuilder_alloc(size_t size);
+
+/**
+ * Reads contents of `str` into newly malloc'd cutil_StringBuilder object.
+ *
+ * @param[in] str string to read data from
+ *
+ * @return newly malloc'd cutil_StringBuilder object with contents of `str`
+ */
+cutil_StringBuilder *
+cutil_StringBuilder_from_string(const char *str);
+
+/**
+ * Reads contents of `in` into newly malloc'd cutil_StringBuilder object.
+ *
+ * @param[in] in FILE stream to read data from
+ *
+ * @return newly malloc'd cutil_StringBuilder object with contents of `in` (NULL
+ * for error)
+ */
+cutil_StringBuilder *
+cutil_StringBuilder_from_file(FILE *in);
+
+/**
+ * Copies contents of `sb` into newly malloc'd cutil_StringBuilder object.
+ *
+ * @param[in] sb cutil_StringBuilder to copy data of
+ *
+ * @return newly malloc'd cutil_StringBuilder object with contents of `sb`
+ */
+cutil_StringBuilder *
+cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb);
 
 /**
  * Frees memory pointed to by `sb`.
@@ -61,6 +103,17 @@ cutil_StringBuilder_free(cutil_StringBuilder *sb);
  */
 void
 cutil_StringBuilder_clear(cutil_StringBuilder *sb);
+
+/**
+ * Copies contents of `src` into `dst`.
+ *
+ * @param[in, out] dst cutil_StringBuilder to copy data into
+ * @param[in] src cutil_StringBuilder to copy data of
+ */
+void
+cutil_StringBuilder_copy(
+  cutil_StringBuilder *dst, const cutil_StringBuilder *src
+);
 
 /**
  * Manually resizes (and potentially truncates) string and/or buffer inside `sb`

@@ -2,8 +2,10 @@
 
 #include <math.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
+
+#include <cutil/cutil.h>
+#include <cutil/std/stdio.h>
 
 #define STRING_DEFAULT_SIZE 64
 #define STRING_THRESHOLD_SIZE 1024
@@ -75,6 +77,12 @@ _enlarge_carr(char **p_carr, size_t *p_size, size_t threshold, size_t target)
 }
 
 cutil_StringBuilder *
+cutil_StringBuilder_create(void)
+{
+    return cutil_StringBuilder_alloc(0);
+}
+
+cutil_StringBuilder *
 cutil_StringBuilder_alloc(size_t size)
 {
     cutil_StringBuilder *const sb = malloc(sizeof *sb);
@@ -87,6 +95,53 @@ cutil_StringBuilder_alloc(size_t size)
     sb->buf = malloc(sb->bufsiz * sizeof *sb->buf);
 
     return sb;
+}
+
+cutil_StringBuilder *
+cutil_StringBuilder_from_string(const char *str)
+{
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
+
+    cutil_StringBuilder_append(sb, str);
+
+    return sb;
+}
+
+cutil_StringBuilder *
+cutil_StringBuilder_from_file(FILE *in)
+{
+    const size_t fsize = (size_t) cutil_get_filesize(in);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(fsize);
+
+    rewind(in);
+    const size_t size = fread(sb->str, 1UL, fsize, in);
+    if (size != fsize - 1) {
+        cutil_StringBuilder_free(sb);
+        return NULL;
+    }
+    /**
+     * TODO: Not optimal, probably need another object to read stuff from files
+     * to prevent potential '\0' characters from breaking things.
+     */
+    sb->length = strlen(sb->str);
+
+    return sb;
+}
+
+cutil_StringBuilder *
+cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
+{
+    cutil_StringBuilder *const dup = malloc(sizeof *sb);
+
+    dup->capacity = sb->capacity;
+    dup->str = malloc(dup->capacity * sizeof *dup->str);
+    dup->length = sb->length;
+    dup->bufsiz = sb->bufsiz;
+    dup->buf = malloc(dup->bufsiz * sizeof *dup->buf);
+
+    memcpy(dup->str, sb->str, sb->length);
+
+    return dup;
 }
 
 void
@@ -107,6 +162,20 @@ cutil_StringBuilder_clear(cutil_StringBuilder *sb)
 {
     const size_t flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
     cutil_StringBuilder_resize(sb, 0, flags);
+}
+
+void
+cutil_StringBuilder_copy(
+  cutil_StringBuilder *dst, const cutil_StringBuilder *src
+)
+{
+    dst->capacity = src->capacity;
+    dst->str = realloc(src->str, src->capacity * sizeof *src->str);
+    dst->length = src->length;
+    dst->bufsiz = src->bufsiz;
+    dst->buf = realloc(src->buf, src->bufsiz * sizeof *src->buf);
+
+    memcpy(dst->str, src->str, src->length);
 }
 
 void
@@ -149,7 +218,7 @@ cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb)
 {
     const size_t len = sb->length + 1;
     char *const cpy = malloc(len * sizeof *cpy);
-    strcpy(cpy, sb->str);
+    memcpy(cpy, sb->str, len * sizeof *cpy);
     return cpy;
 }
 
