@@ -28,8 +28,12 @@ endif ()
 # Enable testing with CTest
 enable_testing()
 
+add_executable(test_log test_log.c)
+add_test(NAME test_log COMMAND test_log)
+
 add_executable(test_stringbuilder test_stringbuilder.c)
 add_test(NAME test_stringbuilder COMMAND test_stringbuilder)
 
 add_executable(test_stdio std/test_stdio.c)
 add_test(NAME test_stdio COMMAND test_stdio)
+

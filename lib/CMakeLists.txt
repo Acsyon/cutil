@@ -25,6 +25,7 @@ endif ()
 # Set source files
 include_directories("include/")
 set(SOURCE_FILES
+    src/log.c
     src/stringbuilder.c
     src/std/stdio.c
 )
