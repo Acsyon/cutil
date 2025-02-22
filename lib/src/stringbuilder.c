@@ -40,7 +40,7 @@ _normalize_size(size_t target, size_t threshold)
 }
 
 /**
- * Adjusts (and potentially reallocs) char array pointed to by `p_carr` to
+ * Adjusts (and potentially reallocs) char array pointed to by `p_arr` to
  * `target`. A pointer to the (previous) size is passed in `p_size` so that it
  * can be adjusted accordingly if a reallocation happens. A resize can be forced
  * with the force flag, causing the new size to be exactly `target`. If the
@@ -48,32 +48,28 @@ _normalize_size(size_t target, size_t threshold)
  * the expansion happens exponentially (by EXPANSION_FACTOR) while linearly (in
  * multiples of the threshold) above.
  *
- * @param[in, out] p_carr pointer to char array to enlarge
+ * @param[in, out] p_arr pointer to char array to enlarge
  * @param[in, out] p_size pointer to size of char array
  * @param[in] threshold threshold between linear and exponential growth
  * @param[in] target target size of string
  * @param[in] force should the resize be forced?
  */
 static void
-_adjust_carr(
-  char **p_carr, size_t *p_size, size_t threshold, size_t target, bool force
+_adjust_char_arr(
+  char **p_arr, size_t *p_size, size_t threshold, size_t target, bool force
 )
 {
-    if (force) {
-        *p_size = target;
-    } else {
-        *p_size = _normalize_size(target, threshold);
-    }
-    *p_carr = realloc(*p_carr, *p_size * sizeof **p_carr);
+    *p_size = (force) ? target : _normalize_size(target, threshold);
+    *p_arr = realloc(*p_arr, *p_size * sizeof **p_arr);
 }
 
 static void
-_enlarge_carr(char **p_carr, size_t *p_size, size_t threshold, size_t target)
+_enlarge_char_arr(char **p_arr, size_t *p_size, size_t threshold, size_t target)
 {
     if (target <= *p_size) {
         return;
     }
-    _adjust_carr(p_carr, p_size, threshold, target, false);
+    _adjust_char_arr(p_arr, p_size, threshold, target, false);
 }
 
 cutil_StringBuilder *
@@ -183,7 +179,7 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
 {
     const bool force = flags & CUTIL_RESIZE_FLAG_FORCE;
     if (flags & CUTIL_RESIZE_FLAG_STRING) {
-        _adjust_carr(
+        _adjust_char_arr(
           &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, target, force
         );
         if (sb->length >= target) {
@@ -192,7 +188,7 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
         }
     }
     if (flags & CUTIL_RESIZE_FLAG_BUFFER) {
-        _adjust_carr(
+        _adjust_char_arr(
           &sb->buf, &sb->bufsiz, BUFFER_THRESHOLD_SIZE, target, force
         );
     }
@@ -235,7 +231,7 @@ cutil_StringBuilder_vninsertf(
         pos = sb->length;
     }
     const size_t remainder = sb->length - pos;
-    _enlarge_carr(
+    _enlarge_char_arr(
       &sb->buf, &sb->bufsiz, BUFFER_THRESHOLD_SIZE, maxlen + remainder
     );
     const int res = vsnprintf(sb->buf, maxlen, format, args);
@@ -243,13 +239,13 @@ cutil_StringBuilder_vninsertf(
         return res;
     }
     if (remainder > 0) {
-        strncpy(&sb->buf[res], &sb->str[pos], remainder + 1);
+        memcpy(&sb->buf[res], &sb->str[pos], remainder + 1);
     }
     sb->length += res;
-    _enlarge_carr(
+    _enlarge_char_arr(
       &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, sb->length + 1
     );
-    strncpy(&sb->str[pos], sb->buf, res + remainder + 1);
+    memcpy(&sb->str[pos], sb->buf, res + remainder + 1);
     return res;
 }
 

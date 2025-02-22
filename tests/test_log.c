@@ -14,15 +14,7 @@
 #define FOREACH_LEVEL(VAR) LEVEL_FOR_LOOP(VAR, CUTIL_LOG_TRACE, CUTIL_LOG_FATAL)
 
 static FILE *
-_create_tmpfile(void)
-{
-    FILE *const _tmpfile = tmpfile();
-    if (_tmpfile == NULL) {
-        fputs("Failed to create temporary output file.\n", stderr);
-        TEST_ASSERT_TRUE(false);
-    }
-    return _tmpfile;
-}
+_create_tmpfile(void);
 
 static void
 _should_setLogStreamCorrectly(void)
@@ -142,6 +134,17 @@ setUp(void)
 void
 tearDown(void)
 {}
+
+static FILE *
+_create_tmpfile(void)
+{
+    FILE *const _tmpfile = tmpfile();
+    if (_tmpfile == NULL) {
+        fputs("Failed to create temporary output file.\n", stderr);
+        TEST_ASSERT_TRUE(false);
+    }
+    return _tmpfile;
+}
 
 int
 main(void)

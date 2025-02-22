@@ -5,7 +5,7 @@
 #include <cutil/std/stdio.h>
 
 static void
-_test_sfclose(void)
+_should_notClose_when_haveNullOrStdStreams(void)
 {
     /* Arrange */
     FILE *const ins[] = {NULL, stdin, stdout, stderr};
@@ -23,7 +23,7 @@ _test_sfclose(void)
 }
 
 static void
-_test_sfclose_on_tmpfile(void)
+_should_close_when_haveTmpfile(void)
 {
     /* Arrange */
     FILE *const in = tmpfile();
@@ -36,7 +36,7 @@ _test_sfclose_on_tmpfile(void)
 }
 
 static void
-_test_get_filesize(void)
+_should_returnCorrectSize_when_haveTmpfile(void)
 {
     /* Arrange */
     char str[64] = {0};
@@ -73,8 +73,8 @@ int
 main(void)
 {
     UNITY_BEGIN();
-    RUN_TEST(_test_sfclose);
-    RUN_TEST(_test_sfclose_on_tmpfile);
-    RUN_TEST(_test_get_filesize);
+    RUN_TEST(_should_notClose_when_haveNullOrStdStreams);
+    RUN_TEST(_should_close_when_haveTmpfile);
+    RUN_TEST(_should_returnCorrectSize_when_haveTmpfile);
     return UNITY_END();
 }

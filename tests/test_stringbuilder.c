@@ -8,7 +8,7 @@
     "This is a very long string that exceeds the initial and default capacity"
 
 static void
-_test_alloc(void)
+_should_constructBuilder_when_useSize(void)
 {
     /* Arrange */
     const char *const assert_str = "";
@@ -28,7 +28,7 @@ _test_alloc(void)
 }
 
 static void
-_test_from_string(void)
+_should_constructBuilder_when_useString(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -47,7 +47,7 @@ _test_from_string(void)
 }
 
 static void
-_test_from_file(void)
+_should_constructBuilder_when_useFile(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -68,7 +68,7 @@ _test_from_file(void)
 }
 
 static void
-_test_duplicate(void)
+_should_duplicateBuilder(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -94,7 +94,7 @@ _test_duplicate(void)
 }
 
 static void
-_test_clear(void)
+_should_clearCorrectly(void)
 {
     /* Arrange */
     const char *const append_str = LONG_STRING;
@@ -120,7 +120,7 @@ _test_clear(void)
 }
 
 static void
-_test_copy(void)
+_should_copyCorrectly(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -147,7 +147,7 @@ _test_copy(void)
 }
 
 static void
-_test_append_single(void)
+_should_appendCorrectly_when_haveSingleString(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello";
@@ -167,7 +167,7 @@ _test_append_single(void)
 }
 
 static void
-_test_append_multiple(void)
+_should_appendCorrectly_when_haveMultipleStrings(void)
 {
     /* Arrange */
     const char *const input_str_1 = "Hello";
@@ -190,7 +190,7 @@ _test_append_multiple(void)
 }
 
 static void
-_test_append_empty(void)
+_should_appendCorrectly_when_haveEmptyString(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -212,7 +212,7 @@ _test_append_empty(void)
 }
 
 static void
-_test_capacity_expansion(void)
+_should_expandCorrectly_when_appendString(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -234,7 +234,7 @@ _test_capacity_expansion(void)
 }
 
 static void
-_test_huge_number_appends(void)
+_should_appendCorrectly_when_haveHugeNumberOfStrings(void)
 {
     /* Arrange */
     const size_t num_appends = 1023;
@@ -256,7 +256,7 @@ _test_huge_number_appends(void)
 }
 
 static void
-_test_insert(void)
+_should_insertCorrectly(void)
 {
     /* Arrange */
     const char *const input_str_1 = "Hello, World!";
@@ -279,7 +279,7 @@ _test_insert(void)
 }
 
 static void
-_test_resize_shrink(void)
+_should_shrink_when_resize(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -307,7 +307,7 @@ _test_resize_shrink(void)
 }
 
 static void
-_test_resize_shrink_force(void)
+_should_shrinkCorrectly_when_resizeWithForce(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -334,7 +334,7 @@ _test_resize_shrink_force(void)
 }
 
 static void
-_test_resize_expand(void)
+_should_expand_when_resize(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -366,7 +366,7 @@ _test_resize_expand(void)
 }
 
 static void
-_test_resize_expand_force(void)
+_should_expandCorrectly_when_resizeWithForce(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -394,7 +394,7 @@ _test_resize_expand_force(void)
 }
 
 static void
-_test_shrink_to_fit(void)
+_should_resizeCorrectly_when_shrinkToFit(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -415,7 +415,7 @@ _test_shrink_to_fit(void)
 }
 
 static void
-_test_duplicate_string(void)
+_should_duplicateStringCorrectly(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -433,7 +433,7 @@ _test_duplicate_string(void)
 }
 
 static void
-_test_delete()
+_should_deleteCorrectly()
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -454,7 +454,7 @@ _test_delete()
 }
 
 static void
-_test_delete_large()
+_should_deleteCorrectly_when_boundsExceedSize()
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -475,7 +475,7 @@ _test_delete_large()
 }
 
 static void
-_test_delete_from_to()
+_should_deleteCorrectly_when_useFromTo()
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -496,7 +496,7 @@ _test_delete_from_to()
 }
 
 static void
-_test_delete_from_to_large()
+_should_deleteFromToCorrectly_when_boundsExceedSize()
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -528,27 +528,27 @@ int
 main(void)
 {
     UNITY_BEGIN();
-    RUN_TEST(_test_alloc);
-    RUN_TEST(_test_from_string);
-    RUN_TEST(_test_from_file);
-    RUN_TEST(_test_duplicate);
-    RUN_TEST(_test_clear);
-    RUN_TEST(_test_copy);
-    RUN_TEST(_test_append_single);
-    RUN_TEST(_test_append_multiple);
-    RUN_TEST(_test_append_empty);
-    RUN_TEST(_test_capacity_expansion);
-    RUN_TEST(_test_huge_number_appends);
-    RUN_TEST(_test_insert);
-    RUN_TEST(_test_resize_shrink);
-    RUN_TEST(_test_resize_shrink_force);
-    RUN_TEST(_test_resize_expand);
-    RUN_TEST(_test_resize_expand_force);
-    RUN_TEST(_test_shrink_to_fit);
-    RUN_TEST(_test_duplicate_string);
-    RUN_TEST(_test_delete);
-    RUN_TEST(_test_delete_large);
-    RUN_TEST(_test_delete_from_to);
-    RUN_TEST(_test_delete_from_to_large);
+    RUN_TEST(_should_constructBuilder_when_useSize);
+    RUN_TEST(_should_constructBuilder_when_useString);
+    RUN_TEST(_should_constructBuilder_when_useFile);
+    RUN_TEST(_should_duplicateBuilder);
+    RUN_TEST(_should_clearCorrectly);
+    RUN_TEST(_should_copyCorrectly);
+    RUN_TEST(_should_appendCorrectly_when_haveSingleString);
+    RUN_TEST(_should_appendCorrectly_when_haveMultipleStrings);
+    RUN_TEST(_should_appendCorrectly_when_haveEmptyString);
+    RUN_TEST(_should_expandCorrectly_when_appendString);
+    RUN_TEST(_should_appendCorrectly_when_haveHugeNumberOfStrings);
+    RUN_TEST(_should_insertCorrectly);
+    RUN_TEST(_should_shrink_when_resize);
+    RUN_TEST(_should_shrinkCorrectly_when_resizeWithForce);
+    RUN_TEST(_should_expand_when_resize);
+    RUN_TEST(_should_expandCorrectly_when_resizeWithForce);
+    RUN_TEST(_should_resizeCorrectly_when_shrinkToFit);
+    RUN_TEST(_should_duplicateStringCorrectly);
+    RUN_TEST(_should_deleteCorrectly);
+    RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
+    RUN_TEST(_should_deleteCorrectly_when_useFromTo);
+    RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);
     return UNITY_END();
 }
