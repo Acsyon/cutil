@@ -433,7 +433,7 @@ _should_duplicateStringCorrectly(void)
 }
 
 static void
-_should_deleteCorrectly()
+_should_deleteCorrectly(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -454,7 +454,7 @@ _should_deleteCorrectly()
 }
 
 static void
-_should_deleteCorrectly_when_boundsExceedSize()
+_should_deleteCorrectly_when_boundsExceedSize(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -475,7 +475,7 @@ _should_deleteCorrectly_when_boundsExceedSize()
 }
 
 static void
-_should_deleteCorrectly_when_useFromTo()
+_should_deleteCorrectly_when_useFromTo(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -496,7 +496,7 @@ _should_deleteCorrectly_when_useFromTo()
 }
 
 static void
-_should_deleteFromToCorrectly_when_boundsExceedSize()
+_should_deleteFromToCorrectly_when_boundsExceedSize(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
