@@ -34,4 +34,6 @@ set(CUTIL_LIBRARY ${PROJECT_NAME})
 add_subdirectory(lib)
 
 # Add the tests directory
-add_subdirectory(tests)
+if(ENABLE_TESTS)
+    add_subdirectory(tests)
+endif()
