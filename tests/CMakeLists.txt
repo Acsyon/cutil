@@ -33,3 +33,6 @@ add_test(NAME test_stringbuilder COMMAND test_stringbuilder)
 
 add_executable(test_stdio std/test_stdio.c)
 add_test(NAME test_stdio COMMAND test_stdio)
+
+add_executable(test_getopt posix/test_getopt.c)
+add_test(NAME test_getopt COMMAND test_getopt)
