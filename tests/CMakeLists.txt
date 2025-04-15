@@ -1,38 +1,40 @@
 # Set additional compiler flags (UNIX)
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION
-                                          VERSION_GREATER_EQUAL 8)
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     string(APPEND CMAKE_C_FLAGS " -fmacro-prefix-map=${CMAKE_SOURCE_DIR}/= ")
-endif()
+endif ()
 
-# Use FetchContent to download Unity if not present
-include(FetchContent)
-FetchContent_Declare(
-    Unity
-    GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
-    GIT_TAG master # You can specify a version if needed
-)
-FetchContent_MakeAvailable(Unity)
+if (NOT TARGET unity)
+    # Include unity subdirectory
+    add_subdirectory(../submodules/Unity unity EXCLUDE_FROM_ALL)
 
-# Link and include Unity
-link_directories(${unity_BINARY_DIR})
-include_directories("${unity_SOURCE_DIR}/src")
-link_libraries(unity)
+    # Set unity output directory to test directory
+    set_target_properties(
+        unity PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+                         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
+endif ()
 
-# Link and include cutil
-include_directories(${CUTIL_INCLUDE_DIR})
-link_libraries(${CUTIL_LIBRARY})
+# Set correct cutil version
+if (CUTIL_BUILD_SHARED_LIB)
+    set(CUTIL_LIB "${CUTIL_LIBRARY}")
+else ()
+    set(CUTIL_LIB "${CUTIL_LIBRARY}-static")
+endif ()
 
-# Enable testing with CTest
-enable_testing()
+# Set test source files
+set(TEST_SOURCES posix/test_getopt.c std/test_stdio.c test_log.c test_stringbuilder.c)
 
-add_executable(test_log test_log.c)
-add_test(NAME test_log COMMAND test_log)
+# Loop over all tests
+foreach (TEST_SOURCE ${TEST_SOURCES})
+    get_filename_component(TEST_NAME "${TEST_SOURCE}" NAME_WE)
 
-add_executable(test_stringbuilder test_stringbuilder.c)
-add_test(NAME test_stringbuilder COMMAND test_stringbuilder)
+    # Add tests and executables
+    add_executable("${TEST_NAME}" "${TEST_SOURCE}")
+    add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
 
-add_executable(test_stdio std/test_stdio.c)
-add_test(NAME test_stdio COMMAND test_stdio)
+    # Link and include Unity
+    target_link_libraries("${TEST_NAME}" PRIVATE unity)
 
-add_executable(test_getopt posix/test_getopt.c)
-add_test(NAME test_getopt COMMAND test_getopt)
+    # Link and include cutil
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
+endforeach ()
