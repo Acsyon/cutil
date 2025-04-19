@@ -6,7 +6,6 @@
 
 #include <cutil/log.h>
 #include <cutil/std/stdio.h>
-#include <cutil/stringbuilder.h>
 
 #define LEVEL_FOR_LOOP(VAR, BEGIN, END)                                        \
     for (enum cutil_LogLevel VAR = BEGIN; VAR <= END; ++VAR)
@@ -14,146 +13,210 @@
 #define FOREACH_LEVEL(VAR) LEVEL_FOR_LOOP(VAR, CUTIL_LOG_TRACE, CUTIL_LOG_FATAL)
 
 static FILE *
-_create_tmpfile(void);
-
-static void
-_should_setLogStreamCorrectly(void)
+_create_test_file(void)
 {
-    /* Arrange */
-    FILE *const newstream = stdout;
-
-    /* Act */
-    FILE *const oldstream = cutil_log_set_stream(newstream);
-
-    /* Assert */
-    TEST_ASSERT_EQUAL_PTR(NULL, oldstream);
-    TEST_ASSERT_EQUAL_PTR(newstream, cutil_log_get_stream());
+    return tmpfile();
 }
 
 static void
-_should_setLogLevelCorrectly(void)
+_destroy_test_file(FILE *stream)
+{
+    if (stream == NULL) {
+        return;
+    }
+
+    fclose(stream);
+}
+
+static char *
+_read_file_contents(FILE *stream)
+{
+    fseek(stream, 0, SEEK_END);
+    long length = ftell(stream);
+    fseek(stream, 0, SEEK_SET);
+    char *buffer = malloc(length + 1);
+    TEST_ASSERT_EQUAL(length, fread(buffer, 1, length, stream));
+    buffer[length] = '\0';
+    return buffer;
+}
+
+static void
+_should_createLoggerCorrectly_when_useDefault(void)
 {
     /* Arrange */
-    enum cutil_LogLevel oldlvl = cutil_log_get_level();
+    /* Act */
+    cutil_Logger *const default_log = cutil_Logger_create_default();
+
+    /* Assert */
+    TEST_ASSERT_NOT_NULL(default_log);
+    TEST_ASSERT_EQUAL(CUTIL_LOG_WARN, cutil_Logger_get_level(default_log));
+
+    /* Cleanup */
+    cutil_Logger_free(default_log);
+}
+
+static void
+_should_createLoggerCorrectly_when_useLevel(void)
+{
+    FOREACH_LEVEL(level)
+    {
+        /* Arrange */
+        /* Act */
+        cutil_Logger *const log = cutil_Logger_create(level);
+
+        /* Assert */
+        TEST_ASSERT_NOT_NULL(log);
+        TEST_ASSERT_EQUAL(level, cutil_Logger_get_level(log));
+
+        /* Cleanup */
+        cutil_Logger_free(log);
+    }
+}
+
+static void
+_should_setLogLevel_when_haveValidLevel(void)
+{
+    /* Arrange */
+    cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
 
     FOREACH_LEVEL(newlvl)
     {
         /* Act */
-        const enum cutil_LogLevel retlvl = cutil_log_set_level(newlvl);
+        const enum cutil_LogLevel oldlvl = cutil_Logger_set_level(log, newlvl);
 
         /* Assert */
-        TEST_ASSERT_EQUAL_INT(newlvl, cutil_log_get_level());
-        TEST_ASSERT_EQUAL_INT(oldlvl, retlvl);
-
-        oldlvl = newlvl;
-    }
-}
-
-static void
-_should_returnCorrectPrefix_when_levelIsValid(void)
-{
-    FOREACH_LEVEL(lvl)
-    {
-        /* Arrange */
-        const char *const assert_prefix = CUTIL_LOG_LEVEL_PREFIXES[lvl];
-
-        /* Act */
-        const char *const prefix = cutil_log_get_prefix(lvl);
-
-        /* Assert */
-        TEST_ASSERT_EQUAL_STRING(assert_prefix, prefix);
-    }
-}
-
-static void
-_should_returnEmptyPrefix_when_levelIsInvalid(void)
-{
-    const enum cutil_LogLevel LVLS[]
-      = {-CUTIL_LOG_DEBUG,    -CUTIL_LOG_ERROR,     -CUTIL_LOG_FATAL,
-         CUTIL_LOG_FATAL + 5, CUTIL_LOG_FATAL + 10, CUTIL_LOG_FATAL + 123456};
-    const size_t num = (sizeof LVLS) / (sizeof *LVLS);
-
-    for (size_t i = 0; i < num; ++i) {
-        /* Arrange */
-        const enum cutil_LogLevel lvl = LVLS[i];
-        const char *const assert_prefix = "";
-
-        /* Act */
-        const char *const prefix = cutil_log_get_prefix(lvl);
-
-        /* Assert */
-        TEST_ASSERT_EQUAL_STRING(assert_prefix, prefix);
-    }
-}
-
-static void
-_should_outputApplicableMessages_when_levelIsSet(void)
-{
-    cutil_StringBuilder *const assert_sb = cutil_StringBuilder_create();
-    FOREACH_LEVEL(lvl)
-    {
-        /* Arrange */
-        FILE *const out = _create_tmpfile();
-        cutil_log_set_stream(out);
-        cutil_log_set_level(lvl);
-
-        cutil_StringBuilder_clear(assert_sb);
-        LEVEL_FOR_LOOP(tmplvl, lvl, CUTIL_LOG_FATAL)
-        {
-            const char *const prefix = cutil_log_get_prefix(tmplvl);
-            cutil_StringBuilder_appendf(assert_sb, "[%s] \n", prefix);
+        TEST_ASSERT_EQUAL_INT(newlvl, cutil_Logger_get_level(log));
+        if (newlvl > CUTIL_LOG_INFO) {
+            TEST_ASSERT_EQUAL(newlvl - 1, oldlvl);
         }
-
-        /* Act */
-        FOREACH_LEVEL(tmplvl)
-        {
-            cutil_log_message(tmplvl, "");
-        }
-
-        /* Assert */
-        cutil_StringBuilder *const sb = cutil_StringBuilder_from_file(out);
-        const char *const str = cutil_StringBuilder_get_string(sb);
-        const char *const assert_str
-          = cutil_StringBuilder_get_string(assert_sb);
-        TEST_ASSERT_EQUAL_STRING(assert_str, str);
-
-        /* Cleanup */
-        cutil_StringBuilder_free(sb);
-        fclose(out);
     }
-    cutil_StringBuilder_free(assert_sb);
+
+    /* Cleanup */
+    cutil_Logger_free(log);
+}
+
+static void
+_should_notSetLogLevel_when_haveInvalidLevel(void)
+{
+    /* Arrange */
+    cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
+    const enum cutil_LogLevel current = cutil_Logger_get_level(log);
+    const enum cutil_LogLevel invalid = CUTIL_LOG_FATAL + 1;
+
+    /* Act */
+    const enum cutil_LogLevel result = cutil_Logger_set_level(log, invalid);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL(current, cutil_Logger_get_level(log));
+    TEST_ASSERT_EQUAL(current, result);
+
+    /* Cleanup */
+    cutil_Logger_free(log);
+}
+
+static void
+_should_outputCorrectly_when_haveMultipleHandlers(void)
+{
+    /* Arrange */
+    FILE *const stream1 = _create_test_file();
+    FILE *const stream2 = _create_test_file();
+    cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_DEBUG);
+
+    cutil_Logger_add_handler(log, stream1, CUTIL_LOG_DEBUG);
+    cutil_Logger_add_handler_full(log, stream2, CUTIL_LOG_WARN, false);
+
+    /* Act */
+    cutil_Logger_debug(log, "Debug message");
+    cutil_Logger_info(log, "Info message");
+    cutil_Logger_warn(log, "Warning message");
+
+    /* Assert  */
+    fflush(stream1);
+    char *content1 = _read_file_contents(stream1);
+    TEST_ASSERT_NOT_NULL(strstr(content1, "Debug message"));
+    TEST_ASSERT_NOT_NULL(strstr(content1, "Info message"));
+    TEST_ASSERT_NOT_NULL(strstr(content1, "Warning message"));
+    
+    fflush(stream2);
+    char *content2 = _read_file_contents(stream2);
+    TEST_ASSERT_NULL(strstr(content2, "Debug message"));
+    TEST_ASSERT_NULL(strstr(content2, "Info message"));
+    TEST_ASSERT_NOT_NULL(strstr(content2, "Warning message"));
+    
+    /* Cleanup */
+    free(content1);
+    free(content2);
+    _destroy_test_file(stream2);
+    cutil_Logger_free(log);
+}
+
+static void
+_should_formatCorrectly_when_callMessageFunctions(void)
+{
+    /* Arrange */
+    FILE *const stream = _create_test_file();
+    cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_TRACE);
+    cutil_Logger_add_handler(log, stream, CUTIL_LOG_TRACE);
+
+    /* Act */
+    cutil_Logger_trace(log, "Trace %d", 1);
+    cutil_Logger_debug(log, "Debug %s", "test");
+    cutil_Logger_info(log, "Info %.1f", 3.14);
+    cutil_Logger_warn(log, "Warning %c", 'X');
+    cutil_Logger_error(log, "Error %p", log);
+    cutil_Logger_fatal(log, "Fatal %ld", 123456L);
+
+    /* Assert */
+    fflush(stream);
+    char *const content = _read_file_contents(stream);
+
+    TEST_ASSERT_NOT_NULL(strstr(content, "[TRACE] Trace 1"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[DEBUG] Debug test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[ INFO] Info 3.1"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[ WARN] Warning X"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[ERROR] Error 0x"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[FATAL] Fatal 123456"));
+
+    /* Cleanup */
+    free(content);
+    cutil_Logger_free(log);
+}
+
+static void
+_should_autoCloseStream_when_destroyLogger(void)
+{
+    /* Arrange */
+    FILE *const stream = _create_test_file();
+    cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
+    cutil_Logger_add_handler(log, stream, CUTIL_LOG_INFO);
+
+    /* Act */
+    cutil_Logger_free(log);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL(EOF, fgetc(stream));
 }
 
 void
 setUp(void)
-{
-    cutil_log_set_stream(NULL);
-    cutil_log_set_level(CUTIL_LOG_TRACE);
-}
+{}
 
 void
 tearDown(void)
 {}
 
-static FILE *
-_create_tmpfile(void)
-{
-    FILE *const _tmpfile = tmpfile();
-    if (_tmpfile == NULL) {
-        fputs("Failed to create temporary output file.\n", stderr);
-        TEST_ASSERT_TRUE(false);
-    }
-    return _tmpfile;
-}
-
 int
 main(void)
 {
     UNITY_BEGIN();
-    RUN_TEST(_should_setLogStreamCorrectly);
-    RUN_TEST(_should_setLogLevelCorrectly);
-    RUN_TEST(_should_returnCorrectPrefix_when_levelIsValid);
-    RUN_TEST(_should_returnEmptyPrefix_when_levelIsInvalid);
-    RUN_TEST(_should_outputApplicableMessages_when_levelIsSet);
+
+    RUN_TEST(_should_createLoggerCorrectly_when_useDefault);
+    RUN_TEST(_should_createLoggerCorrectly_when_useLevel);
+    RUN_TEST(_should_setLogLevel_when_haveValidLevel);
+    RUN_TEST(_should_notSetLogLevel_when_haveInvalidLevel);
+    RUN_TEST(_should_outputCorrectly_when_haveMultipleHandlers);
+    RUN_TEST(_should_formatCorrectly_when_callMessageFunctions);
+    RUN_TEST(_should_autoCloseStream_when_destroyLogger);
+
     return UNITY_END();
 }
