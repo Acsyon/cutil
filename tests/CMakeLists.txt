@@ -31,6 +31,7 @@ foreach (TEST_SOURCE ${TEST_SOURCES})
     # Add tests and executables
     add_executable("${TEST_NAME}" "${TEST_SOURCE}")
     add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
+    list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
 
     # Link and include Unity
     target_link_libraries("${TEST_NAME}" PRIVATE unity)
@@ -38,3 +39,17 @@ foreach (TEST_SOURCE ${TEST_SOURCES})
     # Link and include cutil
     target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
 endforeach ()
+
+# Expose targets to set output directory
+set(CUTIL_TEST_TARGETS "${CUTIL_TEST_TARGETS}" CACHE INTERNAL "List of cutil test targets" FORCE)
+
+# "cutil-check" target that runs the tests
+if (NOT TARGET cutil-check)
+    add_custom_target(
+        cutil-check
+        COMMAND "${CMAKE_CTEST_COMMAND}" "--output-on-failure"
+        DEPENDS "${CUTIL_TEST_TARGETS}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        COMMENT "Running cutil tests"
+    )
+endif ()

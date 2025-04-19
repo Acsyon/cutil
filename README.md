@@ -25,29 +25,40 @@ Welcome to my C99 utility library! This project serves multiple purposes: It is 
 ### Prerequisites
 
 - A C99-compatible compiler (e.g., GCC, Clang, MSVC)
+- This project uses CMake as its build system, so make sure to have it installed.
 
 ### Building the Library
 
 This project uses CMake for building. Run the following commands:
 
-```
+```sh
 cd build
-cmake [-DCMAKE_BUILD_TYPE=Release] ..
-make
+cmake [-DCMAKE_BUILD_TYPE=<TYPE>] ..
+cmake --build .
 ```
+
+Here, `TYPE` specifies the build type. Possible options are
+
+-   **Release**: Enables the highest (sensible) compiler optimizations to improve perfomance (recommended).
+
+-   **Debug**: Disables compiler optimizations and includes debug symbols into the executable.
+
+-   **RelWithDebInfo** (release with debug info): Enable many compiler optimizations, but also include debug symbols.
 
 ### Running Unit Tests
 
-The tests have to be enabled using a CMake variable:
-```
-cd build
-cmake -DENABLE_TESTS=true ..
-make
+If you want to run the unit tests, you have to load the git submodule for the "Unity" unit-test framework:
+
+```sh
+git submodule update --init --remote submodules/Unity
 ```
 
-Thereafter, they can be run using CTest:
-```
-cd build/tests
+Afterwards, CMake has to be set up with the appropriate variable. The tests will be built automatically if no target is specified. They can be run using CTest. All of this can be achieved by running the following commands:
+
+```sh
+cd build
+cmake -DENABLE_TESTS=TRUE [-DCMAKE_BUILD_TYPE=<TYPE>] ..
+cmake --build .
 ctest
 ```
 

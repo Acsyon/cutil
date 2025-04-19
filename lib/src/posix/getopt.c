@@ -7,6 +7,11 @@
 #include <cutil/std/stdio.h>
 
 /**
+ * Make _() a no-op to allow for easy potential inclusion of gettext later
+ */
+#define _(ARG) (ARG)
+
+/**
  * Communication variable with the caller.
  * If the current option takes an argument, it points to that argument.
  */
@@ -112,8 +117,9 @@ cutil_getopt_long(
                     cutil_optarg = optend + 1;
                 } else {
                     if (cutil_opterr != 0) {
-                        cutil_log_error(
-                          "Option '--%s' doesn't allow an argument\n", opt->name
+                        cutil_log_warn(
+                          _("Option '--%s' doesn't allow an argument\n"),
+                          opt->name
                         );
 
                         cutil_optopt = opt->val;
@@ -126,8 +132,8 @@ cutil_getopt_long(
                     ++cutil_optind;
                 } else {
                     if (cutil_opterr != 0) {
-                        cutil_log_error(
-                          "Option '%s' requires an argument\n",
+                        cutil_log_warn(
+                          _("Option '%s' requires an argument\n"),
                           argv[cutil_optind - 1]
                         );
                     }
@@ -150,7 +156,7 @@ cutil_getopt_long(
         if (cutil_opterr != 0) {
             const char tmp = *optend;
             *optend = '\0';
-            cutil_log_error("Unrecognized option '--%s'\n", _nextchar);
+            cutil_log_warn(_("Unrecognized option '--%s'\n"), _nextchar);
             *optend = tmp;
         }
         _nextchar = NULL;
@@ -175,7 +181,7 @@ cutil_getopt_long(
         /* Invalid option */
         if (tmp == NULL || c == ':') {
             if (cutil_opterr != 0) {
-                cutil_log_error("Unrecognized option -- '-%c'\n", c);
+                cutil_log_warn(_("Unrecognized option -- '-%c'\n"), c);
             }
             cutil_optopt = c;
             return '?';
@@ -189,7 +195,9 @@ cutil_getopt_long(
                 ++cutil_optind;
             } else if (cutil_optind == argc) {
                 if (cutil_opterr != 0) {
-                    cutil_log_error("Option requires an argument -- '%c'\n", c);
+                    cutil_log_warn(
+                      _("Option requires an argument -- '%c'\n"), c
+                    );
                 }
                 cutil_optopt = c;
                 c = (shortopts[0] == ':') ? ':' : '?';
