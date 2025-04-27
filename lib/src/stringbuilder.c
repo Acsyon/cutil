@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include <cutil/cutil.h>
+#include <cutil/log.h>
 #include <cutil/std/stdio.h>
 
 #define STRING_DEFAULT_SIZE 64
@@ -59,8 +60,18 @@ _adjust_char_arr(
   char **p_arr, size_t *p_size, size_t threshold, size_t target, bool force
 )
 {
-    *p_size = (force) ? target : _normalize_size(target, threshold);
-    *p_arr = realloc(*p_arr, *p_size * sizeof **p_arr);
+    if (force && target == 0) {
+        cutil_log_warn("Force StringBuilder size of 0");
+    }
+    const size_t new_size
+      = (force) ? target : _normalize_size(target, threshold);
+    char *const new_arr = realloc(*p_arr, new_size * sizeof **p_arr);
+    if (new_arr == NULL) {
+        cutil_log_error("Failed to realloc memory in StringBuilder");
+        return;
+    }
+    *p_size = new_size;
+    *p_arr = new_arr;
 }
 
 static void
@@ -88,7 +99,7 @@ cutil_StringBuilder_alloc(size_t size)
     sb->str = calloc(sb->capacity, sizeof *sb->str);
     sb->length = 0;
     sb->bufsiz = size;
-    sb->buf = malloc(sb->bufsiz * sizeof *sb->buf);
+    sb->buf = calloc(sb->bufsiz, sizeof *sb->buf);
 
     return sb;
 }
@@ -127,15 +138,16 @@ cutil_StringBuilder_from_file(FILE *in)
 cutil_StringBuilder *
 cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
 {
-    cutil_StringBuilder *const dup = malloc(sizeof *sb);
+    cutil_StringBuilder *const dup = malloc(sizeof *dup);
 
     dup->capacity = sb->capacity;
-    dup->str = malloc(dup->capacity * sizeof *dup->str);
+    dup->str = calloc(dup->capacity, sizeof *dup->str);
     dup->length = sb->length;
     dup->bufsiz = sb->bufsiz;
-    dup->buf = malloc(dup->bufsiz * sizeof *dup->buf);
+    dup->buf = calloc(dup->bufsiz, sizeof *dup->buf);
 
-    memcpy(dup->str, sb->str, sb->length);
+    const size_t reallen = sb->length + 1;
+    memcpy(dup->str, sb->str, reallen);
 
     return dup;
 }
@@ -166,12 +178,13 @@ cutil_StringBuilder_copy(
 )
 {
     dst->capacity = src->capacity;
-    dst->str = realloc(src->str, src->capacity * sizeof *src->str);
+    dst->str = realloc(dst->str, src->capacity * sizeof *src->str);
     dst->length = src->length;
     dst->bufsiz = src->bufsiz;
-    dst->buf = realloc(src->buf, src->bufsiz * sizeof *src->buf);
+    dst->buf = realloc(dst->buf, src->bufsiz * sizeof *src->buf);
 
-    memcpy(dst->str, src->str, src->length);
+    const size_t reallen = src->length + 1;
+    memcpy(dst->str, src->str, reallen);
 }
 
 void
@@ -184,6 +197,9 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
         );
         if (sb->length >= target) {
             sb->length = target;
+            if (sb->length == sb->capacity) {
+                --sb->length;
+            }
             sb->str[sb->length] = '\0';
         }
     }
@@ -198,7 +214,8 @@ void
 cutil_StringBuilder_shrink_to_fit(cutil_StringBuilder *sb)
 {
     const int str_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_FORCE;
-    cutil_StringBuilder_resize(sb, sb->length + 1, str_flags);
+    const size_t reallen = sb->length + 1;
+    cutil_StringBuilder_resize(sb, reallen, str_flags);
     const int buf_flags = CUTIL_RESIZE_FLAG_BUFFER;
     cutil_StringBuilder_resize(sb, 0, buf_flags);
 }
@@ -212,9 +229,9 @@ cutil_StringBuilder_get_string(const cutil_StringBuilder *sb);
 char *
 cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb)
 {
-    const size_t len = sb->length + 1;
-    char *const cpy = malloc(len * sizeof *cpy);
-    memcpy(cpy, sb->str, len * sizeof *cpy);
+    const size_t reallen = sb->length + 1;
+    char *const cpy = malloc(reallen * sizeof *cpy);
+    memcpy(cpy, sb->str, reallen);
     return cpy;
 }
 
@@ -231,9 +248,8 @@ cutil_StringBuilder_vninsertf(
         pos = sb->length;
     }
     const size_t remainder = sb->length - pos;
-    _enlarge_char_arr(
-      &sb->buf, &sb->bufsiz, BUFFER_THRESHOLD_SIZE, maxlen + remainder
-    );
+    const size_t needed = maxlen + remainder + 1;
+    _enlarge_char_arr(&sb->buf, &sb->bufsiz, BUFFER_THRESHOLD_SIZE, needed);
     const int res = vsnprintf(sb->buf, maxlen, format, args);
     if (res < 0) {
         return res;
@@ -242,10 +258,10 @@ cutil_StringBuilder_vninsertf(
         memcpy(&sb->buf[res], &sb->str[pos], remainder + 1);
     }
     sb->length += res;
-    _enlarge_char_arr(
-      &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, sb->length + 1
-    );
+    const size_t reallen = sb->length + 1;
+    _enlarge_char_arr(&sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, reallen);
     memcpy(&sb->str[pos], sb->buf, res + remainder + 1);
+    sb->str[sb->length] = '\0';
     return res;
 }
 
@@ -398,7 +414,8 @@ cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num)
     if (pos + num > sb->length) {
         num = sb->length - pos;
     }
-    memmove(&sb->str[pos], &sb->str[pos + num], num);
+    const size_t reallen = sb->length + 1;
+    memmove(&sb->str[pos], &sb->str[pos + num], reallen - pos - num);
     sb->length -= num;
 }
 
