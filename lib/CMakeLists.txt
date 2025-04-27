@@ -33,12 +33,15 @@ endif ()
 # Compile static library
 if (CUTIL_BUILD_STATIC_LIB)
     add_library("${CUTIL_LIBRARY}-static" STATIC "${SOURCE_FILES}")
-    set_target_properties(
-        "${CUTIL_LIBRARY}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}" PREFIX "lib"
-    )
-
     if (NOT WIN32)
+        set_target_properties(
+            "${CUTIL_LIBRARY}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}" PREFIX "lib"
+        )
         target_link_libraries("${CUTIL_LIBRARY}-static" PRIVATE m)
+    else ()
+        set_target_properties(
+            "${CUTIL_LIBRARY}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}"
+        )
     endif ()
 
     target_include_directories(
