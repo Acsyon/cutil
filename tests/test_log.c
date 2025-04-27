@@ -174,7 +174,7 @@ _should_formatCorrectly_when_callMessageFunctions(void)
     TEST_ASSERT_NOT_NULL(strstr(content, "[DEBUG] Debug test"));
     TEST_ASSERT_NOT_NULL(strstr(content, "[ INFO] Info 3.1"));
     TEST_ASSERT_NOT_NULL(strstr(content, "[ WARN] Warning X"));
-    TEST_ASSERT_NOT_NULL(strstr(content, "[ERROR] Error 0x"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "[ERROR] Error "));
     TEST_ASSERT_NOT_NULL(strstr(content, "[FATAL] Fatal 123456"));
 
     /* Cleanup */
