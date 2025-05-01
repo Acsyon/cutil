@@ -21,6 +21,11 @@ else ()
     set(CUTIL_LIB "${CUTIL_LIBRARY}-static")
 endif ()
 
+# Set output path for binaries
+if (WIN32)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
+
 # Set test source files
 set(TEST_SOURCES posix/test_getopt.c std/test_stdio.c test_log.c test_stringbuilder.c)
 

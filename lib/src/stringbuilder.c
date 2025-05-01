@@ -63,15 +63,8 @@ _adjust_char_arr(
     if (force && target == 0) {
         cutil_log_warn("Force StringBuilder size of 0");
     }
-    const size_t new_size
-      = (force) ? target : _normalize_size(target, threshold);
-    char *const new_arr = realloc(*p_arr, new_size * sizeof **p_arr);
-    if (new_arr == NULL) {
-        cutil_log_error("Failed to realloc memory in StringBuilder");
-        return;
-    }
-    *p_size = new_size;
-    *p_arr = new_arr;
+    *p_size = (force) ? target : _normalize_size(target, threshold);
+    *p_arr = realloc(*p_arr, *p_size * sizeof **p_arr);
 }
 
 static void
