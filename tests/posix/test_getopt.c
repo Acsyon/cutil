@@ -7,7 +7,7 @@
 #include <cutil/posix/getopt.h>
 
 static char *
-_strdup(const char *str)
+_dupstr(const char *str)
 {
     if (str == NULL) {
         return NULL;
@@ -27,7 +27,7 @@ _strdup(const char *str)
 
 #define MAKE_CASE_ARG(CHAR, VAR)                                               \
     case CHAR:                                                                 \
-        VAR = _strdup(cutil_optarg);                                           \
+        VAR = _dupstr(cutil_optarg);                                           \
         break
 
 static void
@@ -350,9 +350,9 @@ _should_detectInvalidLongopts_when_present(void)
     /* Arrange */
 
     /* Options have to be modifiable or else we'll get a SIGSEGV */
-    char *const x_str = _strdup("--xi=asdf");
-    char *const y_str = _strdup("--ypsilon");
-    char *const z_str = _strdup("--zeta");
+    char *const x_str = _dupstr("--xi=asdf");
+    char *const y_str = _dupstr("--ypsilon");
+    char *const z_str = _dupstr("--zeta");
 
     char *const argv[] = {"program", x_str, y_str, z_str, NULL};
     const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
