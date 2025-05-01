@@ -1,6 +1,6 @@
-#include "unity.h"
-
 #include <string.h>
+
+#include <unity.h>
 
 #include <cutil/std/stdio.h>
 

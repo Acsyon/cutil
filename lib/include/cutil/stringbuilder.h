@@ -8,6 +8,7 @@
 #define CUTIL_STRINGBUILDER_H_INCLUDED
 
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include <cutil/cutil.h>
@@ -124,7 +125,9 @@ cutil_StringBuilder_copy(
  * @param[in] flags flags for resize process
  */
 void
-cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags);
+cutil_StringBuilder_resize(
+  cutil_StringBuilder *sb, size_t target, uint32_t flags
+);
 
 /**
  * Manually resizes string and buffer inside `sb` to exatcly to current size.
