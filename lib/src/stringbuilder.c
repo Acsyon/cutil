@@ -161,7 +161,7 @@ cutil_StringBuilder_free(cutil_StringBuilder *sb)
 void
 cutil_StringBuilder_clear(cutil_StringBuilder *sb)
 {
-    const size_t flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
+    const uint32_t flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
     cutil_StringBuilder_resize(sb, 0, flags);
 }
 
@@ -181,7 +181,9 @@ cutil_StringBuilder_copy(
 }
 
 void
-cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
+cutil_StringBuilder_resize(
+  cutil_StringBuilder *sb, size_t target, uint32_t flags
+)
 {
     const bool force = flags & CUTIL_RESIZE_FLAG_FORCE;
     if (flags & CUTIL_RESIZE_FLAG_STRING) {
@@ -206,10 +208,11 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
 void
 cutil_StringBuilder_shrink_to_fit(cutil_StringBuilder *sb)
 {
-    const int str_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_FORCE;
+    const uint32_t str_flags
+      = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_FORCE;
     const size_t reallen = sb->length + 1;
     cutil_StringBuilder_resize(sb, reallen, str_flags);
-    const int buf_flags = CUTIL_RESIZE_FLAG_BUFFER;
+    const uint32_t buf_flags = CUTIL_RESIZE_FLAG_BUFFER;
     cutil_StringBuilder_resize(sb, 0, buf_flags);
 }
 

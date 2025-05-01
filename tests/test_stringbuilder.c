@@ -290,7 +290,7 @@ _should_shrink_when_resize(void)
     const size_t before_length = cutil_StringBuilder_length(sb);
     const size_t before_capacity = sb->capacity;
     const size_t before_bufsiz = sb->bufsiz;
-    const int resize_flags
+    const uint32_t resize_flags
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
@@ -315,8 +315,8 @@ _should_shrinkCorrectly_when_resizeWithForce(void)
     /* Arrange */
     const char *const assert_str = LONG_STRING;
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
-    const int resize_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER
-      | CUTIL_RESIZE_FLAG_FORCE;
+    const uint32_t resize_flags = CUTIL_RESIZE_FLAG_STRING
+      | CUTIL_RESIZE_FLAG_BUFFER | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
     const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
@@ -345,7 +345,7 @@ _should_expand_when_resize(void)
     const size_t before_length = cutil_StringBuilder_length(sb);
     const size_t before_capacity = sb->capacity;
     const size_t before_bufsiz = sb->bufsiz;
-    const int resize_flags
+    const uint32_t resize_flags
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 128, 256, 512};
@@ -375,8 +375,8 @@ _should_expandCorrectly_when_resizeWithForce(void)
     const char *const assert_str = "Hello, World!";
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
     const size_t before_length = cutil_StringBuilder_length(sb);
-    const int resize_flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER
-      | CUTIL_RESIZE_FLAG_FORCE;
+    const uint32_t resize_flags = CUTIL_RESIZE_FLAG_STRING
+      | CUTIL_RESIZE_FLAG_BUFFER | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 128, 256, 512};
     const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
