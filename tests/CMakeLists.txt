@@ -3,8 +3,8 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREA
     string(APPEND CMAKE_C_FLAGS " -fmacro-prefix-map=${CMAKE_SOURCE_DIR}/= ")
 endif ()
 
-# Treating warnings as errors would prevent compilation on Windows
-if (WIN32)
+# Treating warnings as errors would prevent compilation for MSVC
+if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     string(REPLACE " /WX" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 endif ()
 
