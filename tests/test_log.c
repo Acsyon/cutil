@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "unity.h"
+#include <unity.h>
 
 #include <cutil/log.h>
 #include <cutil/std/stdio.h>

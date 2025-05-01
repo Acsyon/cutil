@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "unity.h"
+#include <unity.h>
 
 #include <cutil/stringbuilder.h>
 
