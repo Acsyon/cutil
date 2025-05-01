@@ -3,11 +3,6 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREA
     string(APPEND CMAKE_C_FLAGS " -fmacro-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}/src/= ")
 endif ()
 
-# Set output path for binaries
-if (WIN32)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
-endif()
-
 # Set source files
 set(SOURCE_FILES src/log.c src/stringbuilder.c src/posix/getopt.c src/std/stdio.c)
 
@@ -44,9 +39,7 @@ if (CUTIL_BUILD_STATIC_LIB)
         )
         target_link_libraries("${CUTIL_LIBRARY}-static" PRIVATE m)
     else ()
-        set_target_properties(
-            "${CUTIL_LIBRARY}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}"
-        )
+        set_target_properties("${CUTIL_LIBRARY}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}")
     endif ()
 
     target_include_directories(

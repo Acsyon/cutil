@@ -23,8 +23,10 @@ endif ()
 
 # Set output path for binaries
 if (WIN32)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
-endif()
+endif ()
 
 # Set test source files
 set(TEST_SOURCES posix/test_getopt.c std/test_stdio.c test_log.c test_stringbuilder.c)
