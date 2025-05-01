@@ -6,7 +6,7 @@
 
 #include <cutil/posix/getopt.h>
 
-char *
+static char *
 _strdup(const char *str)
 {
     if (str == NULL) {
