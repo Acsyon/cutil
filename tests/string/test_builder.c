@@ -2,7 +2,7 @@
 
 #include "unity.h"
 
-#include <cutil/stringbuilder.h>
+#include <cutil/string/builder.h>
 
 #define LONG_STRING                                                            \
     "This is a very long string that exceeds the initial and default capacity"

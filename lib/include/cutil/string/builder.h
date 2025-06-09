@@ -1,11 +1,11 @@
-/* cutil/stringbuilder.h
+/* cutil/string/builder.h
  *
  * Header for string builder
  *
  */
 
-#ifndef CUTIL_STRINGBUILDER_H_INCLUDED
-#define CUTIL_STRINGBUILDER_H_INCLUDED
+#ifndef CUTIL_STRING_BUILDER_H_INCLUDED
+#define CUTIL_STRING_BUILDER_H_INCLUDED
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -407,4 +407,4 @@ cutil_StringBuilder_delete_from_to(
 }
 #endif
 
-#endif /* CUTIL_STRINGBUILDER_H_INCLUDED */
+#endif /* CUTIL_STRING_BUILDER_H_INCLUDED */

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cutil/log.h>
+#include <cutil/io/log.h>
 #include <cutil/std/stdio.h>
 
 /**

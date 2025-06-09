@@ -22,7 +22,7 @@ else ()
 endif ()
 
 # Set test source files
-set(TEST_SOURCES posix/test_getopt.c std/test_stdio.c test_log.c test_stringbuilder.c)
+set(TEST_SOURCES io/test_log.c posix/test_getopt.c std/test_stdio.c string/test_builder.c)
 
 # Loop over all tests
 foreach (TEST_SOURCE ${TEST_SOURCES})

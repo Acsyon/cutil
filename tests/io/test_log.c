@@ -4,7 +4,7 @@
 
 #include "unity.h"
 
-#include <cutil/log.h>
+#include <cutil/io/log.h>
 #include <cutil/std/stdio.h>
 
 #define LEVEL_FOR_LOOP(VAR, BEGIN, END)                                        \
@@ -136,13 +136,13 @@ _should_outputCorrectly_when_haveMultipleHandlers(void)
     TEST_ASSERT_NOT_NULL(strstr(content1, "Debug message"));
     TEST_ASSERT_NOT_NULL(strstr(content1, "Info message"));
     TEST_ASSERT_NOT_NULL(strstr(content1, "Warning message"));
-    
+
     fflush(stream2);
     char *content2 = _read_file_contents(stream2);
     TEST_ASSERT_NULL(strstr(content2, "Debug message"));
     TEST_ASSERT_NULL(strstr(content2, "Info message"));
     TEST_ASSERT_NOT_NULL(strstr(content2, "Warning message"));
-    
+
     /* Cleanup */
     free(content1);
     free(content2);

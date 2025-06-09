@@ -1,11 +1,11 @@
-/* cutil/log.h
+/* cutil/io/log.h
  *
  * Header for logging stuff
  *
  */
 
-#ifndef CUTIL_LOG_H_INCLUDED
-#define CUTIL_LOG_H_INCLUDED
+#ifndef CUTIL_IO_LOG_H_INCLUDED
+#define CUTIL_IO_LOG_H_INCLUDED
 
 #include <stdarg.h>
 #include <stdbool.h>
@@ -398,4 +398,4 @@ cutil_log_vfatal(const char *format, va_list args);
 void
 cutil_log_fatal(const char *format, ...);
 
-#endif /* CUTIL_LOG_H_INCLUDED */
+#endif /* CUTIL_IO_LOG_H_INCLUDED */
