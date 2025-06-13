@@ -1,6 +1,8 @@
 #include <cutil/io/log.h>
 
-#include <stdlib.h>
+#include <cutil/debug/null.h>
+#include <cutil/std/stdlib.h>
+#include <cutil/util/macro.h>
 
 /**
  * @brief Default output stream for new logger instances.
@@ -59,7 +61,7 @@ static cutil_Logger *_cutil_global_logger = NULL;
  *
  * Prevents duplicate registration of `_cutil_free_global_logger`.
  */
-static bool _free_global_logger_at_exit = false;
+static cutil_Bool _free_global_logger_at_exit = false;
 
 /**
  * Validates if a log level value is within the defined range.
@@ -69,7 +71,7 @@ static bool _free_global_logger_at_exit = false;
  * @return true if the level is valid (CUTIL_LOG_TRACE to CUTIL_LOG_FATAL),
  *         false otherwise
  */
-static inline bool
+static inline cutil_Bool
 _cutil_LogLevel_is_valid(enum cutil_LogLevel level)
 {
     return !(level < CUTIL_LOG_TRACE || level > CUTIL_LOG_FATAL);
@@ -86,7 +88,7 @@ _cutil_LogLevel_is_valid(enum cutil_LogLevel level)
 struct _cutil_LogHandler {
     FILE *stream;              /**< Output stream (e.g., stdout, file) */
     enum cutil_LogLevel level; /**< Minimum log level to process */
-    bool close; /**< If true, stream is closed when handler is destroyed */
+    cutil_Bool close; /**< Should stream be closed when handler is destroyed? */
 };
 
 /**
@@ -102,9 +104,12 @@ _cutil_LogHandler_init(
   struct _cutil_LogHandler *handler,
   FILE *stream,
   enum cutil_LogLevel level,
-  bool close
+  cutil_Bool close
 )
 {
+    CUTIL_NULL_CHECK(handler);
+    CUTIL_NULL_CHECK(stream);
+
     handler->stream = stream;
     handler->level = level;
     handler->close = close;
@@ -118,6 +123,7 @@ _cutil_LogHandler_init(
 static void
 _cutil_LogHandler_close(struct _cutil_LogHandler *handler)
 {
+    CUTIL_NULL_CHECK(handler);
     if (handler->close) {
         cutil_sfclose(handler->stream);
     }
@@ -145,6 +151,8 @@ _cutil_LogHandler_vmessage(
   va_list args
 )
 {
+    CUTIL_NULL_CHECK(handler);
+    CUTIL_NULL_CHECK(format);
     if (level < handler->level) {
         return;
     }
@@ -190,6 +198,7 @@ cutil_Logger_create_stdout(enum cutil_LogLevel level)
 cutil_Logger *
 cutil_Logger_create_with_handler(FILE *stream, enum cutil_LogLevel level)
 {
+    CUTIL_NULL_CHECK(stream);
     cutil_Logger *const log = cutil_Logger_create(level);
     cutil_Logger_add_handler_full(log, stream, level, false);
     return log;
@@ -211,9 +220,7 @@ cutil_Logger_create(enum cutil_LogLevel level)
 void
 cutil_Logger_free(cutil_Logger *log)
 {
-    if (log == NULL) {
-        return;
-    }
+    CUTIL_RETURN_IF_NULL(log);
 
     for (int i = 0; i < log->num_handlers; ++i) {
         _cutil_LogHandler_close(&log->handlers[i]);
@@ -226,12 +233,14 @@ cutil_Logger_free(cutil_Logger *log)
 enum cutil_LogLevel
 cutil_Logger_get_level(const cutil_Logger *log)
 {
+    CUTIL_NULL_CHECK(log);
     return log->level;
 }
 
 enum cutil_LogLevel
 cutil_Logger_set_level(cutil_Logger *log, enum cutil_LogLevel level)
 {
+    CUTIL_NULL_CHECK(log);
     if (!_cutil_LogLevel_is_valid(level)) {
         cutil_Logger_warn(log, "Cannot change log level: invalid value!");
         return log->level;
@@ -246,14 +255,18 @@ cutil_Logger_add_handler(
   cutil_Logger *log, FILE *stream, enum cutil_LogLevel level
 )
 {
+    CUTIL_NULL_CHECK(log);
+    CUTIL_NULL_CHECK(stream);
     cutil_Logger_add_handler_full(log, stream, level, true);
 }
 
 void
 cutil_Logger_add_handler_full(
-  cutil_Logger *log, FILE *stream, enum cutil_LogLevel level, bool close
+  cutil_Logger *log, FILE *stream, enum cutil_LogLevel level, cutil_Bool close
 )
 {
+    CUTIL_NULL_CHECK(log);
+    CUTIL_NULL_CHECK(stream);
     if (log->num_handlers == log->capacity) {
         cutil_Logger_warn(
           log, "Cannot add another handler: maximum number reached!"
@@ -280,9 +293,7 @@ _cutil_Logger_vmessage(
   cutil_Logger *log, enum cutil_LogLevel level, const char *format, va_list args
 )
 {
-    if (log == NULL) {
-        return;
-    }
+    CUTIL_RETURN_IF_NULL(log);
     if (level < log->level) {
         return;
     }
@@ -389,9 +400,6 @@ cutil_Logger_fatal(cutil_Logger *log, const char *format, ...)
 static void
 _cutil_free_global_logger(void)
 {
-    if (_cutil_global_logger == NULL) {
-        return;
-    }
     cutil_Logger_free(_cutil_global_logger);
     _cutil_global_logger = NULL;
 }

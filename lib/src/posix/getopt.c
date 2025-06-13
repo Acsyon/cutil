@@ -1,10 +1,10 @@
 #include <cutil/posix/getopt.h>
 
-#include <stdlib.h>
-#include <string.h>
-
+#include <cutil/debug/null.h>
 #include <cutil/io/log.h>
 #include <cutil/std/stdio.h>
+#include <cutil/std/stdlib.h>
+#include <cutil/std/string.h>
 
 /**
  * Make _() a no-op to allow for easy potential inclusion of gettext later
@@ -59,6 +59,10 @@ cutil_getopt_long(
   int *indexptr
 )
 {
+    CUTIL_NULL_CHECK(argv);
+    CUTIL_NULL_CHECK(shortopts);
+    CUTIL_NULL_CHECK(longopts);
+
     cutil_optarg = NULL;
 
     /* argv[0] is program name not an argument */

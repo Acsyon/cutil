@@ -1,11 +1,12 @@
 #include <cutil/string/builder.h>
 
-#include <math.h>
-#include <stdbool.h>
-#include <string.h>
-
 #include <cutil/cutil.h>
+#include <cutil/debug/null.h>
+#include <cutil/std/math.h>
+#include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
+#include <cutil/std/string.h>
+#include <cutil/util/macro.h>
 
 #define STRING_DEFAULT_SIZE 64
 #define STRING_THRESHOLD_SIZE 1024
@@ -56,7 +57,11 @@ _normalize_size(size_t target, size_t threshold)
  */
 static void
 _adjust_char_arr(
-  char **p_arr, size_t *p_size, size_t threshold, size_t target, bool force
+  char **p_arr,
+  size_t *p_size,
+  size_t threshold,
+  size_t target,
+  cutil_Bool force
 )
 {
     *p_size = (force) ? target : _normalize_size(target, threshold);
@@ -96,6 +101,8 @@ cutil_StringBuilder_alloc(size_t size)
 cutil_StringBuilder *
 cutil_StringBuilder_from_string(const char *str)
 {
+    CUTIL_NULL_CHECK(str);
+
     cutil_StringBuilder *const sb = cutil_StringBuilder_create();
 
     cutil_StringBuilder_append(sb, str);
@@ -106,6 +113,8 @@ cutil_StringBuilder_from_string(const char *str)
 cutil_StringBuilder *
 cutil_StringBuilder_from_file(FILE *in)
 {
+    CUTIL_NULL_CHECK(in);
+
     const size_t fsize = (size_t) cutil_get_filesize(in);
     cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(fsize);
 
@@ -127,6 +136,8 @@ cutil_StringBuilder_from_file(FILE *in)
 cutil_StringBuilder *
 cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
 {
+    CUTIL_NULL_CHECK(sb);
+
     cutil_StringBuilder *const dup = malloc(sizeof *sb);
 
     dup->capacity = sb->capacity;
@@ -143,9 +154,7 @@ cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
 void
 cutil_StringBuilder_free(cutil_StringBuilder *sb)
 {
-    if (sb == NULL) {
-        return;
-    }
+    CUTIL_RETURN_IF_NULL(sb);
 
     free(sb->str);
     free(sb->buf);
@@ -165,6 +174,9 @@ cutil_StringBuilder_copy(
   cutil_StringBuilder *dst, const cutil_StringBuilder *src
 )
 {
+    CUTIL_NULL_CHECK(dst);
+    CUTIL_NULL_CHECK(src);
+
     dst->capacity = src->capacity;
     dst->str = realloc(src->str, src->capacity * sizeof *src->str);
     dst->length = src->length;
@@ -177,7 +189,8 @@ cutil_StringBuilder_copy(
 void
 cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
 {
-    const bool force = flags & CUTIL_RESIZE_FLAG_FORCE;
+    CUTIL_NULL_CHECK(sb);
+    const cutil_Bool force = flags & CUTIL_RESIZE_FLAG_FORCE;
     if (flags & CUTIL_RESIZE_FLAG_STRING) {
         _adjust_char_arr(
           &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, target, force
@@ -212,6 +225,7 @@ cutil_StringBuilder_get_string(const cutil_StringBuilder *sb);
 char *
 cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb)
 {
+    CUTIL_NULL_CHECK(sb);
     const size_t len = sb->length + 1;
     char *const cpy = malloc(len * sizeof *cpy);
     memcpy(cpy, sb->str, len * sizeof *cpy);
@@ -227,6 +241,8 @@ cutil_StringBuilder_vninsertf(
   va_list args
 )
 {
+    CUTIL_NULL_CHECK(sb);
+    CUTIL_NULL_CHECK(format);
     if (pos > sb->length) {
         pos = sb->length;
     }
@@ -285,6 +301,7 @@ cutil_StringBuilder_vinsertf(
   va_list args
 )
 {
+    CUTIL_NULL_CHECK(format);
     va_list args_cpy;
     va_copy(args_cpy, args);
     const int res = vsnprintf(NULL, 0, format, args_cpy);
@@ -389,6 +406,7 @@ cutil_StringBuilder_append(
 void
 cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num)
 {
+    CUTIL_NULL_CHECK(sb);
     if (num == 0) {
         return;
     }
@@ -407,6 +425,7 @@ cutil_StringBuilder_delete_from_to(
   cutil_StringBuilder *sb, size_t begin, size_t end
 )
 {
+    CUTIL_NULL_CHECK(sb);
     if (end > sb->length) {
         end = sb->length;
     }

@@ -8,8 +8,8 @@
 #define CUTIL_IO_LOG_H_INCLUDED
 
 #include <stdarg.h>
-#include <stdbool.h>
 
+#include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
 
 /**
@@ -153,7 +153,7 @@ cutil_Logger_add_handler(
  */
 void
 cutil_Logger_add_handler_full(
-  cutil_Logger *log, FILE *stream, enum cutil_LogLevel level, bool close
+  cutil_Logger *log, FILE *stream, enum cutil_LogLevel level, cutil_Bool close
 );
 
 /**

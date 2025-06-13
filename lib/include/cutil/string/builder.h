@@ -8,10 +8,10 @@
 #define CUTIL_STRING_BUILDER_H_INCLUDED
 
 #include <stdarg.h>
-#include <stdlib.h>
 
 #include <cutil/cutil.h>
 #include <cutil/std/stdio.h>
+#include <cutil/std/stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
