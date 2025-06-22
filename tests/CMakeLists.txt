@@ -23,7 +23,7 @@ endif ()
 
 # Set test source files
 set(TEST_SOURCES io/test_log.c posix/test_getopt.c std/test_stdio.c std/test_string.c
-                 string/test_builder.c
+                 string/test_builder.c util/test_hash.c
 )
 
 # Loop over all tests
