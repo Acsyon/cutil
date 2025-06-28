@@ -172,6 +172,41 @@ char *
 cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb);
 
 /**
+ * Copies string in `sb` to buffer `buf` whose size is `buflen`. If the buffer
+ * is too small, no action is performed.
+ *
+ * @param[in] sb cutil_StringBuilder to get string of
+ * @param[in] buflen size of buffer
+ * @param[in, out] buf buffer to write string to
+ *
+ * @return length of copied string (without NUL character) or 0 if buffer is too
+ * small
+ */
+size_t
+cutil_StringBuilder_copy_string_to_buf(
+  const cutil_StringBuilder *sb, size_t buflen, char *buf
+);
+
+/**
+ * Copies string in `sb` to buffer pointed to by `p_buf` whose size is pointed
+ * to by `p_buflen` and performs potentially necessary (re)allocations. If any
+ * (re)allocation happens and `p_buflen` is not NULL, the new size of the buffer
+ * (including the NUL character) is written to *`p_buflen`. *`p_buf` needs to be
+ * freed.
+ *
+ * @param[in] sb cutil_StringBuilder to get string of
+ * @param[in, out] p_buflen pointer to length of buffer to write new length to
+ * (if it is not NULL)
+ * @param[in, out] p_buf pointer to buffer to write string to
+ *
+ * @return length of copied string (without NUL character)
+ */
+size_t
+cutil_StringBuilder_copy_string(
+  const cutil_StringBuilder *sb, size_t *p_buflen, char **p_buf
+);
+
+/**
  * Inserts va_list `args` according to printf-like format string `format` to
  * `sb` at position `pos` up to at most `maxlen` bytes.
  *
