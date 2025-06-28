@@ -2,6 +2,7 @@
 
 #include <cutil/cutil.h>
 #include <cutil/debug/null.h>
+#include <cutil/io/log.h>
 #include <cutil/std/math.h>
 #include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
@@ -230,6 +231,43 @@ cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb)
     char *const cpy = malloc(len * sizeof *cpy);
     memcpy(cpy, sb->str, len * sizeof *cpy);
     return cpy;
+}
+
+size_t
+cutil_StringBuilder_copy_string_to_buf(
+  const cutil_StringBuilder *sb, size_t buflen, char *buf
+)
+{
+    CUTIL_NULL_CHECK(sb);
+    CUTIL_NULL_CHECK(buf);
+    const size_t len = sb->length + 1;
+    if (buflen < len) {
+        cutil_log_error("Cannot copy string: buffer too small");
+        return 0;
+    }
+    memcpy(buf, sb->str, len * sizeof *buf);
+    return sb->length;
+}
+
+size_t
+cutil_StringBuilder_copy_string(
+  const cutil_StringBuilder *sb, size_t *p_buflen, char **p_buf
+)
+{
+    CUTIL_NULL_CHECK(sb);
+    CUTIL_NULL_CHECK(p_buf);
+    const size_t len = sb->length + 1;
+    const size_t buflen = (p_buflen == NULL) ? 0 : *p_buflen;
+    if (p_buflen != NULL && buflen < len) {
+        *p_buflen = len;
+    }
+    if (*p_buf == NULL) {
+        *p_buf = malloc(len * sizeof **p_buf);
+    } else if (buflen < len) {
+        *p_buf = realloc(*p_buf, len * sizeof **p_buf);
+    }
+    memcpy(*p_buf, sb->str, len * sizeof **p_buf);
+    return sb->length;
 }
 
 int

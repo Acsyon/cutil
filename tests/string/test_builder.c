@@ -2,6 +2,7 @@
 
 #include "unity.h"
 
+#include <cutil/std/string.h>
 #include <cutil/string/builder.h>
 
 #define LONG_STRING                                                            \
@@ -433,6 +434,118 @@ _should_duplicateStringCorrectly(void)
 }
 
 static void
+_should_copyStringCorrectly_when_bufferIsLargeEnough(void)
+{
+    /* Arrange */
+    const char assert_str[] = "Hello, World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+    const size_t buflen = sizeof assert_str;
+    char *const buf = malloc(buflen * sizeof *buf);
+
+    /* Act */
+    const size_t len = cutil_StringBuilder_copy_string_to_buf(sb, buflen, buf);
+    TEST_ASSERT_EQUAL_size_t(buflen - 1, len);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(assert_str, buf);
+
+    /* Cleanup */
+    free(buf);
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_notCopyString_when_bufferIsTooSmall(void)
+{
+    /* Arrange */
+    const char *const assert_str = "Hello, World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+
+    const char small_str[] = "Hello";
+    const size_t buflen = sizeof small_str;
+    char *const buf = cutil_strdup(small_str);
+
+    /* Act */
+    const size_t len = cutil_StringBuilder_copy_string_to_buf(sb, buflen, buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(small_str, buf);
+    TEST_ASSERT_EQUAL_size_t(0, len);
+
+    /* Cleanup */
+    free(buf);
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_copyStringCorrectly_when_bufferIsNull(void)
+{
+    /* Arrange */
+    const char assert_str[] = "Hello, World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+    size_t buflen = 0;
+    char *buf = NULL;
+
+    /* Act */
+    const size_t newlen = cutil_StringBuilder_copy_string(sb, &buflen, &buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(assert_str, buf);
+    TEST_ASSERT_EQUAL_size_t(sizeof assert_str, buflen);
+    TEST_ASSERT_EQUAL_size_t(sizeof assert_str - 1, newlen);
+
+    /* Cleanup */
+    free(buf);
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_copyStringAndRetainPointer_when_bufferIsLargeEnough(void)
+{
+    /* Arrange */
+    const char assert_str[] = "Hello, World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+
+    size_t buflen = sizeof assert_str + 1;
+    char *buf = malloc(buflen * sizeof *buf);
+    char *const old_buf = buf;
+    const size_t old_buflen = buflen;
+
+    /* Act */
+    const size_t newlen = cutil_StringBuilder_copy_string(sb, &buflen, &buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(assert_str, buf);
+    TEST_ASSERT_EQUAL_PTR(old_buf, buf);
+    TEST_ASSERT_EQUAL_size_t(old_buflen, buflen);
+    TEST_ASSERT_EQUAL_size_t(sizeof assert_str - 1, newlen);
+
+    /* Cleanup */
+    free(buf);
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_copyStringCorrectly_when_buflenIsNull(void)
+{
+    /* Arrange */
+    const char assert_str[] = "Hello, World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(assert_str);
+    char *buf = NULL;
+
+    /* Act */
+    const size_t newlen = cutil_StringBuilder_copy_string(sb, NULL, &buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(assert_str, buf);
+    TEST_ASSERT_EQUAL_size_t(sizeof assert_str - 1, newlen);
+
+    /* Cleanup */
+    free(buf);
+    cutil_StringBuilder_free(sb);
+}
+
+static void
 _should_deleteCorrectly(void)
 {
     /* Arrange */
@@ -528,6 +641,7 @@ int
 main(void)
 {
     UNITY_BEGIN();
+
     RUN_TEST(_should_constructBuilder_when_useSize);
     RUN_TEST(_should_constructBuilder_when_useString);
     RUN_TEST(_should_constructBuilder_when_useFile);
@@ -546,9 +660,15 @@ main(void)
     RUN_TEST(_should_expandCorrectly_when_resizeWithForce);
     RUN_TEST(_should_resizeCorrectly_when_shrinkToFit);
     RUN_TEST(_should_duplicateStringCorrectly);
+    RUN_TEST(_should_copyStringCorrectly_when_bufferIsLargeEnough);
+    RUN_TEST(_should_notCopyString_when_bufferIsTooSmall);
+    RUN_TEST(_should_copyStringCorrectly_when_bufferIsNull);
+    RUN_TEST(_should_copyStringAndRetainPointer_when_bufferIsLargeEnough);
+    RUN_TEST(_should_copyStringCorrectly_when_buflenIsNull);
     RUN_TEST(_should_deleteCorrectly);
     RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
     RUN_TEST(_should_deleteCorrectly_when_useFromTo);
     RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);
+
     return UNITY_END();
 }
