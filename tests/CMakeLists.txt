@@ -23,6 +23,7 @@ endif ()
 
 # Set test source files
 set(TEST_SOURCES
+    data/generic/test_array.c
     data/generic/test_iterator.c
     data/generic/test_object.c
     data/generic/test_type.c
