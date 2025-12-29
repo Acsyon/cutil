@@ -8,6 +8,7 @@ set(SOURCE_FILES
     src/io/log.c
     src/posix/getopt.c
     src/std/stdio.c
+    src/std/stdlib.c
     src/std/string.c
     src/string/builder.c
     src/util/compare.c
