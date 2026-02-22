@@ -1,24 +1,11 @@
 #include "unity.h"
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <cutil/posix/getopt.h>
 
-char *
-_strdup(const char *str)
-{
-    if (str == NULL) {
-        return NULL;
-    }
-
-    const size_t len = strlen(str) + 1;
-    char *cpy = malloc(len);
-    cpy = memcpy(cpy, str, len);
-
-    return cpy;
-}
+#include <cutil/std/stdbool.h>
+#include <cutil/std/stdlib.h>
+#include <cutil/std/string.h>
+#include <cutil/util/macro.h>
 
 #define MAKE_CASE_FLAG(CHAR, FLAG)                                             \
     case CHAR:                                                                 \
@@ -27,7 +14,7 @@ _strdup(const char *str)
 
 #define MAKE_CASE_ARG(CHAR, VAR)                                               \
     case CHAR:                                                                 \
-        VAR = _strdup(cutil_optarg);                                           \
+        VAR = cutil_strdup(cutil_optarg);                                           \
         break
 
 static void
@@ -35,7 +22,7 @@ _should_setShortoptsCorrectly_when_haveNoArgument(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "-a", "-b", "-c", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const optstring = "abcde";
 
     cutil_optind = 1; /* Reset for repeatability */
@@ -75,7 +62,7 @@ _should_setShortoptsCorrectly_when_haveArguments(void)
     char *const a_arg = "value";
     char *const b_arg = "another";
     char *const argv[] = {"program", "-a", a_arg, "-b", b_arg, NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const optstring = "a:b:c:d:e:";
 
     cutil_optind = 1; /* Reset for repeatability */
@@ -120,7 +107,7 @@ _should_ignoreShortopts_when_haveDoubleDash(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--", "-a", "-b", "-c", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const optstring = "abcde";
 
     cutil_optind = 1; /* Reset for repeatability */
@@ -158,7 +145,7 @@ _should_detectInvalidShortopts_when_present(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "-x", "-y", "-z", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const optstring = "abcde";
 
     cutil_optind = 1; /* Reset for repeatability */
@@ -200,7 +187,7 @@ _should_setLongoptsCorrectly_when_haveNoArgument(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--alpha", "--beta", "--gamma", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const shortopts = "abcde";
     const cutil_Option longopts[] = {
       {"alpha", CUTIL_OPTION_NO_ARGUMENT, 0, 'a'},
@@ -249,7 +236,7 @@ _should_setLongoptsCorrectly_when_haveArguments(void)
     char *const a_arg = "value";
     char *const b_arg = "another";
     char *const argv[] = {"program", "--alpha", a_arg, "--beta=another", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const shortopts = "a:b:c:d:e:";
     const cutil_Option longopts[] = {
       {"alpha", CUTIL_OPTION_REQUIRED_ARGUMENT, 0, 'a'},
@@ -302,7 +289,7 @@ _should_ignoreLongopts_when_haveDoubleDash(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--", "-a", "-b", "-c", NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const shortopts = "abcde";
     const cutil_Option longopts[] = {
       {"alpha", CUTIL_OPTION_NO_ARGUMENT, 0, 'a'},
@@ -350,12 +337,12 @@ _should_detectInvalidLongopts_when_present(void)
     /* Arrange */
 
     /* Options have to be modifiable or else we'll get a SIGSEGV */
-    char *const x_str = _strdup("--xi=asdf");
-    char *const y_str = _strdup("--ypsilon");
-    char *const z_str = _strdup("--zeta");
+    char *const x_str = cutil_strdup("--xi=asdf");
+    char *const y_str = cutil_strdup("--ypsilon");
+    char *const z_str = cutil_strdup("--zeta");
 
     char *const argv[] = {"program", x_str, y_str, z_str, NULL};
-    const int argc = ((sizeof argv) / (sizeof *argv)) - 1;
+    const int argc = CUTIL_GET_NATIVE_ARRAY_SIZE(argv) - 1;
     const char *const shortopts = "abcde";
     const cutil_Option longopts[] = {
       {"alpha", CUTIL_OPTION_NO_ARGUMENT, 0, 'a'},
@@ -418,6 +405,7 @@ int
 main(void)
 {
     UNITY_BEGIN();
+
     RUN_TEST(_should_setShortoptsCorrectly_when_haveNoArgument);
     RUN_TEST(_should_setShortoptsCorrectly_when_haveArguments);
     RUN_TEST(_should_ignoreShortopts_when_haveDoubleDash);
@@ -426,5 +414,6 @@ main(void)
     RUN_TEST(_should_setLongoptsCorrectly_when_haveArguments);
     RUN_TEST(_should_ignoreLongopts_when_haveDoubleDash);
     RUN_TEST(_should_detectInvalidLongopts_when_present);
+
     return UNITY_END();
 }
