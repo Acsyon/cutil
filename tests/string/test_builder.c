@@ -1,9 +1,10 @@
-#include <string.h>
+#include <cutil/string/builder.h>
 
 #include "unity.h"
 
 #include <cutil/std/string.h>
 #include <cutil/string/builder.h>
+#include <cutil/util/macro.h>
 
 #define LONG_STRING                                                            \
     "This is a very long string that exceeds the initial and default capacity"
@@ -292,7 +293,7 @@ _should_shrink_when_resize(void)
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         /* Act */
         cutil_StringBuilder_resize(sb, SIZES[i], resize_flags);
@@ -317,7 +318,7 @@ _should_shrinkCorrectly_when_resizeWithForce(void)
       | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -349,7 +350,7 @@ _should_expand_when_resize(void)
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 128, 256, 512};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -379,7 +380,7 @@ _should_expandCorrectly_when_resizeWithForce(void)
       | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 128, 256, 512};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -671,6 +672,7 @@ int
 main(void)
 {
     UNITY_BEGIN();
+
     RUN_TEST(_should_constructBuilder_when_useSize);
     RUN_TEST(_should_constructBuilder_when_useString);
     RUN_TEST(_should_preserveNulInvariant_when_constructEmpty);
@@ -699,5 +701,6 @@ main(void)
     RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
     RUN_TEST(_should_deleteCorrectly_when_useFromTo);
     RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);
+
     return UNITY_END();
 }
