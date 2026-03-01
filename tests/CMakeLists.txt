@@ -23,8 +23,10 @@ endif ()
 
 # Set test source files
 set(TEST_SOURCES
+    data/generic/map/test_hashmap.c
     data/generic/test_array.c
     data/generic/test_iterator.c
+    data/generic/test_map.c
     data/generic/test_type.c
     data/native/test_bitarray.c
     io/test_log.c
