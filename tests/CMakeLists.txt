@@ -26,6 +26,7 @@ set(TEST_SOURCES
     data/generic/test_array.c
     data/generic/test_iterator.c
     data/generic/test_type.c
+    data/native/test_bitarray.c
     io/test_log.c
     posix/test_getopt.c
     std/test_stdio.c
