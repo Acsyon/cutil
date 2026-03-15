@@ -348,3 +348,10 @@ const cutil_GenericType *const CUTIL_GENERIC_TYPE_DOUBLE
   = &CUTIL_GENERIC_TYPE_DOUBLE_INSTANCE;
 const cutil_GenericType *const CUTIL_GENERIC_TYPE_LDOUBLE
   = &CUTIL_GENERIC_TYPE_LDOUBLE_INSTANCE;
+
+static const cutil_GenericType CUTIL_GENERIC_TYPE_UNIT_INSTANCE
+  = {.name = "cutil_unit", .size = 1};
+const cutil_GenericType *const CUTIL_GENERIC_TYPE_UNIT
+  = &CUTIL_GENERIC_TYPE_UNIT_INSTANCE;
+
+const unsigned char CUTIL_UNIT_VALUE = 0;
