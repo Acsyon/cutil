@@ -90,6 +90,7 @@ _should_duplicateBuilder(void)
     TEST_ASSERT_EQUAL_size_t(sb_assert->bufsiz, sb->bufsiz);
 
     /* Cleanup */
+    cutil_StringBuilder_free(sb_assert);
     cutil_StringBuilder_free(sb);
 }
 
@@ -116,6 +117,7 @@ _should_clearCorrectly(void)
     TEST_ASSERT_EQUAL_size_t(sb_assert->capacity, sb->capacity);
 
     /* Cleanup */
+    cutil_StringBuilder_free(sb_assert);
     cutil_StringBuilder_free(sb);
 }
 
@@ -143,6 +145,7 @@ _should_copyCorrectly(void)
     TEST_ASSERT_EQUAL_size_t(sb_assert->bufsiz, sb->bufsiz);
 
     /* Cleanup */
+    cutil_StringBuilder_free(sb_assert);
     cutil_StringBuilder_free(sb);
 }
 
@@ -325,7 +328,9 @@ _should_shrinkCorrectly_when_resizeWithForce(void)
 
         /* Assert */
         TEST_ASSERT_EQUAL_size_t(size, cutil_StringBuilder_length(sb));
-        TEST_ASSERT_EQUAL_size_t(size, sb->capacity);
+        /* capacity = size + 1: resize allocates one extra byte for null
+         * terminator */
+        TEST_ASSERT_EQUAL_size_t(size + 1, sb->capacity);
         TEST_ASSERT_EQUAL_size_t(size, sb->bufsiz);
     }
 

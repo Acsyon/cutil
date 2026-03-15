@@ -146,7 +146,7 @@ cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
     dup->bufsiz = sb->bufsiz;
     dup->buf = malloc(dup->bufsiz * sizeof *dup->buf);
 
-    memcpy(dup->str, sb->str, sb->length);
+    memcpy(dup->str, sb->str, sb->length + 1);
 
     return dup;
 }
@@ -178,12 +178,12 @@ cutil_StringBuilder_copy(
     CUTIL_NULL_CHECK(src);
 
     dst->capacity = src->capacity;
-    dst->str = realloc(src->str, src->capacity * sizeof *src->str);
+    dst->str = realloc(dst->str, src->capacity * sizeof *dst->str);
     dst->length = src->length;
     dst->bufsiz = src->bufsiz;
-    dst->buf = realloc(src->buf, src->bufsiz * sizeof *src->buf);
+    dst->buf = realloc(dst->buf, src->bufsiz * sizeof *dst->buf);
 
-    memcpy(dst->str, src->str, src->length);
+    memcpy(dst->str, src->str, src->length + 1);
 }
 
 void
@@ -196,6 +196,13 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
           &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, target, force
         );
         if (sb->length >= target) {
+            if (force) {
+                /* Grow by one to fit the null terminator after the truncated
+                 * text */
+                sb->str
+                  = realloc(sb->str, (sb->capacity + 1) * sizeof *sb->str);
+                ++sb->capacity;
+            }
             sb->length = target;
             sb->str[sb->length] = '\0';
         }

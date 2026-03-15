@@ -1,6 +1,11 @@
+/* Request POSIX.1-2008 for fileno() and read() */
+#define _POSIX_C_SOURCE 200809L
+
+#include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "unity.h"
 
@@ -191,10 +196,14 @@ _should_autoCloseStream_when_destroyLogger(void)
     cutil_Logger_add_handler(log, stream, CUTIL_LOG_INFO);
 
     /* Act */
+    const int fd = fileno(stream);
     cutil_Logger_free(log);
 
-    /* Assert */
-    TEST_ASSERT_EQUAL(EOF, fgetc(stream));
+    /* Assert — fd must be closed (EBADF on read) */
+    char buf[1];
+    errno = 0;
+    TEST_ASSERT_EQUAL(-1, read(fd, buf, sizeof buf));
+    TEST_ASSERT_EQUAL(EBADF, errno);
 }
 
 void
