@@ -424,6 +424,13 @@ extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_FLOAT;
 extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_DOUBLE;
 extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_LDOUBLE;
 
+/**
+ * "Dummy" type with (almost) no functionality and its singleton variable.
+ * Currently only used in HashSet.
+ */
+extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_UNIT;
+extern const unsigned char CUTIL_UNIT_VALUE;
+
 #ifdef __cplusplus
 }
 #endif
