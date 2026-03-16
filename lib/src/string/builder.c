@@ -2,6 +2,7 @@
 
 #include <cutil/cutil.h>
 #include <cutil/debug/null.h>
+#include <cutil/io/log.h>
 #include <cutil/std/math.h>
 #include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
@@ -111,29 +112,6 @@ cutil_StringBuilder_from_string(const char *str)
 }
 
 cutil_StringBuilder *
-cutil_StringBuilder_from_file(FILE *in)
-{
-    CUTIL_NULL_CHECK(in);
-
-    const size_t fsize = (size_t) cutil_get_filesize(in);
-    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(fsize);
-
-    rewind(in);
-    const size_t size = fread(sb->str, 1UL, fsize, in);
-    if (size != fsize - 1) {
-        cutil_StringBuilder_free(sb);
-        return NULL;
-    }
-    /**
-     * TODO: Not optimal, probably need another object to read stuff from files
-     * to prevent potential '\0' characters from breaking things.
-     */
-    sb->length = strlen(sb->str);
-
-    return sb;
-}
-
-cutil_StringBuilder *
 cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
 {
     CUTIL_NULL_CHECK(sb);
@@ -146,7 +124,7 @@ cutil_StringBuilder_duplicate(const cutil_StringBuilder *sb)
     dup->bufsiz = sb->bufsiz;
     dup->buf = malloc(dup->bufsiz * sizeof *dup->buf);
 
-    memcpy(dup->str, sb->str, sb->length);
+    memcpy(dup->str, sb->str, sb->length + 1);
 
     return dup;
 }
@@ -178,12 +156,12 @@ cutil_StringBuilder_copy(
     CUTIL_NULL_CHECK(src);
 
     dst->capacity = src->capacity;
-    dst->str = realloc(src->str, src->capacity * sizeof *src->str);
+    dst->str = realloc(dst->str, src->capacity * sizeof *dst->str);
     dst->length = src->length;
     dst->bufsiz = src->bufsiz;
-    dst->buf = realloc(src->buf, src->bufsiz * sizeof *src->buf);
+    dst->buf = realloc(dst->buf, src->bufsiz * sizeof *dst->buf);
 
-    memcpy(dst->str, src->str, src->length);
+    memcpy(dst->str, src->str, src->length + 1);
 }
 
 void
@@ -196,6 +174,13 @@ cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags)
           &sb->str, &sb->capacity, STRING_THRESHOLD_SIZE, target, force
         );
         if (sb->length >= target) {
+            if (force) {
+                /* Grow by one to fit the null terminator after the truncated
+                 * text */
+                sb->str
+                  = realloc(sb->str, (sb->capacity + 1) * sizeof *sb->str);
+                ++sb->capacity;
+            }
             sb->length = target;
             sb->str[sb->length] = '\0';
         }
@@ -230,6 +215,43 @@ cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb)
     char *const cpy = malloc(len * sizeof *cpy);
     memcpy(cpy, sb->str, len * sizeof *cpy);
     return cpy;
+}
+
+size_t
+cutil_StringBuilder_copy_string_to_buf(
+  const cutil_StringBuilder *sb, size_t buflen, char *buf
+)
+{
+    CUTIL_NULL_CHECK(sb);
+    CUTIL_NULL_CHECK(buf);
+    const size_t len = sb->length + 1;
+    if (buflen < len) {
+        cutil_log_error("Cannot copy string: buffer too small");
+        return 0;
+    }
+    memcpy(buf, sb->str, len * sizeof *buf);
+    return sb->length;
+}
+
+size_t
+cutil_StringBuilder_copy_string(
+  const cutil_StringBuilder *sb, size_t *p_buflen, char **p_buf
+)
+{
+    CUTIL_NULL_CHECK(sb);
+    CUTIL_NULL_CHECK(p_buf);
+    const size_t len = sb->length + 1;
+    const size_t buflen = (p_buflen == NULL) ? 0 : *p_buflen;
+    if (p_buflen != NULL && buflen < len) {
+        *p_buflen = len;
+    }
+    if (*p_buf == NULL) {
+        *p_buf = malloc(len * sizeof **p_buf);
+    } else if (buflen < len) {
+        *p_buf = realloc(*p_buf, len * sizeof **p_buf);
+    }
+    memcpy(*p_buf, sb->str, len * sizeof **p_buf);
+    return sb->length;
 }
 
 int
@@ -416,7 +438,7 @@ cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num)
     if (pos + num > sb->length) {
         num = sb->length - pos;
     }
-    memmove(&sb->str[pos], &sb->str[pos + num], num);
+    memmove(&sb->str[pos], &sb->str[pos + num], sb->length - pos - num + 1);
     sb->length -= num;
 }
 
