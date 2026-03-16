@@ -48,21 +48,16 @@ _should_constructBuilder_when_useString(void)
 }
 
 static void
-_should_constructBuilder_when_useFile(void)
+_should_preserveNulInvariant_when_constructEmpty(void)
 {
-    /* Arrange */
-    const char *const assert_str = LONG_STRING;
-    FILE *const in = tmpfile();
-    fwrite(assert_str, 1UL, sizeof LONG_STRING, in);
-
     /* Act */
-    cutil_StringBuilder *const sb = cutil_StringBuilder_from_file(in);
+    cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
 
-    /* Assert */
+    /* Assert: invariant str[length] == '\0' on an empty builder */
     const size_t len = cutil_StringBuilder_length(sb);
-    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    TEST_ASSERT_EQUAL_size_t(0, len);
     const char *const str = cutil_StringBuilder_get_string(sb);
-    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+    TEST_ASSERT_EQUAL_CHAR('\0', str[len]);
 
     /* Cleanup */
     cutil_StringBuilder_free(sb);
@@ -277,6 +272,8 @@ _should_insertCorrectly(void)
     TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
     const char *const str = cutil_StringBuilder_get_string(sb);
     TEST_ASSERT_EQUAL_STRING(assert_str, str);
+    /* Invariant: str[length] must be NUL after middle insert */
+    TEST_ASSERT_EQUAL_CHAR('\0', str[len]);
 
     /* Cleanup */
     cutil_StringBuilder_free(sb);
@@ -432,6 +429,8 @@ _should_duplicateStringCorrectly(void)
 
     /* Assert */
     TEST_ASSERT_EQUAL_STRING(assert_str, cpy);
+    /* Invariant: duplicated string is NUL-terminated */
+    TEST_ASSERT_EQUAL_CHAR('\0', cpy[strlen(assert_str)]);
 
     /* Cleanup */
     free(cpy);
@@ -453,6 +452,8 @@ _should_copyStringCorrectly_when_bufferIsLargeEnough(void)
 
     /* Assert */
     TEST_ASSERT_EQUAL_STRING(assert_str, buf);
+    /* Invariant: buf is NUL-terminated on success */
+    TEST_ASSERT_EQUAL_CHAR('\0', buf[len]);
 
     /* Cleanup */
     free(buf);
@@ -572,6 +573,30 @@ _should_deleteCorrectly(void)
 }
 
 static void
+_should_deleteCorrectly_when_numLessThanRemainder(void)
+{
+    /* Arrange: delete 1 char where the remaining suffix (7 chars) exceeds num.
+     * The old memmove(num) bug would fail to move the suffix and NUL. */
+    const char *const input_str = "Hello, World!";
+    const char *const assert_str = "Hello World!";
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(input_str);
+
+    /* Act: delete ',' at pos 5 (num=1, remainder=7 > num) */
+    cutil_StringBuilder_delete(sb, 5, 1);
+
+    /* Assert */
+    const size_t len = cutil_StringBuilder_length(sb);
+    TEST_ASSERT_EQUAL_size_t(strlen(assert_str), len);
+    const char *const str = cutil_StringBuilder_get_string(sb);
+    TEST_ASSERT_EQUAL_STRING(assert_str, str);
+    /* Invariant: str[length] must be NUL — catches the memmove(num) bug */
+    TEST_ASSERT_EQUAL_CHAR('\0', str[len]);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
 _should_deleteCorrectly_when_boundsExceedSize(void)
 {
     /* Arrange */
@@ -648,7 +673,7 @@ main(void)
     UNITY_BEGIN();
     RUN_TEST(_should_constructBuilder_when_useSize);
     RUN_TEST(_should_constructBuilder_when_useString);
-    RUN_TEST(_should_constructBuilder_when_useFile);
+    RUN_TEST(_should_preserveNulInvariant_when_constructEmpty);
     RUN_TEST(_should_duplicateBuilder);
     RUN_TEST(_should_clearCorrectly);
     RUN_TEST(_should_copyCorrectly);
@@ -670,6 +695,7 @@ main(void)
     RUN_TEST(_should_copyStringAndRetainPointer_when_bufferIsLargeEnough);
     RUN_TEST(_should_copyStringCorrectly_when_buflenIsNull);
     RUN_TEST(_should_deleteCorrectly);
+    RUN_TEST(_should_deleteCorrectly_when_numLessThanRemainder);
     RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
     RUN_TEST(_should_deleteCorrectly_when_useFromTo);
     RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);

@@ -10,7 +10,6 @@
 #include <stdarg.h>
 
 #include <cutil/cutil.h>
-#include <cutil/std/stdio.h>
 #include <cutil/std/stdlib.h>
 
 #ifdef __cplusplus
@@ -18,7 +17,11 @@ extern "C" {
 #endif
 
 /**
- * String builder
+ * String builder.
+ *
+ * NUL-terminator invariant: @c str[length] == '\0' is maintained after every
+ * operation. @c length counts stored characters and excludes the NUL
+ * terminator; @c capacity >= length + 1.
  */
 typedef struct {
     size_t capacity;
@@ -39,7 +42,7 @@ enum {
 
 /**
  * Creates newly malloc'd cutil_StringBuilder object with default initial
- * capacity.
+ * capacity. The string is initialized to an empty NUL-terminated string.
  *
  * @return newly malloc'd cutil_StringBuilder object
  */
@@ -48,7 +51,7 @@ cutil_StringBuilder_create(void);
 
 /**
  * Creates newly malloc'd cutil_StringBuilder object with initial capacity
- * `size`.
+ * `size`. The string is initialized to an empty NUL-terminated string.
  *
  * @param[in] size initial capacity (0 for default)
  *
@@ -59,6 +62,7 @@ cutil_StringBuilder_alloc(size_t size);
 
 /**
  * Reads contents of `str` into newly malloc'd cutil_StringBuilder object.
+ * The resulting builder contains a NUL-terminated copy of `str`.
  *
  * @param[in] str string to read data from
  *
@@ -68,18 +72,8 @@ cutil_StringBuilder *
 cutil_StringBuilder_from_string(const char *str);
 
 /**
- * Reads contents of `in` into newly malloc'd cutil_StringBuilder object.
- *
- * @param[in] in FILE stream to read data from
- *
- * @return newly malloc'd cutil_StringBuilder object with contents of `in` (NULL
- * for error)
- */
-cutil_StringBuilder *
-cutil_StringBuilder_from_file(FILE *in);
-
-/**
  * Copies contents of `sb` into newly malloc'd cutil_StringBuilder object.
+ * The NUL-terminator invariant is preserved in the duplicate.
  *
  * @param[in] sb cutil_StringBuilder to copy data of
  *
@@ -97,7 +91,8 @@ void
 cutil_StringBuilder_free(cutil_StringBuilder *sb);
 
 /**
- * Clears contents of `sb` and resets sizes.
+ * Clears contents of `sb` and resets sizes. The NUL-terminator invariant
+ * is preserved: after this call @c sb->str[0] == '\0' and @c length == 0.
  *
  * @param[in] sb cutil_StringBuilder object to clear
  */
@@ -105,7 +100,8 @@ void
 cutil_StringBuilder_clear(cutil_StringBuilder *sb);
 
 /**
- * Copies contents of `src` into `dst`.
+ * Copies contents of `src` into `dst`. The NUL-terminator invariant is
+ * preserved in the destination.
  *
  * @param[in, out] dst cutil_StringBuilder to copy data into
  * @param[in] src cutil_StringBuilder to copy data of
@@ -117,7 +113,8 @@ cutil_StringBuilder_copy(
 
 /**
  * Manually resizes (and potentially truncates) string and/or buffer inside `sb`
- * to new size `target` according to `flags`.
+ * to new size `target` according to `flags`. When the string is truncated the
+ * NUL-terminator is placed at the new @c length position.
  *
  * @param[in] sb cutil_StringBuilder to resize
  * @param[in] target target size of string and buffer
@@ -127,8 +124,9 @@ void
 cutil_StringBuilder_resize(cutil_StringBuilder *sb, size_t target, int flags);
 
 /**
- * Manually resizes string and buffer inside `sb` to exatcly to current size.
- * This overrides standard resize algorithm.
+ * Manually resizes string and buffer inside `sb` to exactly the current size.
+ * This overrides the standard resize algorithm. The NUL-terminator invariant
+ * is preserved.
  *
  * @param[in] sb cutil_StringBuilder to shrink to fit
  */
@@ -136,11 +134,12 @@ void
 cutil_StringBuilder_shrink_to_fit(cutil_StringBuilder *sb);
 
 /**
- * Returns length of string in `sb`.
+ * Returns the number of characters stored in `sb`, excluding the NUL
+ * terminator. Equivalent to @c strlen(cutil_StringBuilder_get_string(sb)).
  *
  * @param[in] sb cutil_StringBuilder to get length of
  *
- * @return length of string in `sb`
+ * @return number of stored characters, excluding the NUL terminator
  */
 inline size_t
 cutil_StringBuilder_length(const cutil_StringBuilder *sb)
@@ -149,11 +148,12 @@ cutil_StringBuilder_length(const cutil_StringBuilder *sb)
 }
 
 /**
- * Returns string in `sb`.
+ * Returns the NUL-terminated string stored in `sb`. The pointer is owned by
+ * the builder and remains valid until the next mutating call.
  *
  * @param[in] sb cutil_StringBuilder to get string of
  *
- * @return string in `sb`
+ * @return NUL-terminated string owned by @c sb
  */
 inline const char *
 cutil_StringBuilder_get_string(const cutil_StringBuilder *sb)
@@ -162,25 +162,27 @@ cutil_StringBuilder_get_string(const cutil_StringBuilder *sb)
 }
 
 /**
- * Returns newly malloc'd copy of string in `sb`. Has to be freed.
+ * Returns a newly malloc'd NUL-terminated copy of the string in `sb`. The
+ * caller is responsible for freeing the returned pointer.
  *
  * @param[in] sb cutil_StringBuilder to get string of
  *
- * @return string in `sb`
+ * @return newly malloc'd NUL-terminated copy of the string; caller must free
  */
 char *
 cutil_StringBuilder_duplicate_string(const cutil_StringBuilder *sb);
 
 /**
- * Copies string in `sb` to buffer `buf` whose size is `buflen`. If the buffer
- * is too small, no action is performed.
+ * Copies the NUL-terminated string in `sb` to buffer `buf` of size `buflen`.
+ * If the buffer is too small (buflen < length + 1), no action is performed.
+ * On success the buffer is NUL-terminated.
  *
  * @param[in] sb cutil_StringBuilder to get string of
- * @param[in] buflen size of buffer
- * @param[in, out] buf buffer to write string to
+ * @param[in] buflen size of buffer (must be >= length + 1 for success)
+ * @param[in, out] buf buffer to write NUL-terminated string to
  *
- * @return length of copied string (without NUL character) or 0 if buffer is too
- * small
+ * @return length of copied string (without NUL character) or 0 if buffer is
+ * too small
  */
 size_t
 cutil_StringBuilder_copy_string_to_buf(
@@ -417,6 +419,8 @@ cutil_StringBuilder_append(
 
 /**
  * Deletes `num` chars from the string in `sb` starting at `pos` (inclusively).
+ * The NUL-terminator invariant is preserved: @c sb->str[sb->length] == '\0'
+ * after the call.
  *
  * @param[in] sb cutil_StringBuilder to delete from
  * @param[in] pos position to start deletion at
@@ -427,7 +431,7 @@ cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num);
 
 /**
  * Deletes all chars between `begin` and `end` (inclusively) from the string in
- * `sb` starting at `pos.
+ * `sb`. The NUL-terminator invariant is preserved.
  *
  * @param[in] sb cutil_StringBuilder to delete from
  * @param[in] begin position of the first char to delete
