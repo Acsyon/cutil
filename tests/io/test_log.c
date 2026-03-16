@@ -1,5 +1,7 @@
-/* Request POSIX.1-2008 for fileno() and read() */
-#define _POSIX_C_SOURCE 200809L
+/* Request POSIX.1-1993 for fileno() and read() */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 199309L
+#endif /* _POSIX_C_SOURCE */
 
 #include <errno.h>
 #include <stdbool.h>
