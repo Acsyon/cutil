@@ -61,6 +61,15 @@ extern "C" {
 #define CUTIL_UNUSED(VAR) ((void) (VAR))
 
 /**
+ * MACRO for casting away "const" (and/or "volatile") qualifiers from pointers.
+ * This is dangerous and bad design and you should never do this! I am shocked
+ * that this actually works...
+ *
+ * @param[in] PTR pointer to cast away qualifiers from
+ */
+#define CUTIL_CONST_CAST(VAR) ((void *) (uintptr_t) (VAR))
+
+/**
  * MACRO for calculating the size of native C arrays. Use with caution!
  *
  * @param[in] ARR C array to get size of
