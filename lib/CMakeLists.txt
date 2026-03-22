@@ -5,6 +5,7 @@ endif ()
 
 # Set source files
 set(SOURCE_FILES
+    src/data/generic/iterator.c
     src/data/generic/type.c
     src/io/log.c
     src/posix/getopt.c
