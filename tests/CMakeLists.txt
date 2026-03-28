@@ -30,13 +30,20 @@ set(TEST_SOURCES
     std/test_stdio.c
     std/test_string.c
     string/test_builder.c
+    string/util/test_iterator.c
     util/test_compare.c
     util/test_hash.c
 )
 
 # Loop over all tests
 foreach (TEST_SOURCE ${TEST_SOURCES})
-    get_filename_component(TEST_NAME "${TEST_SOURCE}" NAME_WE)
+    # Derive test name: test_<dir_underscored>_<stem>
+    # e.g. data/generic/test_array.c -> test_data_generic_array
+    get_filename_component(TEST_DIR "${TEST_SOURCE}" DIRECTORY)
+    get_filename_component(TEST_BASENAME "${TEST_SOURCE}" NAME_WE)
+    string(REPLACE "/" "_" TEST_DIR_UNDERSCORED "${TEST_DIR}")
+    string(REGEX REPLACE "^test_" "" TEST_STEM "${TEST_BASENAME}")
+    set(TEST_NAME "test_${TEST_DIR_UNDERSCORED}_${TEST_STEM}")
 
     # Add tests and executables
     add_executable("${TEST_NAME}" "${TEST_SOURCE}")
