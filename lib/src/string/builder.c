@@ -92,7 +92,7 @@ cutil_StringBuilder_alloc(size_t size)
     size = _normalize_size(size, STRING_THRESHOLD_SIZE);
     sb->capacity = size;
     sb->str = calloc(sb->capacity, sizeof *sb->str);
-    sb->length = 0;
+    sb->length = 0UL;
     sb->bufsiz = size;
     sb->buf = malloc(sb->bufsiz * sizeof *sb->buf);
 
@@ -134,14 +134,27 @@ cutil_StringBuilder_free(cutil_StringBuilder *sb)
 {
     CUTIL_RETURN_IF_NULL(sb);
 
-    free(sb->str);
-    free(sb->buf);
+    cutil_StringBuilder_clear(sb);
 
     free(sb);
 }
 
 void
 cutil_StringBuilder_clear(cutil_StringBuilder *sb)
+{
+    CUTIL_RETURN_IF_NULL(sb);
+
+    free(sb->str);
+    free(sb->buf);
+    sb->capacity = 0;
+    sb->str = NULL;
+    sb->length = 0;
+    sb->bufsiz = 0;
+    sb->buf = NULL;
+}
+
+void
+cutil_StringBuilder_reset(cutil_StringBuilder *sb)
 {
     const size_t flags = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
     cutil_StringBuilder_resize(sb, 0, flags);
@@ -456,3 +469,131 @@ cutil_StringBuilder_delete_from_to(
     }
     cutil_StringBuilder_delete(sb, begin, end - begin + 1);
 }
+
+cutil_Bool
+cutil_StringBuilder_deep_equals(
+  const cutil_StringBuilder *lhs, const cutil_StringBuilder *rhs
+)
+{
+    return cutil_StringBuilder_deep_equals_generic(lhs, rhs);
+}
+
+int
+cutil_StringBuilder_compare(
+  const cutil_StringBuilder *lhs, const cutil_StringBuilder *rhs
+)
+{
+    return cutil_StringBuilder_compare_generic(lhs, rhs);
+}
+
+cutil_hash_t
+cutil_StringBuilder_hash(const cutil_StringBuilder *sb)
+{
+    return cutil_StringBuilder_hash_generic(sb);
+}
+
+size_t
+cutil_StringBuilder_to_string(
+  const cutil_StringBuilder *sb, char *buf, size_t buflen
+)
+{
+    return cutil_StringBuilder_to_string_generic(sb, buf, buflen);
+}
+
+extern inline void
+cutil_StringBuilder_clear_generic(void *obj);
+
+extern inline void
+cutil_StringBuilder_copy_generic(void *dst, const void *src);
+
+cutil_Bool
+cutil_StringBuilder_deep_equals_generic(const void *vlhs, const void *vrhs)
+{
+    const cutil_StringBuilder *const lhs = vlhs;
+    const cutil_StringBuilder *const rhs = vrhs;
+    if (lhs == rhs) {
+        return true;
+    }
+    if (lhs == NULL || rhs == NULL) {
+        return false;
+    }
+    if (lhs->str == rhs->str) {
+        return true;
+    }
+    if (lhs->str == NULL || rhs->str == NULL) {
+        return false;
+    }
+    return (strcmp(lhs->str, rhs->str) == 0);
+}
+
+int
+cutil_StringBuilder_compare_generic(const void *vlhs, const void *vrhs)
+{
+    const cutil_StringBuilder *const lhs = vlhs;
+    const cutil_StringBuilder *const rhs = vrhs;
+    if (lhs == rhs) {
+        return 0;
+    }
+    if (lhs == NULL || rhs == NULL) {
+        return (rhs == NULL) - (lhs == NULL);
+    }
+    if (lhs->str == rhs->str) {
+        return 0;
+    }
+    if (lhs->str == NULL || rhs->str == NULL) {
+        return (rhs->str == NULL) - (lhs->str == NULL);
+    }
+    return strcmp(lhs->str, rhs->str);
+}
+
+cutil_hash_t
+cutil_StringBuilder_hash_generic(const void *vsb)
+{
+    const cutil_StringBuilder *const sb = vsb;
+    if (sb == NULL || sb->length == 0) {
+        return CUTIL_HASH_C(0);
+    }
+    return cutil_hash_str(sb->str);
+}
+
+size_t
+cutil_StringBuilder_to_string_generic(const void *vsb, char *buf, size_t buflen)
+{
+    const cutil_StringBuilder *const sb = vsb;
+    if (sb == NULL) {
+        const int res = snprintf(buf, buflen, "NULL");
+        return (size_t) CUTIL_MAX(0, res);
+    }
+    if (sb->length + 1UL > buflen) {
+        cutil_log_warn(
+          "Cannot serialize cutil_StringBuilder: buffer too small"
+        );
+        return 0UL;
+    }
+    return snprintf(buf, buflen, "%s", sb->str);
+}
+
+void
+_cutil_StringBuilder_init_default(void *vsb)
+{
+    cutil_StringBuilder *const sb = vsb;
+    sb->capacity = STRING_DEFAULT_SIZE;
+    sb->str = calloc(sb->capacity, sizeof *sb->str);
+    sb->length = 0UL;
+    sb->bufsiz = STRING_DEFAULT_SIZE;
+    sb->buf = malloc(sb->bufsiz * sizeof *sb->buf);
+}
+
+static const cutil_GenericType CUTIL_GENERIC_TYPE_STRING_BUILDER_INSTANCE = {
+  .name = "cutil_StringBuilder",
+  .size = sizeof(cutil_StringBuilder),
+  .init = &_cutil_StringBuilder_init_default,
+  .clear = &cutil_StringBuilder_clear_generic,
+  .copy = &cutil_StringBuilder_copy_generic,
+  .deep_equals = &cutil_StringBuilder_deep_equals_generic,
+  .comp = &cutil_StringBuilder_compare_generic,
+  .hash = &cutil_StringBuilder_hash_generic,
+  .to_string = &cutil_StringBuilder_to_string_generic
+};
+const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_BUILDER
+  = &CUTIL_GENERIC_TYPE_STRING_BUILDER_INSTANCE;

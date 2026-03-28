@@ -10,6 +10,7 @@
 #include <stdarg.h>
 
 #include <cutil/cutil.h>
+#include <cutil/data/generic/type.h>
 #include <cutil/std/stdlib.h>
 
 #ifdef __cplusplus
@@ -19,9 +20,9 @@ extern "C" {
 /**
  * String builder.
  *
- * NUL-terminator invariant: @c str[length] == '\0' is maintained after every
- * operation. @c length counts stored characters and excludes the NUL
- * terminator; @c capacity >= length + 1.
+ * NUL-terminator invariant: str[length] == '\0' is maintained after every
+ * operation. `length` counts stored characters and excludes the NUL
+ * terminator; `capacity` >= `length` + 1.
  */
 typedef struct {
     size_t capacity;
@@ -91,13 +92,21 @@ void
 cutil_StringBuilder_free(cutil_StringBuilder *sb);
 
 /**
- * Clears contents of `sb` and resets sizes. The NUL-terminator invariant
- * is preserved: after this call @c sb->str[0] == '\0' and @c length == 0.
+ * Frees contents of `sb`.
  *
- * @param[in] sb cutil_StringBuilder object to clear
+ * @param[in] sb cutil_StringBuilder object to be cleared
  */
 void
 cutil_StringBuilder_clear(cutil_StringBuilder *sb);
+
+/**
+ * Clears contents of `sb` and resets sizes. The NUL-terminator invariant
+ * is preserved: after this call sb->str[0] == '\0' and length == 0.
+ *
+ * @param[in] sb cutil_StringBuilder object to reset
+ */
+void
+cutil_StringBuilder_reset(cutil_StringBuilder *sb);
 
 /**
  * Copies contents of `src` into `dst`. The NUL-terminator invariant is
@@ -114,7 +123,7 @@ cutil_StringBuilder_copy(
 /**
  * Manually resizes (and potentially truncates) string and/or buffer inside `sb`
  * to new size `target` according to `flags`. When the string is truncated the
- * NUL-terminator is placed at the new @c length position.
+ * NUL-terminator is placed at the new `length` position.
  *
  * @param[in] sb cutil_StringBuilder to resize
  * @param[in] target target size of string and buffer
@@ -135,7 +144,7 @@ cutil_StringBuilder_shrink_to_fit(cutil_StringBuilder *sb);
 
 /**
  * Returns the number of characters stored in `sb`, excluding the NUL
- * terminator. Equivalent to @c strlen(cutil_StringBuilder_get_string(sb)).
+ * terminator. Equivalent to strlen(cutil_StringBuilder_get_string(sb)).
  *
  * @param[in] sb cutil_StringBuilder to get length of
  *
@@ -153,7 +162,7 @@ cutil_StringBuilder_length(const cutil_StringBuilder *sb)
  *
  * @param[in] sb cutil_StringBuilder to get string of
  *
- * @return NUL-terminated string owned by @c sb
+ * @return NUL-terminated string owned by `sb`
  */
 inline const char *
 cutil_StringBuilder_get_string(const cutil_StringBuilder *sb)
@@ -419,7 +428,7 @@ cutil_StringBuilder_append(
 
 /**
  * Deletes `num` chars from the string in `sb` starting at `pos` (inclusively).
- * The NUL-terminator invariant is preserved: @c sb->str[sb->length] == '\0'
+ * The NUL-terminator invariant is preserved: sb->str[sb->length] == '\0'
  * after the call.
  *
  * @param[in] sb cutil_StringBuilder to delete from
@@ -441,6 +450,140 @@ void
 cutil_StringBuilder_delete_from_to(
   cutil_StringBuilder *sb, size_t begin, size_t end
 );
+
+/**
+ * Returns whether Sets `lhs` and `rhs` contain exactly the same strings. Both
+ * NULL or the same pointer compare equal. NULL and non-NULL compare unequal.
+ *
+ * @param[in] lhs left-hand side of comparison
+ * @param[in] rhs right-hand side of comparison
+ *
+ * @return Are `lhs` and `rhs` deeply equal?
+ */
+cutil_Bool
+cutil_StringBuilder_deep_equals(
+  const cutil_StringBuilder *lhs, const cutil_StringBuilder *rhs
+);
+
+/**
+ * Three-way comparison of strings inside builders `lhs` and `rhs`. Calls strcmp
+ * internally. NULL sorts before non-NULL; identical pointers compare equal.
+ *
+ * @param[in] lhs left-hand side of comparison
+ * @param[in] rhs right-hand side of comparison
+ *
+ * @return strcmp result
+ */
+int
+cutil_StringBuilder_compare(
+  const cutil_StringBuilder *lhs, const cutil_StringBuilder *rhs
+);
+
+/**
+ * Computes the hash of the string inside `sb`. Returns CUTIL_HASH_C(0) for NULL
+ * or an empty string.
+ *
+ * @param[in] sb cutil_StringBuilder to hash
+ *
+ * @return hash value
+ */
+cutil_hash_t
+cutil_StringBuilder_hash(const cutil_StringBuilder *sb);
+
+/**
+ * Copies the string inside `sb` to `buf`.
+ *
+ * @param[in] sb cutil_StringBuilder to copy, or NULL
+ * @param[out] buf destination buffer, or NULL to query required size
+ * @param[in] buflen size of destination buffer in bytes, or 0 when querying
+ *
+ * @return number of characters written (excluding NUL), or required size when
+ *         buf is NULL
+ */
+size_t
+cutil_StringBuilder_to_string(
+  const cutil_StringBuilder *sb, char *buf, size_t buflen
+);
+
+/**
+ * Generic-type support functions
+ */
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_clear'.
+ *
+ * @param[in] set cutil_StringBuilder to clear
+ */
+inline void
+cutil_StringBuilder_clear_generic(void *obj)
+{
+    cutil_StringBuilder *const set = (cutil_StringBuilder *) obj;
+    cutil_StringBuilder_clear(set);
+}
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_copy'.
+ *
+ * @param[out] dst cutil_StringBuilder to copy to
+ * @param[in] src cutil_StringBuilder to be copied
+ */
+inline void
+cutil_StringBuilder_copy_generic(void *dst, const void *src)
+{
+    cutil_StringBuilder *const sb_dst = (cutil_StringBuilder *) dst;
+    const cutil_StringBuilder *const sb_src = (const cutil_StringBuilder *) src;
+    cutil_StringBuilder_copy(sb_dst, sb_src);
+}
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_deep_equals'.
+ *
+ * @param[in] lhs left-hand side of comparison
+ * @param[in] rhs right-hand side of comparison
+ *
+ * @return Are `lhs` and `rhs` deeply equal?
+ */
+cutil_Bool
+cutil_StringBuilder_deep_equals_generic(const void *lhs, const void *rhs);
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_compare'.
+ *
+ * @param[in] lhs left-hand side of comparison
+ * @param[in] rhs right-hand side of comparison
+ *
+ * @return negative if lhs < rhs, 0 if equal, positive if lhs > rhs
+ */
+int
+cutil_StringBuilder_compare_generic(const void *lhs, const void *rhs);
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_hash'.
+ *
+ * @param[in] sb string builder to hash
+ *
+ * @return hash value
+ */
+cutil_hash_t
+cutil_StringBuilder_hash_generic(const void *sb);
+
+/**
+ * Generic (i.e, void-argument) version of 'cutil_StringBuilder_to_string'.
+ *
+ * @param[in] sb string builder to serialize, or NULL
+ * @param[out] buf destination buffer, or NULL to query required size
+ * @param[in] buflen size of destination buffer in bytes, or 0 when querying
+ *
+ * @return number of characters written (excluding NUL), or required size when
+ *         buf is NULL
+ */
+size_t
+cutil_StringBuilder_to_string_generic(const void *sb, char *buf, size_t buflen);
+
+/**
+ * Generic type descriptor for cutil_StringBuilder.
+ */
+extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_BUILDER;
 
 #ifdef __cplusplus
 }
