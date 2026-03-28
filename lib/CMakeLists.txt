@@ -14,6 +14,7 @@ set(SOURCE_FILES
     src/std/string.c
     src/string/util/iterator.c
     src/string/builder.c
+    src/string/type.c
     src/util/compare.c
     src/util/hash.c
 )

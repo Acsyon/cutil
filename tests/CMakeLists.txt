@@ -31,6 +31,7 @@ set(TEST_SOURCES
     std/test_string.c
     string/util/test_iterator.c
     string/test_builder.c
+    string/test_type.c
     util/test_compare.c
     util/test_hash.c
 )
