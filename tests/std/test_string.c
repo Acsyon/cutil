@@ -2,22 +2,27 @@
 
 #include <cutil/std/string.h>
 
-static const char *SHORT_STRINGS[] = {"This", "is", "a", "short", "string"};
+#include <cutil/util/macro.h>
 
-static const char *LONG_STRINGS[] = {
+static const char *const SHORT_STRINGS[] = {
+  "This", "is", "a", "short", "string",
+};
+static const size_t NUM_SHORT = CUTIL_GET_NATIVE_ARRAY_SIZE(SHORT_STRINGS);
+
+static const char *const LONG_STRINGS[] = {
   "This is a very long string for testing purposes",
   "THIS IS ANOTHER, EVEN LONGER STRING THAT FULFILS THE SAME OBJECTIVE",
-  "Since two is a very pitiful number for test cases, here's another one"
+  "Since two is a very pitiful number for test cases, here's another one",
 };
+static const size_t NUM_LONG = CUTIL_GET_NATIVE_ARRAY_SIZE(LONG_STRINGS);
 
 static void
 _should_returnStrlen_when_stringIsShorterThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
-    const size_t num = sizeof SHORT_STRINGS / sizeof *SHORT_STRINGS;
 
-    for (size_t i = 0; i < num; ++i) {
+    for (size_t i = 0; i < NUM_SHORT; ++i) {
         const char *const str = SHORT_STRINGS[i];
 
         /* Act */
@@ -33,9 +38,8 @@ _should_returnMaxlen_when_stringIsLongerThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
-    const size_t num = sizeof LONG_STRINGS / sizeof *LONG_STRINGS;
 
-    for (size_t i = 0; i < num; ++i) {
+    for (size_t i = 0; i < NUM_LONG; ++i) {
         const char *const str = LONG_STRINGS[i];
 
         /* Act */
@@ -47,7 +51,7 @@ _should_returnMaxlen_when_stringIsLongerThanMaxlen(void)
 }
 
 static void
-_strdup_test_fnc_aux(size_t num, const char *strs[])
+_strdup_test_fnc_aux(size_t num, const char *const strs[])
 {
     for (size_t i = 0; i < num; ++i) {
         const char *const str = strs[i];
@@ -66,14 +70,10 @@ _strdup_test_fnc_aux(size_t num, const char *strs[])
 static void
 _should_duplicateStringCorrectly_when_useStrdup(void)
 {
-    /* Arrange */
-    const size_t num_short = sizeof SHORT_STRINGS / sizeof *SHORT_STRINGS;
-    const size_t num_long = sizeof LONG_STRINGS / sizeof *LONG_STRINGS;
-
     /* Act */
     /* Assert */
-    _strdup_test_fnc_aux(num_short, SHORT_STRINGS);
-    _strdup_test_fnc_aux(num_long, LONG_STRINGS);
+    _strdup_test_fnc_aux(NUM_SHORT, SHORT_STRINGS);
+    _strdup_test_fnc_aux(NUM_LONG, LONG_STRINGS);
 }
 
 static void
@@ -81,9 +81,8 @@ _should_duplicateFullString_when_stringIsShorterThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
-    const size_t num = sizeof SHORT_STRINGS / sizeof *SHORT_STRINGS;
 
-    for (size_t i = 0; i < num; ++i) {
+    for (size_t i = 0; i < NUM_SHORT; ++i) {
         const char *const str = SHORT_STRINGS[i];
 
         /* Act */
@@ -102,9 +101,8 @@ _should_duplicateFullString_when_stringIsLongerThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
-    const size_t num = sizeof LONG_STRINGS / sizeof *LONG_STRINGS;
 
-    for (size_t i = 0; i < num; ++i) {
+    for (size_t i = 0; i < NUM_LONG; ++i) {
         const char *const str = LONG_STRINGS[i];
 
         /* Act */
@@ -131,10 +129,12 @@ int
 main(void)
 {
     UNITY_BEGIN();
+
     RUN_TEST(_should_returnStrlen_when_stringIsShorterThanMaxlen);
     RUN_TEST(_should_returnMaxlen_when_stringIsLongerThanMaxlen);
     RUN_TEST(_should_duplicateStringCorrectly_when_useStrdup);
     RUN_TEST(_should_duplicateFullString_when_stringIsShorterThanMaxlen);
     RUN_TEST(_should_duplicateFullString_when_stringIsLongerThanMaxlen);
+
     return UNITY_END();
 }
