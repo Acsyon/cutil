@@ -13,6 +13,7 @@ set(SOURCE_FILES
     src/std/stdlib.c
     src/std/string.c
     src/string/builder.c
+    src/string/type.c
     src/string/util/iterator.c
     src/util/compare.c
     src/util/hash.c
