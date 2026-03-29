@@ -5,9 +5,11 @@ endif ()
 
 # Set source files
 set(SOURCE_FILES
+    src/data/generic/list/arraylist.c
     src/data/generic/map/hashmap.c
     src/data/generic/set/hashset.c
     src/data/generic/array.c
+    src/data/generic/list.c
     src/data/generic/iterator.c
     src/data/generic/map.c
     src/data/generic/object.c
@@ -24,6 +26,7 @@ set(SOURCE_FILES
     src/string/type.c
     src/util/compare.c
     src/util/hash.c
+    src/status.c
 )
 
 # Compile shared library
