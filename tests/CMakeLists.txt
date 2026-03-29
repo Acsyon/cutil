@@ -26,7 +26,9 @@ set(TEST_SOURCES
     data/generic/map/test_hashmap.c
     data/generic/set/test_hashset.c
     data/generic/test_array.c
+    data/generic/list/test_arraylist.c
     data/generic/test_iterator.c
+    data/generic/test_list.c
     data/generic/test_map.c
     data/generic/test_set.c
     data/generic/test_type.c
