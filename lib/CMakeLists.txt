@@ -7,6 +7,7 @@ endif ()
 set(SOURCE_FILES
     src/data/generic/iterator.c
     src/data/generic/type.c
+    src/data/generic/object.c
     src/io/log.c
     src/posix/getopt.c
     src/std/stdio.c

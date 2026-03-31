@@ -25,6 +25,7 @@ endif ()
 set(TEST_SOURCES
     data/generic/test_iterator.c
     data/generic/test_type.c
+    data/generic/test_object.c
     io/test_log.c
     posix/test_getopt.c
     std/test_stdio.c
