@@ -11,61 +11,78 @@ Welcome to my C99 utility library! This project serves multiple purposes: It is 
 
 ## Features
 
-- A collection of commonly used utility functions for C99.
+The library is organized by domain, each providing a focused set of utilities:
 
-  - A string builder for convenient string handling
-  - A parser for command-line arguments heavily inspired by POSIX `getopt` and GNU `getopt_long`
-  - A simple logging system 
+- **Data structures** — Generic (type-erased) collections with iterator support:
+  - ArrayList, HashSet, HashMap (via vtable-based abstract interfaces: List, Set, Map, Array)
+  - Iterator interface for uniform traversal
+  - Generic type descriptors for type-safe operations on `void *` elements
+  - Native BitArray for compact bit storage
+- **String** — String builder for incremental string construction; string type with iterator support
+- **I/O** — Simple logging system
+- **POSIX** — Command-line argument parser inspired by POSIX `getopt` and GNU `getopt_long`
+- **Standard library** — Portable wrappers for `stdio`, `stdlib`, and `string`
+- **Utilities** — Hash functions, comparison functions, macro utilities
 
-- A test suite to ensure correctness and stability.
+A comprehensive test suite (Unity framework) covers all modules.
 
+## Source Organization
+
+Sources and headers follow a domain-based layout:
+
+```
+lib/
+├── include/cutil/       # Public API headers (consumed as #include <cutil/...>)
+│   ├── data/            # Generic collections, native data structures
+│   ├── io/              # Logging
+│   ├── posix/           # Argument parser
+│   ├── std/             # Standard library wrappers
+│   ├── string/          # String builder, string type
+│   └── util/            # Hash, compare, macros
+└── src/                 # Implementation sources (mirrors header layout)
+```
 
 ## Getting Started
 
 ### Prerequisites
 
-- A C99-compatible compiler (e.g., GCC, Clang, MSVC)
-- This project uses CMake as its build system, so make sure to have it installed.
+- A C99-compatible compiler (e.g., GCC, Clang)
+- CMake (≥ 3.5)
 
 ### Building the Library
 
-This project uses CMake for building. Run the following commands:
-
 ```sh
-cd build
+mkdir -p build && cd build
 cmake [-DCMAKE_BUILD_TYPE=<TYPE>] ..
 cmake --build .
 ```
 
-Here, `TYPE` specifies the build type. Possible options are
+Build types: **Release** (optimized), **Debug** (symbols, `-Werror`), **RelWithDebInfo** (optimized + symbols).
 
--   **Release**: Enables the highest (sensible) compiler optimizations to improve perfomance (recommended).
-
--   **Debug**: Disables compiler optimizations and includes debug symbols into the executable.
-
--   **RelWithDebInfo** (release with debug info): Enable many compiler optimizations, but also include debug symbols.
+Both shared (`libcutil.so`) and static (`libcutil.a`) libraries are built by default. Compiled artefacts are placed in `bin/`. To build only one variant, set `-DCUTIL_BUILD_SHARED_AND_STATIC_LIBS=OFF`.
 
 ### Running Unit Tests
 
-If you want to run the unit tests, you have to load the git submodule for the "Unity" unit-test framework:
+Initialize the Unity test framework submodule (first time only):
 
 ```sh
 git submodule update --init --remote submodules/Unity
 ```
 
-Afterwards, CMake has to be set up with the appropriate variable. The tests will be built automatically if no target is specified. They can be run using CTest. All of this can be achieved by running the following commands:
+Configure with tests enabled, build, and run:
 
 ```sh
 cd build
 cmake -DENABLE_TESTS=TRUE [-DCMAKE_BUILD_TYPE=<TYPE>] ..
 cmake --build .
-ctest
+ctest --output-on-failure
 ```
 
 ## Roadmap
-- Expand functionality with more utilities.
-- Improve cross-platform support.
-- Enhance test coverage with additional unit tests.
+
+- Expand data structure offerings and utility functions
+- Improve cross-platform support (Windows, macOS)
+- Enhance test coverage with additional unit tests
 
 ## License
 

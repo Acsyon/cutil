@@ -1,9 +1,12 @@
-#include <string.h>
+#include <cutil/string/builder.h>
 
 #include "unity.h"
 
+#include <cutil/data/generic/type.h>
 #include <cutil/std/string.h>
 #include <cutil/string/builder.h>
+#include <cutil/util/hash.h>
+#include <cutil/util/macro.h>
 
 #define LONG_STRING                                                            \
     "This is a very long string that exceeds the initial and default capacity"
@@ -95,25 +98,17 @@ _should_clearCorrectly(void)
 {
     /* Arrange */
     const char *const append_str = LONG_STRING;
-    cutil_StringBuilder *const sb_assert = cutil_StringBuilder_create();
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string(append_str);
 
     /* Act */
     cutil_StringBuilder_clear(sb);
 
     /* Assert */
-    const size_t assert_len = cutil_StringBuilder_length(sb_assert);
-    const size_t len = cutil_StringBuilder_length(sb);
-    TEST_ASSERT_EQUAL_size_t(assert_len, len);
-
-    const char *const assert_str = cutil_StringBuilder_get_string(sb_assert);
-    const char *const str = cutil_StringBuilder_get_string(sb);
-    TEST_ASSERT_EQUAL_STRING(assert_str, str);
-
-    TEST_ASSERT_EQUAL_size_t(sb_assert->capacity, sb->capacity);
+    TEST_ASSERT_EQUAL_size_t(0, cutil_StringBuilder_length(sb));
+    TEST_ASSERT_NULL(cutil_StringBuilder_get_string(sb));
+    TEST_ASSERT_EQUAL_size_t(0, sb->capacity);
 
     /* Cleanup */
-    cutil_StringBuilder_free(sb_assert);
     cutil_StringBuilder_free(sb);
 }
 
@@ -292,7 +287,7 @@ _should_shrink_when_resize(void)
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         /* Act */
         cutil_StringBuilder_resize(sb, SIZES[i], resize_flags);
@@ -317,7 +312,7 @@ _should_shrinkCorrectly_when_resizeWithForce(void)
       | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 56, 48, 32, 24, 16, 8};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -349,7 +344,7 @@ _should_expand_when_resize(void)
       = CUTIL_RESIZE_FLAG_STRING | CUTIL_RESIZE_FLAG_BUFFER;
 
     const size_t SIZES[] = {64, 128, 256, 512};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -379,7 +374,7 @@ _should_expandCorrectly_when_resizeWithForce(void)
       | CUTIL_RESIZE_FLAG_FORCE;
 
     const size_t SIZES[] = {64, 128, 256, 512};
-    const size_t NUM_SIZES = (sizeof SIZES) / (sizeof SIZES[0]);
+    const size_t NUM_SIZES = CUTIL_GET_NATIVE_ARRAY_SIZE(SIZES);
     for (size_t i = 0; i < NUM_SIZES; ++i) {
         const size_t size = SIZES[i];
 
@@ -659,6 +654,311 @@ _should_deleteFromToCorrectly_when_boundsExceedSize(void)
     cutil_StringBuilder_free(sb);
 }
 
+static void
+_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
+    cutil_StringBuilder *const rhs = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    const cutil_Bool result = cutil_StringBuilder_deep_equals_generic(lhs, rhs);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(lhs);
+    cutil_StringBuilder_free(rhs);
+}
+
+static void
+_should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
+    cutil_StringBuilder *const rhs = cutil_StringBuilder_from_string("world");
+
+    /* Act */
+    const cutil_Bool result = cutil_StringBuilder_deep_equals_generic(lhs, rhs);
+
+    /* Assert */
+    TEST_ASSERT_FALSE(result);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(lhs);
+    cutil_StringBuilder_free(rhs);
+}
+
+static void
+_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    const cutil_Bool result = cutil_StringBuilder_deep_equals_generic(sb, sb);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+
+    /* Act / Assert */
+    TEST_ASSERT_FALSE(cutil_StringBuilder_deep_equals_generic(NULL, sb));
+    TEST_ASSERT_FALSE(cutil_StringBuilder_deep_equals_generic(sb, NULL));
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls(void)
+{
+    /* Act */
+    const cutil_Bool result
+      = cutil_StringBuilder_deep_equals_generic(NULL, NULL);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result);
+}
+
+static void
+_should_returnZero_when_compareGenericCalledOnEqualStrings(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
+    cutil_StringBuilder *const rhs = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    const int result = cutil_StringBuilder_compare_generic(lhs, rhs);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_INT(0, result);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(lhs);
+    cutil_StringBuilder_free(rhs);
+}
+
+static void
+_should_returnNegative_when_compareGenericCalledOnLesserFirst(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("abc");
+    cutil_StringBuilder *const rhs = cutil_StringBuilder_from_string("xyz");
+
+    /* Act */
+    const int result = cutil_StringBuilder_compare_generic(lhs, rhs);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result < 0);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(lhs);
+    cutil_StringBuilder_free(rhs);
+}
+
+static void
+_should_returnPositive_when_compareGenericCalledOnGreaterFirst(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("xyz");
+    cutil_StringBuilder *const rhs = cutil_StringBuilder_from_string("abc");
+
+    /* Act */
+    const int result = cutil_StringBuilder_compare_generic(lhs, rhs);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result > 0);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(lhs);
+    cutil_StringBuilder_free(rhs);
+}
+
+static void
+_should_returnNegative_when_compareGenericCalledOnNullFirst(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    const int result = cutil_StringBuilder_compare_generic(NULL, sb);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(result < 0);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    const cutil_hash_t hash = cutil_StringBuilder_hash_generic(sb);
+
+    /* Assert */
+    TEST_ASSERT_TRUE(hash != CUTIL_HASH_C(0));
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_create();
+
+    /* Act */
+    const cutil_hash_t hash = cutil_StringBuilder_hash_generic(sb);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_UINT64(CUTIL_HASH_C(0), hash);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_returnZeroHash_when_hashGenericCalledOnNullBuilder(void)
+{
+    /* Act */
+    const cutil_hash_t hash = cutil_StringBuilder_hash_generic(NULL);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_UINT64(CUTIL_HASH_C(0), hash);
+}
+
+static void
+_should_writeNullString_when_toStringGenericCalledOnNull(void)
+{
+    /* Arrange */
+    char buf[16];
+
+    /* Act */
+    const size_t len
+      = cutil_StringBuilder_to_string_generic(NULL, buf, sizeof buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_size_t(4, len);
+    TEST_ASSERT_EQUAL_STRING("NULL", buf);
+}
+
+static void
+_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb
+      = cutil_StringBuilder_from_string("hello world");
+    char buf[4];
+
+    /* Act */
+    const size_t len
+      = cutil_StringBuilder_to_string_generic(sb, buf, sizeof buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_size_t(0, len);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_writeContent_when_toStringGenericCalledWithAdequateBuffer(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+    char buf[16];
+
+    /* Act */
+    const size_t len
+      = cutil_StringBuilder_to_string_generic(sb, buf, sizeof buf);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_size_t(5, len);
+    TEST_ASSERT_EQUAL_STRING("hello", buf);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_clearBuilder_when_clearGenericCalled(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
+
+    /* Act */
+    cutil_StringBuilder_clear_generic(sb);
+
+    /* Assert */
+    TEST_ASSERT_NULL(sb->str);
+    TEST_ASSERT_EQUAL_size_t(0, sb->length);
+
+    /* Cleanup */
+    cutil_StringBuilder_free(sb);
+}
+
+static void
+_should_copyBuilder_when_copyGenericCalled(void)
+{
+    /* Arrange */
+    cutil_StringBuilder *const src = cutil_StringBuilder_from_string("hello");
+    cutil_StringBuilder *const dst = cutil_StringBuilder_create();
+
+    /* Act */
+    cutil_StringBuilder_copy_generic(dst, src);
+
+    /* Assert */
+    TEST_ASSERT_EQUAL_STRING(
+      cutil_StringBuilder_get_string(src), cutil_StringBuilder_get_string(dst)
+    );
+    TEST_ASSERT_EQUAL_size_t(
+      cutil_StringBuilder_length(src), cutil_StringBuilder_length(dst)
+    );
+
+    /* Cleanup */
+    cutil_StringBuilder_free(src);
+    cutil_StringBuilder_free(dst);
+}
+
+static void
+_should_beValid_when_descriptorIsChecked(void)
+{
+    /* Act */
+    const cutil_GenericType *const type = CUTIL_GENERIC_TYPE_STRING_BUILDER;
+
+    /* Assert */
+    TEST_ASSERT_TRUE(cutil_GenericType_is_valid(type));
+    TEST_ASSERT_EQUAL_STRING(
+      "cutil_StringBuilder", cutil_GenericType_get_name(type)
+    );
+    TEST_ASSERT_EQUAL_size_t(
+      sizeof(cutil_StringBuilder), cutil_GenericType_get_size(type)
+    );
+    TEST_ASSERT_NOT_NULL(type->init);
+    TEST_ASSERT_NOT_NULL(type->clear);
+    TEST_ASSERT_NOT_NULL(type->copy);
+    TEST_ASSERT_NOT_NULL(type->deep_equals);
+    TEST_ASSERT_NOT_NULL(type->comp);
+    TEST_ASSERT_NOT_NULL(type->hash);
+    TEST_ASSERT_NOT_NULL(type->to_string);
+}
+
 void
 setUp(void)
 {}
@@ -671,6 +971,7 @@ int
 main(void)
 {
     UNITY_BEGIN();
+
     RUN_TEST(_should_constructBuilder_when_useSize);
     RUN_TEST(_should_constructBuilder_when_useString);
     RUN_TEST(_should_preserveNulInvariant_when_constructEmpty);
@@ -699,5 +1000,27 @@ main(void)
     RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
     RUN_TEST(_should_deleteCorrectly_when_useFromTo);
     RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);
+
+    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings);
+    RUN_TEST(
+      _should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings
+    );
+    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer);
+    RUN_TEST(_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull);
+    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls);
+    RUN_TEST(_should_returnZero_when_compareGenericCalledOnEqualStrings);
+    RUN_TEST(_should_returnNegative_when_compareGenericCalledOnLesserFirst);
+    RUN_TEST(_should_returnPositive_when_compareGenericCalledOnGreaterFirst);
+    RUN_TEST(_should_returnNegative_when_compareGenericCalledOnNullFirst);
+    RUN_TEST(_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder);
+    RUN_TEST(_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder);
+    RUN_TEST(_should_returnZeroHash_when_hashGenericCalledOnNullBuilder);
+    RUN_TEST(_should_writeNullString_when_toStringGenericCalledOnNull);
+    RUN_TEST(_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer);
+    RUN_TEST(_should_writeContent_when_toStringGenericCalledWithAdequateBuffer);
+    RUN_TEST(_should_clearBuilder_when_clearGenericCalled);
+    RUN_TEST(_should_copyBuilder_when_copyGenericCalled);
+    RUN_TEST(_should_beValid_when_descriptorIsChecked);
+
     return UNITY_END();
 }
