@@ -11,6 +11,10 @@
 #include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Enumerates all available log severity levels in ascending order of
  * importance.
@@ -396,5 +400,9 @@ cutil_log_vfatal(const char *format, va_list args);
  */
 void
 cutil_log_fatal(const char *format, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CUTIL_IO_LOG_H_INCLUDED */

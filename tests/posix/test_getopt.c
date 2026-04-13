@@ -1,5 +1,4 @@
 #include "unity.h"
-
 #include <cutil/posix/getopt.h>
 
 #include <cutil/std/stdbool.h>
@@ -14,7 +13,7 @@
 
 #define MAKE_CASE_ARG(CHAR, VAR)                                               \
     case CHAR:                                                                 \
-        VAR = cutil_strdup(cutil_optarg);                                           \
+        VAR = cutil_strdup(cutil_optarg);                                      \
         break
 
 static void

@@ -61,7 +61,6 @@ cutil_getopt_long(
 {
     CUTIL_NULL_CHECK(argv);
     CUTIL_NULL_CHECK(shortopts);
-    CUTIL_NULL_CHECK(longopts);
 
     cutil_optarg = NULL;
 

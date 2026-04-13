@@ -1,5 +1,4 @@
 #include "unity.h"
-
 #include <cutil/std/string.h>
 
 #include <cutil/util/macro.h>
@@ -117,6 +116,26 @@ _should_duplicateFullString_when_stringIsLongerThanMaxlen(void)
     }
 }
 
+static void
+_should_returnNull_when_strdupReceivesNull(void)
+{
+    /* Act */
+    char *const res = cutil_strdup(NULL);
+
+    /* Assert */
+    TEST_ASSERT_NULL(res);
+}
+
+static void
+_should_returnNull_when_strndupReceivesNull(void)
+{
+    /* Act */
+    char *const res = cutil_strndup(NULL, 10);
+
+    /* Assert */
+    TEST_ASSERT_NULL(res);
+}
+
 void
 setUp(void)
 {}
@@ -135,6 +154,8 @@ main(void)
     RUN_TEST(_should_duplicateStringCorrectly_when_useStrdup);
     RUN_TEST(_should_duplicateFullString_when_stringIsShorterThanMaxlen);
     RUN_TEST(_should_duplicateFullString_when_stringIsLongerThanMaxlen);
+    RUN_TEST(_should_returnNull_when_strdupReceivesNull);
+    RUN_TEST(_should_returnNull_when_strndupReceivesNull);
 
     return UNITY_END();
 }
