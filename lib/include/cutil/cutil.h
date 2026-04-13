@@ -1,8 +1,7 @@
-/* cutil/cutil.h
+/** cutil/cutil.h
  *
  * Header for general stuff like wrappers around C language features (e.g., the
- * 'restrict' keyword)
- *
+ * 'restrict' keyword).
  */
 
 #ifndef CUTIL_CUTIL_H_INCLUDED

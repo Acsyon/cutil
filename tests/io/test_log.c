@@ -1,18 +1,17 @@
 /* Request POSIX.1-1993 for fileno() and read() */
 #ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 199309L
+    #define _POSIX_C_SOURCE 199309L
 #endif /* _POSIX_C_SOURCE */
+#include "unity.h"
+#include <cutil/io/log.h>
 
 #include <errno.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
-#include "unity.h"
-
-#include <cutil/io/log.h>
+#include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
+#include <cutil/std/stdlib.h>
+#include <cutil/std/string.h>
 
 #define LEVEL_FOR_LOOP(VAR, BEGIN, END)                                        \
     for (enum cutil_LogLevel VAR = BEGIN; VAR <= END; ++VAR)

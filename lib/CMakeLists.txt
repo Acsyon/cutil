@@ -4,8 +4,29 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREA
 endif ()
 
 # Set source files
-set(SOURCE_FILES src/io/log.c src/posix/getopt.c src/std/stdio.c src/std/stdlib.c src/std/string.c
-                 src/string/builder.c
+set(SOURCE_FILES
+    src/data/generic/list/arraylist.c
+    src/data/generic/map/hashmap.c
+    src/data/generic/set/hashset.c
+    src/data/generic/array.c
+    src/data/generic/list.c
+    src/data/generic/iterator.c
+    src/data/generic/map.c
+    src/data/generic/object.c
+    src/data/generic/set.c
+    src/data/generic/type.c
+    src/data/native/bitarray.c
+    src/io/log.c
+    src/posix/getopt.c
+    src/std/stdio.c
+    src/std/stdlib.c
+    src/std/string.c
+    src/string/util/iterator.c
+    src/string/builder.c
+    src/string/type.c
+    src/util/compare.c
+    src/util/hash.c
+    src/status.c
 )
 
 # Compile shared library

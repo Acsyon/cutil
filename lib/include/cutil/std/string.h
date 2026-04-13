@@ -1,7 +1,6 @@
-/* cutil/std/string.h
+/** cutil/std/string.h
  *
- * Wrapper around standard "string.h" header
- *
+ * Wrapper around standard "string.h" header.
  */
 
 #ifndef CUTIL_STD_STRING_H_INCLUDED

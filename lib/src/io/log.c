@@ -294,6 +294,7 @@ _cutil_Logger_vmessage(
 )
 {
     CUTIL_RETURN_IF_NULL(log);
+    CUTIL_NULL_CHECK(format);
     if (level < log->level) {
         return;
     }

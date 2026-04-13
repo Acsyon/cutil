@@ -1,7 +1,6 @@
-/* cutil/util/macro.h
+/** cutil/util/macro.h
  *
  * Header for miscellaneous utility macros.
- *
  */
 
 #ifndef CUTIL_UTIL_MACRO_H_INCLUDED
@@ -61,6 +60,24 @@ extern "C" {
 #define CUTIL_UNUSED(VAR) ((void) (VAR))
 
 /**
+ * MACRO for casting away "const" (and/or "volatile") qualifiers from pointers.
+ * This is dangerous and bad design and you should never do this! I am shocked
+ * that this is actually allowed...
+ *
+ * @param[in] PTR pointer to cast away qualifiers from
+ */
+#define CUTIL_CONST_CAST(VAR) ((void *) (VAR))
+
+/**
+ * MACRO for calculating the size of native C arrays. Use with caution!
+ *
+ * @param[in] ARR C array to get size of
+ *
+ * @return size of `ARR` in bytes
+ */
+#define CUTIL_GET_NATIVE_ARRAY_SIZE(ARR) (sizeof(ARR) / sizeof *(ARR))
+
+/**
  * MACRO for returning RET from function if LVAL is RVAL.
  *
  * @param[in] LVAL value on left-hand side of comparison
@@ -88,12 +105,19 @@ extern "C" {
     } while (0)
 
 /**
+ * MACRO for returning VAL from function if PTR is NULL.
+ *
+ * @param[in] PTR pointer to be checked
+ */
+#define CUTIL_RETURN_VAL_IF_NULL(PTR, RET)                                     \
+    CUTIL_RETURN_VAL_IF_VAL((PTR), NULL, RET)
+
+/**
  * MACRO for returning NULL from function if PTR is NULL.
  *
  * @param[in] PTR pointer to be checked
  */
-#define CUTIL_RETURN_NULL_IF_NULL(PTR)                                         \
-    CUTIL_RETURN_VAL_IF_VAL((PTR), NULL, NULL)
+#define CUTIL_RETURN_NULL_IF_NULL(PTR) CUTIL_RETURN_VAL_IF_NULL((PTR), NULL)
 
 /**
  * MACRO for returning from function if PTR is NULL.

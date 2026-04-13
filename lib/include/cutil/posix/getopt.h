@@ -2,7 +2,6 @@
  *
  * Header for command-line option parser heavily inspired by POSIX getopt
  * and GNU getopt_long.
- *
  */
 
 #ifndef CUTIL_POSIX_GETOPT_H_INCLUDED

@@ -1,7 +1,6 @@
-/* cutil/io/log.h
+/** cutil/io/log.h
  *
- * Header for logging stuff
- *
+ * Header for logging stuff.
  */
 
 #ifndef CUTIL_IO_LOG_H_INCLUDED
@@ -11,6 +10,10 @@
 
 #include <cutil/std/stdbool.h>
 #include <cutil/std/stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Enumerates all available log severity levels in ascending order of
@@ -397,5 +400,9 @@ cutil_log_vfatal(const char *format, va_list args);
  */
 void
 cutil_log_fatal(const char *format, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CUTIL_IO_LOG_H_INCLUDED */

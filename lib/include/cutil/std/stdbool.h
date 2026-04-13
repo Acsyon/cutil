@@ -1,7 +1,6 @@
-/* cutil/std/stdbool.h
+/** cutil/std/stdbool.h
  *
- * Wrapper around standard "stdbool.h" header
- *
+ * Wrapper around standard "stdbool.h" header.
  */
 
 #ifndef CUTIL_STD_STDBOOL_H_INCLUDED
@@ -29,6 +28,16 @@ typedef uint32_t cutil_Bool;
  * @return boolification of `b`
  */
 #define CUTIL_BOOLIFY(b) ((cutil_Bool) !!(b))
+
+/**
+ * Completely unnecessary but pedantic MACRO for 'true'
+ */
+#define CUTIL_TRUE CUTIL_BOOLIFY(true)
+
+/**
+ * Completely unnecessary but pedantic MACRO for 'false'
+ */
+#define CUTIL_FALSE CUTIL_BOOLIFY(false)
 
 #ifdef __cplusplus
 }
