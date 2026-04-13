@@ -1,7 +1,6 @@
-/* cutil/std/stdio.h
+/** cutil/std/stdio.h
  *
- * Wrapper around standard "stdio.h" header
- *
+ * Wrapper around standard "stdio.h" header.
  */
 
 #ifndef CUTIL_STD_STDIO_H_INCLUDED

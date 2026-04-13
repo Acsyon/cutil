@@ -1,7 +1,6 @@
-/* cutil/std/stdlib.h
+/** cutil/std/stdlib.h
  *
- * Wrapper around standard "stdlib.h" header
- *
+ * Wrapper around standard "stdlib.h" header.
  */
 
 #ifndef CUTIL_STD_STDLIB_H_INCLUDED

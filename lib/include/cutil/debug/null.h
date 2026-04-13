@@ -1,7 +1,6 @@
-/* cutil/debug/null.h
+/** cutil/debug/null.h
  *
- * Header for debug handling of null pointers
- *
+ * Header for debug handling of null pointers.
  */
 
 #ifndef CUTIL_DEBUG_NULL_H_INCLUDED

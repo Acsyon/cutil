@@ -1,7 +1,6 @@
-/* cutil/util/macro.h
+/** cutil/util/macro.h
  *
  * Header for miscellaneous utility macros.
- *
  */
 
 #ifndef CUTIL_UTIL_MACRO_H_INCLUDED

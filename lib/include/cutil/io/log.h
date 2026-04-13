@@ -1,7 +1,6 @@
-/* cutil/io/log.h
+/** cutil/io/log.h
  *
- * Header for logging stuff
- *
+ * Header for logging stuff.
  */
 
 #ifndef CUTIL_IO_LOG_H_INCLUDED

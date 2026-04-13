@@ -1,7 +1,6 @@
-/* cutil/status.h
+/** cutil/status.h
  *
- * Header for return-value status codes
- *
+ * Header for return-value status codes.
  */
 
 #ifndef CUTIL_STATUS_H_INCLUDED

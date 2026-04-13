@@ -1,7 +1,6 @@
-/* cutil/std/stdbool.h
+/** cutil/std/stdbool.h
  *
- * Wrapper around standard "stdbool.h" header
- *
+ * Wrapper around standard "stdbool.h" header.
  */
 
 #ifndef CUTIL_STD_STDBOOL_H_INCLUDED

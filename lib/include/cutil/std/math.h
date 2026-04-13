@@ -1,7 +1,6 @@
-/* cutil/std/math.h
+/** cutil/std/math.h
  *
- * Wrapper around standard "math.h" header
- *
+ * Wrapper around standard "math.h" header.
  */
 
 #ifndef CUTIL_STD_MATH_H_INCLUDED

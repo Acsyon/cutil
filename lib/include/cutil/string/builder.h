@@ -1,7 +1,6 @@
-/* cutil/string/builder.h
+/** cutil/string/builder.h
  *
- * Header for string builder
- *
+ * Header for string builder.
  */
 
 #ifndef CUTIL_STRING_BUILDER_H_INCLUDED
