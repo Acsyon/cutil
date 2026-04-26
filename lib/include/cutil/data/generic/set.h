@@ -158,7 +158,7 @@ cutil_Set_duplicate(const cutil_Set *set)
     CUTIL_NULL_CHECKS_SET(set);
     CUTIL_NULL_CHECK_VTABLE(set->vtable, duplicate);
     CUTIL_RETURN_NULL_IF_NULL(set->vtable->duplicate);
-    cutil_Set *const dup = CUTIL_MALLOC_OBJECT(dup);
+    cutil_Set *const dup = (cutil_Set *) CUTIL_MALLOC_OBJECT(dup);
     dup->vtable = set->vtable;
     dup->data = set->vtable->duplicate(set->data);
     return dup;

@@ -63,8 +63,8 @@ inline void
 cutil_void_memswap(void *a, void *b, size_t size)
 {
     char tmp;
-    char *const pa = a;
-    char *const pb = b;
+    char *const pa = (char *) a;
+    char *const pb = (char *) b;
     for (size_t i = 0; i < size; ++i) {
         tmp = pa[i];
         pa[i] = pb[i];

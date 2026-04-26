@@ -168,7 +168,7 @@ cutil_List_duplicate(const cutil_List *list)
     CUTIL_NULL_CHECKS_LIST(list);
     CUTIL_NULL_CHECK_VTABLE(list->vtable, duplicate);
     CUTIL_RETURN_NULL_IF_NULL(list->vtable->duplicate);
-    cutil_List *const dup = CUTIL_MALLOC_OBJECT(dup);
+    cutil_List *const dup = (cutil_List *) CUTIL_MALLOC_OBJECT(dup);
     dup->vtable = list->vtable;
     dup->data = list->vtable->duplicate(list->data);
     return dup;

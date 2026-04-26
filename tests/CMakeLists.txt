@@ -1,3 +1,5 @@
+project("CUTIL_TESTS" LANGUAGES C CXX)
+
 # Set additional compiler flags (UNIX)
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     string(APPEND CMAKE_C_FLAGS " -fmacro-prefix-map=${CMAKE_SOURCE_DIR}/= ")
@@ -21,8 +23,8 @@ else ()
     set(CUTIL_LIB "${CUTIL_LIBRARY}-static")
 endif ()
 
-# Set test source files
-set(TEST_SOURCES
+# Set C test source files
+set(C_TEST_SOURCES
     data/generic/list/test_arraylist.c
     data/generic/map/test_hashmap.c
     data/generic/set/test_hashset.c
@@ -45,8 +47,8 @@ set(TEST_SOURCES
     util/test_hash.c
 )
 
-# Loop over all tests
-foreach (TEST_SOURCE ${TEST_SOURCES})
+# Loop over all C tests
+foreach (TEST_SOURCE ${C_TEST_SOURCES})
     # Derive test name: test_<dir_underscored>_<stem>
     # e.g. data/generic/test_array.c -> test_data_generic_array
     get_filename_component(TEST_DIR "${TEST_SOURCE}" DIRECTORY)
@@ -62,6 +64,34 @@ foreach (TEST_SOURCE ${TEST_SOURCES})
 
     # Link and include Unity
     target_link_libraries("${TEST_NAME}" PRIVATE unity)
+
+    # Link and include cutil
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
+endforeach ()
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Set C++ test source files
+set(CXX_TEST_SOURCES
+    cpp/test_cpp.cpp
+)
+
+# Loop over all C++ tests
+foreach (TEST_SOURCE ${CXX_TEST_SOURCES})
+    # Derive test name: test_<dir_underscored>_<stem>
+    get_filename_component(TEST_DIR "${TEST_SOURCE}" DIRECTORY)
+    get_filename_component(TEST_BASENAME "${TEST_SOURCE}" NAME_WE)
+    string(REPLACE "/" "_" TEST_DIR_UNDERSCORED "${TEST_DIR}")
+    string(REGEX REPLACE "^test_" "" TEST_STEM "${TEST_BASENAME}")
+    set(TEST_NAME "test_${TEST_DIR_UNDERSCORED}_${TEST_STEM}")
+
+    # Add tests and executables
+    add_executable("${TEST_NAME}" "${TEST_SOURCE}")
+    add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
+    list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
 
     # Link and include cutil
     target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")

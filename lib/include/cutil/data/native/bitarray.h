@@ -106,7 +106,7 @@ cutil_BitArray_get_capacity(const cutil_BitArray *arr)
 inline unsigned char
 cutil_BitArray_get(const cutil_BitArray *arr, size_t idx)
 {
-    const div_t res = div(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
+    const ldiv_t res = ldiv(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
     return arr->data[res.quot] & ((unsigned char) 1 << res.rem);
 }
 
@@ -119,7 +119,7 @@ cutil_BitArray_get(const cutil_BitArray *arr, size_t idx)
 inline void
 cutil_BitArray_set(cutil_BitArray *arr, size_t idx)
 {
-    const div_t res = div(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
+    const ldiv_t res = ldiv(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
     arr->data[res.quot] |= ((unsigned char) 1 << res.rem);
 }
 
@@ -132,7 +132,7 @@ cutil_BitArray_set(cutil_BitArray *arr, size_t idx)
 inline void
 cutil_BitArray_unset(cutil_BitArray *arr, size_t idx)
 {
-    const div_t res = div(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
+    const ldiv_t res = ldiv(idx, cutil_BitArray_ELEM_SIZE_IN_BITS);
     arr->data[res.quot] &= ~((unsigned char) 1 << res.rem);
 }
 
