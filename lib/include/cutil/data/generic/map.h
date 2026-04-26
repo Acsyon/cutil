@@ -86,7 +86,7 @@ cutil_Map_get_vtable(const cutil_Map *map)
 
 /**
  * Frees contents of `map`.
- * 
+ *
  * @param[in] map cutil_Map object to be cleared
  */
 inline void
@@ -161,7 +161,7 @@ cutil_Map_duplicate(const cutil_Map *map)
     CUTIL_NULL_CHECKS_MAP(map);
     CUTIL_NULL_CHECK_VTABLE(map->vtable, duplicate);
     CUTIL_RETURN_NULL_IF_NULL(map->vtable->duplicate);
-    cutil_Map *const dup = CUTIL_MALLOC_OBJECT(dup);
+    cutil_Map *const dup = (cutil_Map *) CUTIL_MALLOC_OBJECT(dup);
     dup->vtable = map->vtable;
     dup->data = map->vtable->duplicate(map->data);
     return dup;
@@ -196,7 +196,7 @@ cutil_Map_remove(cutil_Map *map, const void *key)
 {
     CUTIL_NULL_CHECKS_MAP(map);
     CUTIL_NULL_CHECK_VTABLE(map->vtable, remove);
-    CUTIL_RETURN_VAL_IF_NULL(map->vtable->remove, EXIT_FAILURE);
+    CUTIL_RETURN_VAL_IF_NULL(map->vtable->remove, CUTIL_STATUS_FAILURE);
     return map->vtable->remove(map->data, key);
 }
 

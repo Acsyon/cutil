@@ -57,8 +57,8 @@ cutil_compare_bytes(const void *lhs, const void *rhs, size_t num)
     if (lhs == NULL || rhs == NULL) {
         return CUTIL_DEFAULT_COMPARISON_KERNEL(lhs, rhs);
     }
-    const unsigned char *const a = lhs;
-    const unsigned char *const b = rhs;
+    const unsigned char *const a = (const unsigned char *) lhs;
+    const unsigned char *const b = (const unsigned char *) rhs;
     for (size_t i = 0; i < num; ++i) {
         const unsigned char ai = a[i];
         const unsigned char bi = b[i];
@@ -113,8 +113,8 @@ cutil_compare_sizes(
                                                                                \
     inline int cutil_compare_##ID(const void *lhs, const void *rhs)            \
     {                                                                          \
-        const TYPE *const a = lhs;                                             \
-        const TYPE *const b = rhs;                                             \
+        const TYPE *const a = (const TYPE *) lhs;                              \
+        const TYPE *const b = (const TYPE *) rhs;                              \
         return CUTIL_DEFAULT_COMPARISON_KERNEL(*a, *b);                        \
     }
 
