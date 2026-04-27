@@ -14,6 +14,7 @@ set(CMAKE_C_EXTENSIONS OFF)
 # Options
 option(CUTIL_BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" ON)
 option(ENABLE_TESTS "Build and enable unit tests" OFF)
+option(CUTIL_ENABLE_BENCHMARKS "Build the benchmark suite" OFF)
 option(CUTIL_MARCH_NATIVE "Build for native architecture" OFF)
 option(CUTIL_FAST_MATH "Enable certain flags for fast math" OFF)
 
@@ -56,11 +57,10 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
     string(APPEND CMAKE_C_FLAGS_RELEASE " -O3")
 endif ()
 
-# Set output path for binaries. CMAKE_BINARY_DIR is read-only after project(); use CUTIL_OUTPUT_DIR
-# for the artefact path.
-set(CUTIL_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CUTIL_OUTPUT_DIR}")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CUTIL_OUTPUT_DIR}")
+# Set output path for binaries
+set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 # Utility variables
 
@@ -96,6 +96,9 @@ include(CTest)
 if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(tests)
+    if (CUTIL_ENABLE_BENCHMARKS)
+        add_subdirectory(benchmarks)
+    endif ()
 endif ()
 
 # Configure the uninstaller
