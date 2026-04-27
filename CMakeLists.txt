@@ -44,6 +44,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 # Options
 option(CUTIL_BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" ON)
+option(ENABLE_BENCHMARKS "Build the benchmark suite" OFF)
 
 # Utility variables
 if (CUTIL_BUILD_SHARED_AND_STATIC_LIBS OR BUILD_SHARED_LIBS)
