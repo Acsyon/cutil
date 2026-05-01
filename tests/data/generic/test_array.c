@@ -166,7 +166,7 @@ _should_copyArrayCorrectly(void)
         double src_val, dst_val;
         cutil_Array_get(src, i, &src_val);
         cutil_Array_get(dst, i, &dst_val);
-        TEST_ASSERT_EQUAL_FLOAT(src_val, dst_val);
+        TEST_ASSERT_EQUAL_DOUBLE(src_val, dst_val);
     }
 
     /* Cleanup */
