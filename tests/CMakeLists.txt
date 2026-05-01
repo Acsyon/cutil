@@ -14,6 +14,9 @@ if (NOT TARGET unity)
         unity PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
                          LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     )
+
+    # Enable Unity double support (excluded by default)
+    target_compile_definitions(unity PUBLIC UNITY_INCLUDE_DOUBLE)
 endif ()
 
 # Set correct cutil version
@@ -67,6 +70,9 @@ foreach (TEST_SOURCE ${C_TEST_SOURCES})
 
     # Link and include cutil
     target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
+
+    # Enable Unity double-comparison macros
+    target_compile_definitions("${TEST_NAME}" PRIVATE UNITY_INCLUDE_DOUBLE)
 endforeach ()
 
 # Set C++ standard
