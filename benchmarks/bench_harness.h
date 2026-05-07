@@ -114,7 +114,7 @@ bench_median(int64_t *arr, size_t len)
 static inline void
 bench_print_csv_header(void)
 {
-    printf("container,impl,operation,n,elapsed_ns,ops_per_sec\n");
+    printf("%8s\t%5s\t%14s\t%10s\t%10s\t%16s\n", "container", "impl", "operation", "n", "elapsed_ns", "ops_per_sec");
 }
 
 /**
@@ -138,7 +138,7 @@ bench_print_csv_row(
     double ops_per_sec
       = (elapsed_ns > 0) ? ((double) n * 1.0e9 / (double) elapsed_ns) : 0.0;
     printf(
-      "%s,%s,%s,%zu,%" PRId64 ",%.2f\n", container, impl, operation, n,
+      "%8s\t%5s\t%14s\t%10zu\t% 10" PRId64 "\t%16.2f\n", container, impl, operation, n,
       elapsed_ns, ops_per_sec
     );
 }
