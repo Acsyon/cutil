@@ -7,12 +7,12 @@
 #ifndef CUTIL_DATA_GENERIC_TYPE_H_INCLUDED
 #define CUTIL_DATA_GENERIC_TYPE_H_INCLUDED
 
-#include <cutil/debug/null.h>
-#include <cutil/io/log.h>
-#include <cutil/std/stdbool.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/compare.h>
-#include <cutil/util/hash.h>
+#include <cutil/core/debug/null.h>
+#include <cutil/core/io/log.h>
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/compare.h>
+#include <cutil/core/util/hash.h>
 
 #ifdef __cplusplus
 extern "C" {

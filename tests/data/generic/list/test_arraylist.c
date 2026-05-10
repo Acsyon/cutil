@@ -3,10 +3,10 @@
 
 #include <cutil/data/generic/list.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/array.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 static void
 _should_haveZeroCapacity_when_newlyAllocated(void)

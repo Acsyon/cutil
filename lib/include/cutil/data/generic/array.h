@@ -1,4 +1,4 @@
-/** cutil/generic/array.h
+/** cutil/data/generic/array.h
  *
  * Header for a type-generic array.
  *
@@ -12,10 +12,10 @@
 #ifndef CUTIL_DATA_GENERIC_ARRAY_H_INCLUDED
 #define CUTIL_DATA_GENERIC_ARRAY_H_INCLUDED
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/std/string.h>
 #include <cutil/data/generic/iterator.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/std/string.h>
 
 #ifdef __cplusplus
 extern "C" {

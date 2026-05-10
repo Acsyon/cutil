@@ -1,7 +1,7 @@
 # CMake version and project name
 cmake_minimum_required(VERSION 3.5...3.31)
 set(CUTIL_LIBRARY "cutil")
-project("{CUTIL_LIBRARY}" LANGUAGES C)
+project("${CUTIL_LIBRARY}" LANGUAGES C)
 
 # Set C standard
 set(CMAKE_C_STANDARD 99)
@@ -53,8 +53,18 @@ if (CUTIL_BUILD_SHARED_AND_STATIC_LIBS OR NOT BUILD_SHARED_LIBS)
     set(CUTIL_BUILD_STATIC_LIB TRUE)
 endif ()
 
-# Add the lib directory
-add_subdirectory(lib)
+# Set correct include directory
+set(CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${CUTIL_LIBRARY}")
+
+# Add core library
+set(CUTIL_COMPONENT_CORE "core")
+set(CUTIL_LIBRARY_CORE "${CUTIL_COMPONENT_CORE}")
+add_subdirectory(lib/core)
+
+# Add data library
+set(CUTIL_COMPONENT_DATA data)
+set(CUTIL_LIBRARY_DATA "${CUTIL_COMPONENT_DATA}")
+add_subdirectory(lib/data)
 
 # Add the tests directory
 include(CTest)

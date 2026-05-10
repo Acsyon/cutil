@@ -21,13 +21,25 @@ endif ()
 
 # Set correct cutil version
 if (CUTIL_BUILD_SHARED_LIB)
-    set(CUTIL_LIB "${CUTIL_LIBRARY}")
+    set(CUTIL_LIB_CORE "${CUTIL_LIBRARY_CORE}")
+    set(CUTIL_LIB_DATA "${CUTIL_LIBRARY_DATA}")
 else ()
-    set(CUTIL_LIB "${CUTIL_LIBRARY}-static")
+    set(CUTIL_LIB_CORE "${CUTIL_LIBRARY_CORE}-static")
+    set(CUTIL_LIB_DATA "${CUTIL_LIBRARY_DATA}-static")
 endif ()
 
 # Set C test source files
 set(C_TEST_SOURCES
+    core/io/test_log.c
+    core/os/test_path.c
+    core/posix/test_getopt.c
+    core/std/test_stdio.c
+    core/std/test_string.c
+    core/string/util/test_iterator.c
+    core/string/test_builder.c
+    core/string/test_type.c
+    core/util/test_compare.c
+    core/util/test_hash.c
     data/generic/list/test_arraylist.c
     data/generic/map/test_hashmap.c
     data/generic/set/test_hashset.c
@@ -39,22 +51,12 @@ set(C_TEST_SOURCES
     data/generic/test_set.c
     data/generic/test_type.c
     data/native/test_bitarray.c
-    io/test_log.c
-    os/test_path.c
-    posix/test_getopt.c
-    std/test_stdio.c
-    std/test_string.c
-    string/util/test_iterator.c
-    string/test_builder.c
-    string/test_type.c
-    util/test_compare.c
-    util/test_hash.c
 )
 
 # Loop over all C tests
 foreach (TEST_SOURCE ${C_TEST_SOURCES})
-    # Derive test name: test_<dir_underscored>_<stem>
-    # e.g. data/generic/test_array.c -> test_data_generic_array
+    # Derive test name: test_<dir_underscored>_<stem> e.g. data/generic/test_array.c ->
+    # test_data_generic_array
     get_filename_component(TEST_DIR "${TEST_SOURCE}" DIRECTORY)
     get_filename_component(TEST_BASENAME "${TEST_SOURCE}" NAME_WE)
     string(REPLACE "/" "_" TEST_DIR_UNDERSCORED "${TEST_DIR}")
@@ -67,14 +69,16 @@ foreach (TEST_SOURCE ${C_TEST_SOURCES})
     list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
 
     # Add resources directory as a macro
-    target_compile_definitions("${TEST_NAME}" PRIVATE
-        CUTIL_TEST_RESOURCE_DIR="${CMAKE_SOURCE_DIR}/tests/resources")
+    target_compile_definitions(
+        "${TEST_NAME}" PRIVATE CUTIL_TEST_RESOURCE_DIR="${CMAKE_SOURCE_DIR}/tests/resources"
+    )
 
     # Link and include Unity
     target_link_libraries("${TEST_NAME}" PRIVATE unity)
 
     # Link and include cutil
-    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB_CORE}")
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB_DATA}")
 
     # Enable Unity double-comparison macros
     target_compile_definitions("${TEST_NAME}" PRIVATE UNITY_INCLUDE_DOUBLE)
@@ -86,9 +90,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set C++ test source files
-set(CXX_TEST_SOURCES
-    cpp/test_cpp.cpp
-)
+set(CXX_TEST_SOURCES core/test_cpp.cpp data/test_cpp.cpp)
 
 # Loop over all C++ tests
 foreach (TEST_SOURCE ${CXX_TEST_SOURCES})
@@ -105,7 +107,8 @@ foreach (TEST_SOURCE ${CXX_TEST_SOURCES})
     list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
 
     # Link and include cutil
-    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB}")
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB_CORE}")
+    target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_LIB_DATA}")
 endforeach ()
 
 # Expose targets to set output directory

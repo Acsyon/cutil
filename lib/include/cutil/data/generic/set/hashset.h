@@ -3,8 +3,8 @@
  * Header for arbitrarily typed hash set.
  */
 
-#ifndef CUTIL_GENERIC_SET_HASHSET_H_INCLUDED
-#define CUTIL_GENERIC_SET_HASHSET_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_SET_HASHSET_H_INCLUDED
+#define CUTIL_DATA_GENERIC_SET_HASHSET_H_INCLUDED
 
 #include <cutil/data/generic/set.h>
 #include <cutil/data/generic/type.h>
@@ -66,4 +66,4 @@ extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_HASHSET_LDOUBLE;
 }
 #endif
 
-#endif /* CUTIL_GENERIC_SET_HASHSET_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_SET_HASHSET_H_INCLUDED */

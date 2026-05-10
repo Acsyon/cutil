@@ -3,10 +3,10 @@
 
 #include <cutil/data/generic/map/hashmap.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/std/string.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/std/string.h>
-#include <cutil/util/macro.h>
 
 /* Mock implementation data structure */
 typedef struct {

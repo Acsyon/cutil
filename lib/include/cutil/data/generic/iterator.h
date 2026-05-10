@@ -6,11 +6,11 @@
 #ifndef CUTIL_DATA_GENERIC_ITERATOR_H_INCLUDED
 #define CUTIL_DATA_GENERIC_ITERATOR_H_INCLUDED
 
-#include <cutil/debug/null.h>
-#include <cutil/status.h>
-#include <cutil/std/stdbool.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
+#include <cutil/core/debug/null.h>
+#include <cutil/core/status.h>
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 
 #ifdef __cplusplus
 extern "C" {

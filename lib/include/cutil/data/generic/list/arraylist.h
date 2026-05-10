@@ -3,8 +3,8 @@
  * Header for dynamically-allocated typed list backed by cutil_Array.
  */
 
-#ifndef CUTIL_GENERIC_LIST_ARRAYLIST_H_INCLUDED
-#define CUTIL_GENERIC_LIST_ARRAYLIST_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_LIST_ARRAYLIST_H_INCLUDED
+#define CUTIL_DATA_GENERIC_LIST_ARRAYLIST_H_INCLUDED
 
 #include <cutil/data/generic/list.h>
 #include <cutil/data/generic/type.h>
@@ -101,4 +101,4 @@ extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_ARRAYLIST_LDOUBLE;
 }
 #endif
 
-#endif /* CUTIL_GENERIC_LIST_ARRAYLIST_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_LIST_ARRAYLIST_H_INCLUDED */

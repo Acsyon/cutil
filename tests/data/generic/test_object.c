@@ -1,9 +1,9 @@
 #include "unity.h"
 #include <cutil/data/generic/object.h>
 
+#include <cutil/core/std/string.h>
+#include <cutil/core/string/type.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/string.h>
-#include <cutil/string/type.h>
 
 static void
 _should_returnEmptyObject_when_alloc(void)

@@ -1,10 +1,10 @@
 #include "unity.h"
 #include <cutil/data/generic/type.h>
 
-#include <cutil/std/stdio.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/std/string.h>
-#include <cutil/util/macro.h>
+#include <cutil/core/std/stdio.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/std/string.h>
+#include <cutil/core/util/macro.h>
 
 static void
 _noop_one(void *obj)

@@ -1,9 +1,9 @@
 #include "unity.h"
 #include <cutil/data/generic/set/hashset.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 /* Tests for cutil_HashSet_alloc */
 static void

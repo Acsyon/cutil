@@ -1,8 +1,8 @@
 #include "unity.h"
 #include <cutil/data/generic/iterator.h>
 
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 
 /* --- Mock state and vtable infrastructure --------------------------------- */
 

@@ -1,7 +1,7 @@
 #include "unity.h"
 #include <cutil/data/native/bitarray.h>
 
-#include <cutil/util/macro.h>
+#include <cutil/core/util/macro.h>
 
 static void
 _should_constructArray_when_provideSizeAndCapacity(void)
