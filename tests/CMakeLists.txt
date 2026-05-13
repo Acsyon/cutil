@@ -40,6 +40,7 @@ set(C_TEST_SOURCES
     core/string/test_type.c
     core/util/test_compare.c
     core/util/test_hash.c
+    core/util/test_void.c
     data/generic/list/test_arraylist.c
     data/generic/map/test_hashmap.c
     data/generic/set/test_hashset.c

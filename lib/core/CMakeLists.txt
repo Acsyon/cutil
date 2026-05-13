@@ -16,6 +16,7 @@ set(SOURCE_FILES_CORE
     src/string/type.c
     src/util/compare.c
     src/util/hash.c
+    src/util/void.c
     src/status.c
 )
 

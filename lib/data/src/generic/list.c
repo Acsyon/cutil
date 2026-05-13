@@ -3,6 +3,7 @@
 #include <cutil/core/string/builder.h>
 #include <cutil/core/string/util/iterator.h>
 #include <cutil/core/util/compare.h>
+#include <cutil/core/util/void.h>
 
 cutil_Bool
 cutil_ListType_equals(const cutil_ListType *lhs, const cutil_ListType *rhs)

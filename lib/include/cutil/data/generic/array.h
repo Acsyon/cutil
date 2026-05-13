@@ -14,6 +14,7 @@
 
 #include <cutil/core/std/stdlib.h>
 #include <cutil/core/std/string.h>
+#include <cutil/core/util/void.h>
 #include <cutil/data/generic/iterator.h>
 #include <cutil/data/generic/type.h>
 
