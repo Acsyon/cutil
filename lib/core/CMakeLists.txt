@@ -80,7 +80,7 @@ endif ()
 
 # Install headers
 install(
-    DIRECTORY "../include/cutil/${CUTIL_COMPONENT_CORE}"
+    DIRECTORY "${CMAKE_SOURCE_DIR}/lib/include/cutil/${CUTIL_COMPONENT_CORE}"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     FILES_MATCHING
     PATTERN "*.h"

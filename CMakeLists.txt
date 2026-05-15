@@ -53,7 +53,10 @@ if (CUTIL_BUILD_SHARED_AND_STATIC_LIBS OR NOT BUILD_SHARED_LIBS)
     set(CUTIL_BUILD_STATIC_LIB TRUE)
 endif ()
 
-# Set correct include directory
+# Include GNUInstallDirs BEFORE setting CMAKE_INSTALL_INCLUDEDIR
+include(GNUInstallDirs)
+
+# Set correct include directory (append to system include dir)
 set(CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${CUTIL_LIBRARY}")
 
 # Add core library
@@ -81,17 +84,17 @@ add_custom_target(
 # Include GNUInstallDirs for proper install destinations
 include(GNUInstallDirs)
 
-# Generate and install export configuration
-install(
-    EXPORT "${CUTIL_LIBRARY}-targets"
-    FILE "${CUTIL_LIBRARY}Config.cmake"
-    NAMESPACE "${CUTIL_LIBRARY}::"
-    DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
-)
-
 # Generate config file for find_package()
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     cmake/${CUTIL_LIBRARY}Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${CUTIL_LIBRARY}Config.cmake"
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
+)
+
+# Generate and install export configuration
+install(
+    EXPORT "${CUTIL_LIBRARY}-targets"
+    FILE "${CUTIL_LIBRARY}Config.cmake"
+    NAMESPACE "${CUTIL_LIBRARY}::"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
 )
