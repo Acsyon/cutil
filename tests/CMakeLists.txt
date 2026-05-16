@@ -40,6 +40,7 @@ set(C_TEST_SOURCES
     data/generic/test_type.c
     data/native/test_bitarray.c
     io/test_log.c
+    os/test_path.c
     posix/test_getopt.c
     std/test_stdio.c
     std/test_string.c
@@ -64,6 +65,10 @@ foreach (TEST_SOURCE ${C_TEST_SOURCES})
     add_executable("${TEST_NAME}" "${TEST_SOURCE}")
     add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
     list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
+
+    # Add resources directory as a macro
+    target_compile_definitions("${TEST_NAME}" PRIVATE
+        CUTIL_TEST_RESOURCE_DIR="${CMAKE_SOURCE_DIR}/tests/resources")
 
     # Link and include Unity
     target_link_libraries("${TEST_NAME}" PRIVATE unity)

@@ -13,16 +13,17 @@ Welcome to my C99 utility library! This project serves multiple purposes: It is 
 
 The library is organized by domain, each providing a focused set of utilities:
 
-- **Data structures** — Generic (type-erased) collections with iterator support:
+- **Data structures** – Generic (type-erased) collections with iterator support:
   - ArrayList, HashSet, HashMap (via vtable-based abstract interfaces: List, Set, Map, Array)
   - Iterator interface for uniform traversal
   - Generic type descriptors for type-safe operations on `void *` elements
   - Native BitArray for compact bit storage
-- **String** — String builder for incremental string construction; string type with iterator support
-- **I/O** — Simple logging system
-- **POSIX** — Command-line argument parser inspired by POSIX `getopt` and GNU `getopt_long`
-- **Standard library** — Portable wrappers for `stdio`, `stdlib`, and `string`
-- **Utilities** — Hash functions, comparison functions, macro utilities
+- **String** – String builder for incremental string construction; string type with iterator support
+- **I/O** – Input and output utilities, e.g., simple logging system
+- **OS** – OS-specific utilites, e.g., directory creation and deletion
+- **POSIX** – POSIX utilities, e.g., command-line argument parser inspired by POSIX `getopt` and GNU `getopt_long`
+- **Standard library** – Portable wrappers for, e.g., `stdio`, `stdlib` and `string`
+- **Utilities** – Hash functions, comparison functions, macro utilities
 
 A comprehensive test suite (Unity framework) covers all modules.
 
@@ -34,11 +35,12 @@ Sources and headers follow a domain-based layout:
 lib/
 ├── include/cutil/       # Public API headers (consumed as #include <cutil/...>)
 │   ├── data/            # Generic collections, native data structures
-│   ├── io/              # Logging
-│   ├── posix/           # Argument parser
+│   ├── io/              # Input and output utilities, e.g., logging system
+│   ├── os/              # OS-specific utlities
+│   ├── posix/           # POSIX utilities, e.g., getopt
 │   ├── std/             # Standard library wrappers
 │   ├── string/          # String builder, string type
-│   └── util/            # Hash, compare, macros
+│   └── util/            # Utilities: hashing, comparisons, macros
 └── src/                 # Implementation sources (mirrors header layout)
 ```
 
