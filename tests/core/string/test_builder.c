@@ -2,7 +2,6 @@
 #include <cutil/core/string/builder.h>
 
 #include <cutil/core/std/string.h>
-#include <cutil/core/string/builder.h>
 #include <cutil/core/util/hash.h>
 #include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
@@ -935,29 +934,6 @@ _should_copyBuilder_when_copyGenericCalled(void)
     cutil_StringBuilder_free(dst);
 }
 
-static void
-_should_beValid_when_descriptorIsChecked(void)
-{
-    /* Act */
-    const cutil_GenericType *const type = CUTIL_GENERIC_TYPE_STRING_BUILDER;
-
-    /* Assert */
-    TEST_ASSERT_TRUE(cutil_GenericType_is_valid(type));
-    TEST_ASSERT_EQUAL_STRING(
-      "cutil_StringBuilder", cutil_GenericType_get_name(type)
-    );
-    TEST_ASSERT_EQUAL_size_t(
-      sizeof(cutil_StringBuilder), cutil_GenericType_get_size(type)
-    );
-    TEST_ASSERT_NOT_NULL(type->init);
-    TEST_ASSERT_NOT_NULL(type->clear);
-    TEST_ASSERT_NOT_NULL(type->copy);
-    TEST_ASSERT_NOT_NULL(type->deep_equals);
-    TEST_ASSERT_NOT_NULL(type->comp);
-    TEST_ASSERT_NOT_NULL(type->hash);
-    TEST_ASSERT_NOT_NULL(type->to_string);
-}
-
 void
 setUp(void)
 {}
@@ -1019,7 +995,6 @@ main(void)
     RUN_TEST(_should_writeContent_when_toStringGenericCalledWithAdequateBuffer);
     RUN_TEST(_should_clearBuilder_when_clearGenericCalled);
     RUN_TEST(_should_copyBuilder_when_copyGenericCalled);
-    RUN_TEST(_should_beValid_when_descriptorIsChecked);
 
     return UNITY_END();
 }

@@ -9,9 +9,13 @@
 #include <stdarg.h>
 
 #include <cutil/core/cutil.h>
+#include <cutil/core/debug/null.h>
 #include <cutil/core/status.h>
+#include <cutil/core/std/inttypes.h>
+#include <cutil/core/std/stdbool.h>
 #include <cutil/core/std/stdlib.h>
-#include <cutil/data/generic/type.h>
+#include <cutil/core/util/hash.h>
+#include <cutil/core/util/macro.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -585,11 +589,6 @@ cutil_StringBuilder_hash_generic(const void *sb);
  */
 size_t
 cutil_StringBuilder_to_string_generic(const void *sb, char *buf, size_t buflen);
-
-/**
- * Generic type descriptor for cutil_StringBuilder.
- */
-extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_BUILDER;
 
 #ifdef __cplusplus
 }

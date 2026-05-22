@@ -2,9 +2,9 @@
 
 #include <cutil/core/io/log.h>
 #include <cutil/core/string/builder.h>
-#include <cutil/core/string/util/iterator.h>
 #include <cutil/core/util/macro.h>
 #include <cutil/data/generic/iterator.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 #define ITER_REWOUND_SENTINEL ((size_t) -1)
 

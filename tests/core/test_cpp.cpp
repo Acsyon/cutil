@@ -12,7 +12,7 @@
 #include <cutil/core/std/stdlib.h>
 #include <cutil/core/std/string.h>
 
-#include <cutil/core/string/util/iterator.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 #include <cutil/core/string/builder.h>
 #include <cutil/core/string/type.h>

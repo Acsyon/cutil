@@ -11,7 +11,6 @@ set(SOURCE_FILES_CORE
     src/std/stdio.c
     src/std/stdlib.c
     src/std/string.c
-    src/string/util/iterator.c
     src/string/builder.c
     src/string/type.c
     src/util/compare.c

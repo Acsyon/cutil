@@ -3,6 +3,7 @@
 
 #include <cutil/core/std/string.h>
 #include <cutil/core/string/type.h>
+#include <cutil/data/generic/string/type.h>
 #include <cutil/data/generic/type.h>
 
 static void

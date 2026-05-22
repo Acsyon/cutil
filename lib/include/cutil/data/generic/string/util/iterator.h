@@ -1,10 +1,10 @@
-/** cutil/core/string/util/iterator.h
+/** cutil/data/generic/string/util/iterator.h
  *
  * Iterator serialization utilities.
  */
 
-#ifndef CUTIL_CORE_STRING_UTIL_ITERATOR_H_INCLUDED
-#define CUTIL_CORE_STRING_UTIL_ITERATOR_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_STRING_UTIL_ITERATOR_H_INCLUDED
+#define CUTIL_DATA_GENERIC_STRING_UTIL_ITERATOR_H_INCLUDED
 
 #include <cutil/core/std/stddef.h>
 #include <cutil/core/string/builder.h>
@@ -151,4 +151,4 @@ cutil_ConstIterator_to_string(
 }
 #endif
 
-#endif /* CUTIL_CORE_STRING_UTIL_ITERATOR_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_STRING_UTIL_ITERATOR_H_INCLUDED */

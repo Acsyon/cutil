@@ -1,5 +1,6 @@
 #include <cutil/core/string/type.h>
 
+#include <cutil/core/debug/null.h>
 #include <cutil/core/io/log.h>
 #include <cutil/core/status.h>
 #include <cutil/core/std/stdio.h>
@@ -7,8 +8,10 @@
 #include <cutil/core/std/string.h>
 #include <cutil/core/util/macro.h>
 
-static void
-_cutil_String_init_default(void *vs)
+#include "priv.h"
+
+void
+priv_cutil_String_init_default(void *vs)
 {
     cutil_String *const s = vs;
 
@@ -21,7 +24,7 @@ _cutil_String_alloc(void)
 {
     cutil_String *const s = CUTIL_MALLOC_OBJECT(s);
 
-    _cutil_String_init_default(s);
+    priv_cutil_String_init_default(s);
 
     return s;
 }
@@ -181,22 +184,8 @@ cutil_String_to_string_generic(const void *vs, char *buf, size_t buflen)
     return (size_t) snprintf(buf, buflen, "%s", s->str);
 }
 
-static const cutil_GenericType CUTIL_GENERIC_TYPE_STRING_INSTANCE = {
-  .name = "cutil_String",
-  .size = sizeof(cutil_String),
-  .init = &_cutil_String_init_default,
-  .clear = &cutil_String_clear_generic,
-  .copy = &cutil_String_copy_generic,
-  .deep_equals = &cutil_String_deep_equals_generic,
-  .comp = &cutil_String_compare_generic,
-  .hash = &cutil_String_hash_generic,
-  .to_string = &cutil_String_to_string_generic
-};
-const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING
-  = &CUTIL_GENERIC_TYPE_STRING_INSTANCE;
-
-static void
-_cutil_StringView_init_default(void *vsv)
+void
+priv_cutil_StringView_init_default(void *vsv)
 {
     cutil_StringView *const sv = vsv;
 
@@ -209,7 +198,7 @@ _cutil_StringView_alloc(void)
 {
     cutil_StringView *const sv = CUTIL_MALLOC_OBJECT(sv);
 
-    _cutil_StringView_init_default(sv);
+    priv_cutil_StringView_init_default(sv);
 
     return sv;
 }
@@ -370,17 +359,3 @@ cutil_StringView_to_string_generic(const void *vsv, char *buf, size_t buflen)
     }
     return snprintf(buf, buflen, "%.*s", (int) sv->length, sv->str);
 }
-
-static const cutil_GenericType CUTIL_GENERIC_TYPE_STRING_VIEW_INSTANCE = {
-  .name = "cutil_StringView",
-  .size = sizeof(cutil_StringView),
-  .init = &_cutil_StringView_init_default,
-  .clear = &cutil_StringView_clear_generic,
-  .copy = &cutil_StringView_copy_generic,
-  .deep_equals = &cutil_StringView_deep_equals_generic,
-  .comp = &cutil_StringView_compare_generic,
-  .hash = &cutil_StringView_hash_generic,
-  .to_string = &cutil_StringView_to_string_generic
-};
-const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_VIEW
-  = &CUTIL_GENERIC_TYPE_STRING_VIEW_INSTANCE;

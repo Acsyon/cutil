@@ -308,27 +308,6 @@ _should_matchCompareGeneric_when_calledWithSameArgs(void)
     cutil_String_free(rhs);
 }
 
-static void
-_should_beValid_when_stringDescriptorIsChecked(void)
-{
-    /* Act */
-    const cutil_GenericType *const type = CUTIL_GENERIC_TYPE_STRING;
-
-    /* Assert */
-    TEST_ASSERT_TRUE(cutil_GenericType_is_valid(type));
-    TEST_ASSERT_EQUAL_STRING("cutil_String", cutil_GenericType_get_name(type));
-    TEST_ASSERT_EQUAL_size_t(
-      sizeof(cutil_String), cutil_GenericType_get_size(type)
-    );
-    TEST_ASSERT_NOT_NULL(type->init);
-    TEST_ASSERT_NOT_NULL(type->clear);
-    TEST_ASSERT_NOT_NULL(type->copy);
-    TEST_ASSERT_NOT_NULL(type->deep_equals);
-    TEST_ASSERT_NOT_NULL(type->comp);
-    TEST_ASSERT_NOT_NULL(type->hash);
-    TEST_ASSERT_NOT_NULL(type->to_string);
-}
-
 /* ========================================================================= */
 /* cutil_StringView tests                                                    */
 /* ========================================================================= */
@@ -654,29 +633,6 @@ _should_matchCompareGeneric_when_viewCalledWithSameArgs(void)
     cutil_StringView_free(rhs);
 }
 
-static void
-_should_beValid_when_viewDescriptorIsChecked(void)
-{
-    /* Act */
-    const cutil_GenericType *const type = CUTIL_GENERIC_TYPE_STRING_VIEW;
-
-    /* Assert */
-    TEST_ASSERT_TRUE(cutil_GenericType_is_valid(type));
-    TEST_ASSERT_EQUAL_STRING(
-      "cutil_StringView", cutil_GenericType_get_name(type)
-    );
-    TEST_ASSERT_EQUAL_size_t(
-      sizeof(cutil_StringView), cutil_GenericType_get_size(type)
-    );
-    TEST_ASSERT_NOT_NULL(type->init);
-    TEST_ASSERT_NOT_NULL(type->clear);
-    TEST_ASSERT_NOT_NULL(type->copy);
-    TEST_ASSERT_NOT_NULL(type->deep_equals);
-    TEST_ASSERT_NOT_NULL(type->comp);
-    TEST_ASSERT_NOT_NULL(type->hash);
-    TEST_ASSERT_NOT_NULL(type->to_string);
-}
-
 void
 setUp(void)
 {}
@@ -708,7 +664,6 @@ main(void)
     RUN_TEST(_should_copyViaGeneric_when_copyGenericCalled);
     RUN_TEST(_should_matchDeepEqualsGeneric_when_calledWithSameArgs);
     RUN_TEST(_should_matchCompareGeneric_when_calledWithSameArgs);
-    RUN_TEST(_should_beValid_when_stringDescriptorIsChecked);
 
     /* cutil_StringView */
     RUN_TEST(_should_haveNullStr_when_viewCreatedFromNullString);
@@ -729,7 +684,6 @@ main(void)
     RUN_TEST(_should_copyViaGeneric_when_viewCopyGenericCalled);
     RUN_TEST(_should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs);
     RUN_TEST(_should_matchCompareGeneric_when_viewCalledWithSameArgs);
-    RUN_TEST(_should_beValid_when_viewDescriptorIsChecked);
 
     return UNITY_END();
 }

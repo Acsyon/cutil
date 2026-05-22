@@ -1,4 +1,4 @@
-#include <cutil/core/string/util/iterator.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 #include <cutil/core/io/log.h>
 #include <cutil/core/std/stdbool.h>

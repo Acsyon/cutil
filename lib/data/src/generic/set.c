@@ -1,8 +1,8 @@
 #include <cutil/data/generic/set.h>
 
 #include <cutil/core/string/builder.h>
-#include <cutil/core/string/util/iterator.h>
 #include <cutil/core/util/compare.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 cutil_Bool
 cutil_SetType_equals(const cutil_SetType *lhs, const cutil_SetType *rhs)

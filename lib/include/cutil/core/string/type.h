@@ -10,7 +10,6 @@
 #include <cutil/core/std/stdbool.h>
 #include <cutil/core/std/stddef.h>
 #include <cutil/core/util/hash.h>
-#include <cutil/data/generic/type.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -186,11 +185,6 @@ cutil_String_hash_generic(const void *s);
  */
 size_t
 cutil_String_to_string_generic(const void *s, char *buf, size_t buflen);
-
-/**
- * Generic type descriptor for cutil_String.
- */
-extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING;
 
 /**
  * Non-owning string view. Holds a pointer into an externally owned string.
@@ -369,11 +363,6 @@ cutil_StringView_hash_generic(const void *sv);
  */
 size_t
 cutil_StringView_to_string_generic(const void *sv, char *buf, size_t buflen);
-
-/**
- * Generic type descriptor for cutil_StringView.
- */
-extern const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_VIEW;
 
 #ifdef __cplusplus
 }

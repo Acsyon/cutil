@@ -1,5 +1,5 @@
 #include "unity.h"
-#include <cutil/core/string/util/iterator.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 #include <cutil/core/std/stdbool.h>
 #include <cutil/core/std/stdio.h>

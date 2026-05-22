@@ -8,6 +8,9 @@ set(SOURCE_FILES_DATA
     src/generic/list/arraylist.c
     src/generic/map/hashmap.c
     src/generic/set/hashset.c
+    src/generic/string/util/iterator.c
+    src/generic/string/builder.c
+    src/generic/string/type.c
     src/generic/array.c
     src/generic/list.c
     src/generic/iterator.c

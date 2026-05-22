@@ -9,6 +9,8 @@
 #include <cutil/core/std/string.h>
 #include <cutil/core/util/macro.h>
 
+#include "priv.h"
+
 #define STRING_DEFAULT_SIZE 64
 #define STRING_THRESHOLD_SIZE 1024
 #define BUFFER_THRESHOLD_SIZE 1024
@@ -598,7 +600,7 @@ cutil_StringBuilder_to_string_generic(const void *vsb, char *buf, size_t buflen)
 }
 
 void
-_cutil_StringBuilder_init_default(void *vsb)
+priv_cutil_StringBuilder_init_default(void *vsb)
 {
     cutil_StringBuilder *const sb = vsb;
     sb->capacity = STRING_DEFAULT_SIZE;
@@ -607,17 +609,3 @@ _cutil_StringBuilder_init_default(void *vsb)
     sb->bufsiz = STRING_DEFAULT_SIZE;
     sb->buf = malloc(sb->bufsiz * sizeof *sb->buf);
 }
-
-static const cutil_GenericType CUTIL_GENERIC_TYPE_STRING_BUILDER_INSTANCE = {
-  .name = "cutil_StringBuilder",
-  .size = sizeof(cutil_StringBuilder),
-  .init = &_cutil_StringBuilder_init_default,
-  .clear = &cutil_StringBuilder_clear_generic,
-  .copy = &cutil_StringBuilder_copy_generic,
-  .deep_equals = &cutil_StringBuilder_deep_equals_generic,
-  .comp = &cutil_StringBuilder_compare_generic,
-  .hash = &cutil_StringBuilder_hash_generic,
-  .to_string = &cutil_StringBuilder_to_string_generic
-};
-const cutil_GenericType *const CUTIL_GENERIC_TYPE_STRING_BUILDER
-  = &CUTIL_GENERIC_TYPE_STRING_BUILDER_INSTANCE;

@@ -3,9 +3,9 @@
 #include <cutil/core/io/log.h>
 #include <cutil/core/std/stdlib.h>
 #include <cutil/core/string/builder.h>
-#include <cutil/core/string/util/iterator.h>
 #include <cutil/core/util/compare.h>
 #include <cutil/core/util/macro.h>
+#include <cutil/data/generic/string/util/iterator.h>
 
 cutil_Bool
 cutil_MapType_equals(const cutil_MapType *lhs, const cutil_MapType *rhs)
