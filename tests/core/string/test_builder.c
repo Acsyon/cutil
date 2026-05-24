@@ -10,7 +10,7 @@
     "This is a very long string that exceeds the initial and default capacity"
 
 static void
-_should_constructBuilder_when_useSize(void)
+test_should_constructBuilder_when_useSize(void)
 {
     /* Arrange */
     const char *const assert_str = "";
@@ -30,7 +30,7 @@ _should_constructBuilder_when_useSize(void)
 }
 
 static void
-_should_constructBuilder_when_useString(void)
+test_should_constructBuilder_when_useString(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -49,7 +49,7 @@ _should_constructBuilder_when_useString(void)
 }
 
 static void
-_should_preserveNulInvariant_when_constructEmpty(void)
+test_should_preserveNulInvariant_when_constructEmpty(void)
 {
     /* Act */
     cutil_StringBuilder *const sb = cutil_StringBuilder_alloc(0);
@@ -65,7 +65,7 @@ _should_preserveNulInvariant_when_constructEmpty(void)
 }
 
 static void
-_should_duplicateBuilder(void)
+test_should_duplicateBuilder(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -92,7 +92,7 @@ _should_duplicateBuilder(void)
 }
 
 static void
-_should_clearCorrectly(void)
+test_should_clearCorrectly(void)
 {
     /* Arrange */
     const char *const append_str = LONG_STRING;
@@ -111,7 +111,7 @@ _should_clearCorrectly(void)
 }
 
 static void
-_should_copyCorrectly(void)
+test_should_copyCorrectly(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -139,7 +139,7 @@ _should_copyCorrectly(void)
 }
 
 static void
-_should_appendCorrectly_when_haveSingleString(void)
+test_should_appendCorrectly_when_haveSingleString(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello";
@@ -159,7 +159,7 @@ _should_appendCorrectly_when_haveSingleString(void)
 }
 
 static void
-_should_appendCorrectly_when_haveMultipleStrings(void)
+test_should_appendCorrectly_when_haveMultipleStrings(void)
 {
     /* Arrange */
     const char *const input_str_1 = "Hello";
@@ -182,7 +182,7 @@ _should_appendCorrectly_when_haveMultipleStrings(void)
 }
 
 static void
-_should_appendCorrectly_when_haveEmptyString(void)
+test_should_appendCorrectly_when_haveEmptyString(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -204,7 +204,7 @@ _should_appendCorrectly_when_haveEmptyString(void)
 }
 
 static void
-_should_expandCorrectly_when_appendString(void)
+test_should_expandCorrectly_when_appendString(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -226,7 +226,7 @@ _should_expandCorrectly_when_appendString(void)
 }
 
 static void
-_should_appendCorrectly_when_haveHugeNumberOfStrings(void)
+test_should_appendCorrectly_when_haveHugeNumberOfStrings(void)
 {
     /* Arrange */
     const size_t num_appends = 1023;
@@ -248,7 +248,7 @@ _should_appendCorrectly_when_haveHugeNumberOfStrings(void)
 }
 
 static void
-_should_insertCorrectly(void)
+test_should_insertCorrectly(void)
 {
     /* Arrange */
     const char *const input_str_1 = "Hello, World!";
@@ -273,7 +273,7 @@ _should_insertCorrectly(void)
 }
 
 static void
-_should_shrink_when_resize(void)
+test_should_shrink_when_resize(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -301,7 +301,7 @@ _should_shrink_when_resize(void)
 }
 
 static void
-_should_shrinkCorrectly_when_resizeWithForce(void)
+test_should_shrinkCorrectly_when_resizeWithForce(void)
 {
     /* Arrange */
     const char *const assert_str = LONG_STRING;
@@ -330,7 +330,7 @@ _should_shrinkCorrectly_when_resizeWithForce(void)
 }
 
 static void
-_should_expand_when_resize(void)
+test_should_expand_when_resize(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -362,7 +362,7 @@ _should_expand_when_resize(void)
 }
 
 static void
-_should_expandCorrectly_when_resizeWithForce(void)
+test_should_expandCorrectly_when_resizeWithForce(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -390,7 +390,7 @@ _should_expandCorrectly_when_resizeWithForce(void)
 }
 
 static void
-_should_resizeCorrectly_when_shrinkToFit(void)
+test_should_resizeCorrectly_when_shrinkToFit(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -411,7 +411,7 @@ _should_resizeCorrectly_when_shrinkToFit(void)
 }
 
 static void
-_should_duplicateStringCorrectly(void)
+test_should_duplicateStringCorrectly(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -431,7 +431,7 @@ _should_duplicateStringCorrectly(void)
 }
 
 static void
-_should_copyStringCorrectly_when_bufferIsLargeEnough(void)
+test_should_copyStringCorrectly_when_bufferIsLargeEnough(void)
 {
     /* Arrange */
     const char assert_str[] = "Hello, World!";
@@ -454,7 +454,7 @@ _should_copyStringCorrectly_when_bufferIsLargeEnough(void)
 }
 
 static void
-_should_notCopyString_when_bufferIsTooSmall(void)
+test_should_notCopyString_when_bufferIsTooSmall(void)
 {
     /* Arrange */
     const char *const assert_str = "Hello, World!";
@@ -477,7 +477,7 @@ _should_notCopyString_when_bufferIsTooSmall(void)
 }
 
 static void
-_should_copyStringCorrectly_when_bufferIsNull(void)
+test_should_copyStringCorrectly_when_bufferIsNull(void)
 {
     /* Arrange */
     const char assert_str[] = "Hello, World!";
@@ -499,7 +499,7 @@ _should_copyStringCorrectly_when_bufferIsNull(void)
 }
 
 static void
-_should_copyStringAndRetainPointer_when_bufferIsLargeEnough(void)
+test_should_copyStringAndRetainPointer_when_bufferIsLargeEnough(void)
 {
     /* Arrange */
     const char assert_str[] = "Hello, World!";
@@ -525,7 +525,7 @@ _should_copyStringAndRetainPointer_when_bufferIsLargeEnough(void)
 }
 
 static void
-_should_copyStringCorrectly_when_buflenIsNull(void)
+test_should_copyStringCorrectly_when_buflenIsNull(void)
 {
     /* Arrange */
     const char assert_str[] = "Hello, World!";
@@ -545,7 +545,7 @@ _should_copyStringCorrectly_when_buflenIsNull(void)
 }
 
 static void
-_should_deleteCorrectly(void)
+test_should_deleteCorrectly(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -566,7 +566,7 @@ _should_deleteCorrectly(void)
 }
 
 static void
-_should_deleteCorrectly_when_numLessThanRemainder(void)
+test_should_deleteCorrectly_when_numLessThanRemainder(void)
 {
     /* Arrange: delete 1 char where the remaining suffix (7 chars) exceeds num.
      * The old memmove(num) bug would fail to move the suffix and NUL. */
@@ -590,7 +590,7 @@ _should_deleteCorrectly_when_numLessThanRemainder(void)
 }
 
 static void
-_should_deleteCorrectly_when_boundsExceedSize(void)
+test_should_deleteCorrectly_when_boundsExceedSize(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -611,7 +611,7 @@ _should_deleteCorrectly_when_boundsExceedSize(void)
 }
 
 static void
-_should_deleteCorrectly_when_useFromTo(void)
+test_should_deleteCorrectly_when_useFromTo(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -632,7 +632,7 @@ _should_deleteCorrectly_when_useFromTo(void)
 }
 
 static void
-_should_deleteFromToCorrectly_when_boundsExceedSize(void)
+test_should_deleteFromToCorrectly_when_boundsExceedSize(void)
 {
     /* Arrange */
     const char *const input_str = "Hello, Beautiful World!";
@@ -653,7 +653,7 @@ _should_deleteFromToCorrectly_when_boundsExceedSize(void)
 }
 
 static void
-_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings(void)
+test_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
@@ -671,7 +671,7 @@ _should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings(void)
+test_should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings(void)
 {
     /* Arrange */
     cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
@@ -689,7 +689,7 @@ _should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings(void)
 }
 
 static void
-_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer(void)
+test_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -705,7 +705,7 @@ _should_returnTrue_when_deepEqualsGenericCalledOnSamePointer(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull(void)
+test_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -719,7 +719,7 @@ _should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull(void)
 }
 
 static void
-_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls(void)
+test_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls(void)
 {
     /* Act */
     const cutil_Bool result
@@ -730,7 +730,7 @@ _should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls(void)
 }
 
 static void
-_should_returnZero_when_compareGenericCalledOnEqualStrings(void)
+test_should_returnZero_when_compareGenericCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("hello");
@@ -748,7 +748,7 @@ _should_returnZero_when_compareGenericCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnNegative_when_compareGenericCalledOnLesserFirst(void)
+test_should_returnNegative_when_compareGenericCalledOnLesserFirst(void)
 {
     /* Arrange */
     cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("abc");
@@ -766,7 +766,7 @@ _should_returnNegative_when_compareGenericCalledOnLesserFirst(void)
 }
 
 static void
-_should_returnPositive_when_compareGenericCalledOnGreaterFirst(void)
+test_should_returnPositive_when_compareGenericCalledOnGreaterFirst(void)
 {
     /* Arrange */
     cutil_StringBuilder *const lhs = cutil_StringBuilder_from_string("xyz");
@@ -784,7 +784,7 @@ _should_returnPositive_when_compareGenericCalledOnGreaterFirst(void)
 }
 
 static void
-_should_returnNegative_when_compareGenericCalledOnNullFirst(void)
+test_should_returnNegative_when_compareGenericCalledOnNullFirst(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -800,7 +800,7 @@ _should_returnNegative_when_compareGenericCalledOnNullFirst(void)
 }
 
 static void
-_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder(void)
+test_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -816,7 +816,7 @@ _should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder(void)
 }
 
 static void
-_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder(void)
+test_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_create();
@@ -832,7 +832,7 @@ _should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder(void)
 }
 
 static void
-_should_returnZeroHash_when_hashGenericCalledOnNullBuilder(void)
+test_should_returnZeroHash_when_hashGenericCalledOnNullBuilder(void)
 {
     /* Act */
     const cutil_hash_t hash = cutil_StringBuilder_hash_generic(NULL);
@@ -842,7 +842,7 @@ _should_returnZeroHash_when_hashGenericCalledOnNullBuilder(void)
 }
 
 static void
-_should_writeNullString_when_toStringGenericCalledOnNull(void)
+test_should_writeNullString_when_toStringGenericCalledOnNull(void)
 {
     /* Arrange */
     char buf[16];
@@ -857,7 +857,7 @@ _should_writeNullString_when_toStringGenericCalledOnNull(void)
 }
 
 static void
-_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb
@@ -876,7 +876,7 @@ _should_returnZero_when_toStringGenericCalledWithTooSmallBuffer(void)
 }
 
 static void
-_should_writeContent_when_toStringGenericCalledWithAdequateBuffer(void)
+test_should_writeContent_when_toStringGenericCalledWithAdequateBuffer(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -895,7 +895,7 @@ _should_writeContent_when_toStringGenericCalledWithAdequateBuffer(void)
 }
 
 static void
-_should_clearBuilder_when_clearGenericCalled(void)
+test_should_clearBuilder_when_clearGenericCalled(void)
 {
     /* Arrange */
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("hello");
@@ -912,7 +912,7 @@ _should_clearBuilder_when_clearGenericCalled(void)
 }
 
 static void
-_should_copyBuilder_when_copyGenericCalled(void)
+test_should_copyBuilder_when_copyGenericCalled(void)
 {
     /* Arrange */
     cutil_StringBuilder *const src = cutil_StringBuilder_from_string("hello");
@@ -947,54 +947,54 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_constructBuilder_when_useSize);
-    RUN_TEST(_should_constructBuilder_when_useString);
-    RUN_TEST(_should_preserveNulInvariant_when_constructEmpty);
-    RUN_TEST(_should_duplicateBuilder);
-    RUN_TEST(_should_clearCorrectly);
-    RUN_TEST(_should_copyCorrectly);
-    RUN_TEST(_should_appendCorrectly_when_haveSingleString);
-    RUN_TEST(_should_appendCorrectly_when_haveMultipleStrings);
-    RUN_TEST(_should_appendCorrectly_when_haveEmptyString);
-    RUN_TEST(_should_expandCorrectly_when_appendString);
-    RUN_TEST(_should_appendCorrectly_when_haveHugeNumberOfStrings);
-    RUN_TEST(_should_insertCorrectly);
-    RUN_TEST(_should_shrink_when_resize);
-    RUN_TEST(_should_shrinkCorrectly_when_resizeWithForce);
-    RUN_TEST(_should_expand_when_resize);
-    RUN_TEST(_should_expandCorrectly_when_resizeWithForce);
-    RUN_TEST(_should_resizeCorrectly_when_shrinkToFit);
-    RUN_TEST(_should_duplicateStringCorrectly);
-    RUN_TEST(_should_copyStringCorrectly_when_bufferIsLargeEnough);
-    RUN_TEST(_should_notCopyString_when_bufferIsTooSmall);
-    RUN_TEST(_should_copyStringCorrectly_when_bufferIsNull);
-    RUN_TEST(_should_copyStringAndRetainPointer_when_bufferIsLargeEnough);
-    RUN_TEST(_should_copyStringCorrectly_when_buflenIsNull);
-    RUN_TEST(_should_deleteCorrectly);
-    RUN_TEST(_should_deleteCorrectly_when_numLessThanRemainder);
-    RUN_TEST(_should_deleteCorrectly_when_boundsExceedSize);
-    RUN_TEST(_should_deleteCorrectly_when_useFromTo);
-    RUN_TEST(_should_deleteFromToCorrectly_when_boundsExceedSize);
+    RUN_TEST(test_should_constructBuilder_when_useSize);
+    RUN_TEST(test_should_constructBuilder_when_useString);
+    RUN_TEST(test_should_preserveNulInvariant_when_constructEmpty);
+    RUN_TEST(test_should_duplicateBuilder);
+    RUN_TEST(test_should_clearCorrectly);
+    RUN_TEST(test_should_copyCorrectly);
+    RUN_TEST(test_should_appendCorrectly_when_haveSingleString);
+    RUN_TEST(test_should_appendCorrectly_when_haveMultipleStrings);
+    RUN_TEST(test_should_appendCorrectly_when_haveEmptyString);
+    RUN_TEST(test_should_expandCorrectly_when_appendString);
+    RUN_TEST(test_should_appendCorrectly_when_haveHugeNumberOfStrings);
+    RUN_TEST(test_should_insertCorrectly);
+    RUN_TEST(test_should_shrink_when_resize);
+    RUN_TEST(test_should_shrinkCorrectly_when_resizeWithForce);
+    RUN_TEST(test_should_expand_when_resize);
+    RUN_TEST(test_should_expandCorrectly_when_resizeWithForce);
+    RUN_TEST(test_should_resizeCorrectly_when_shrinkToFit);
+    RUN_TEST(test_should_duplicateStringCorrectly);
+    RUN_TEST(test_should_copyStringCorrectly_when_bufferIsLargeEnough);
+    RUN_TEST(test_should_notCopyString_when_bufferIsTooSmall);
+    RUN_TEST(test_should_copyStringCorrectly_when_bufferIsNull);
+    RUN_TEST(test_should_copyStringAndRetainPointer_when_bufferIsLargeEnough);
+    RUN_TEST(test_should_copyStringCorrectly_when_buflenIsNull);
+    RUN_TEST(test_should_deleteCorrectly);
+    RUN_TEST(test_should_deleteCorrectly_when_numLessThanRemainder);
+    RUN_TEST(test_should_deleteCorrectly_when_boundsExceedSize);
+    RUN_TEST(test_should_deleteCorrectly_when_useFromTo);
+    RUN_TEST(test_should_deleteFromToCorrectly_when_boundsExceedSize);
 
-    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings);
+    RUN_TEST(test_should_returnTrue_when_deepEqualsGenericCalledOnEqualStrings);
     RUN_TEST(
-      _should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings
+      test_should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings
     );
-    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer);
-    RUN_TEST(_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull);
-    RUN_TEST(_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls);
-    RUN_TEST(_should_returnZero_when_compareGenericCalledOnEqualStrings);
-    RUN_TEST(_should_returnNegative_when_compareGenericCalledOnLesserFirst);
-    RUN_TEST(_should_returnPositive_when_compareGenericCalledOnGreaterFirst);
-    RUN_TEST(_should_returnNegative_when_compareGenericCalledOnNullFirst);
-    RUN_TEST(_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder);
-    RUN_TEST(_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder);
-    RUN_TEST(_should_returnZeroHash_when_hashGenericCalledOnNullBuilder);
-    RUN_TEST(_should_writeNullString_when_toStringGenericCalledOnNull);
-    RUN_TEST(_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer);
-    RUN_TEST(_should_writeContent_when_toStringGenericCalledWithAdequateBuffer);
-    RUN_TEST(_should_clearBuilder_when_clearGenericCalled);
-    RUN_TEST(_should_copyBuilder_when_copyGenericCalled);
+    RUN_TEST(test_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer);
+    RUN_TEST(test_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull);
+    RUN_TEST(test_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls);
+    RUN_TEST(test_should_returnZero_when_compareGenericCalledOnEqualStrings);
+    RUN_TEST(test_should_returnNegative_when_compareGenericCalledOnLesserFirst);
+    RUN_TEST(test_should_returnPositive_when_compareGenericCalledOnGreaterFirst);
+    RUN_TEST(test_should_returnNegative_when_compareGenericCalledOnNullFirst);
+    RUN_TEST(test_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder);
+    RUN_TEST(test_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder);
+    RUN_TEST(test_should_returnZeroHash_when_hashGenericCalledOnNullBuilder);
+    RUN_TEST(test_should_writeNullString_when_toStringGenericCalledOnNull);
+    RUN_TEST(test_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer);
+    RUN_TEST(test_should_writeContent_when_toStringGenericCalledWithAdequateBuffer);
+    RUN_TEST(test_should_clearBuilder_when_clearGenericCalled);
+    RUN_TEST(test_should_copyBuilder_when_copyGenericCalled);
 
     return UNITY_END();
 }

@@ -9,7 +9,7 @@
 #include <cutil/data/generic/type.h>
 
 static void
-_should_haveZeroCapacity_when_newlyAllocated(void)
+test_should_haveZeroCapacity_when_newlyAllocated(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -25,7 +25,7 @@ _should_haveZeroCapacity_when_newlyAllocated(void)
 }
 
 static void
-_should_increaseCapacity_when_firstElementAppended(void)
+test_should_increaseCapacity_when_firstElementAppended(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -42,7 +42,7 @@ _should_increaseCapacity_when_firstElementAppended(void)
 }
 
 static void
-_should_haveCapacityGtOrEqLength_when_elementsAppended(void)
+test_should_haveCapacityGtOrEqLength_when_elementsAppended(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -60,7 +60,7 @@ _should_haveCapacityGtOrEqLength_when_elementsAppended(void)
 }
 
 static void
-_should_doubleCapacity_when_belowThreshold(void)
+test_should_doubleCapacity_when_belowThreshold(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -83,7 +83,7 @@ _should_doubleCapacity_when_belowThreshold(void)
 }
 
 static void
-_should_growLinearly_when_atOrAboveThreshold(void)
+test_should_growLinearly_when_atOrAboveThreshold(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -109,7 +109,7 @@ _should_growLinearly_when_atOrAboveThreshold(void)
 }
 
 static void
-_should_setCapacityExactly_when_resizeCalled(void)
+test_should_setCapacityExactly_when_resizeCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -125,7 +125,7 @@ _should_setCapacityExactly_when_resizeCalled(void)
 }
 
 static void
-_should_preserveElements_when_growingViaResize(void)
+test_should_preserveElements_when_growingViaResize(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -148,7 +148,7 @@ _should_preserveElements_when_growingViaResize(void)
 }
 
 static void
-_should_truncateElements_when_shrinkingViaResize(void)
+test_should_truncateElements_when_shrinkingViaResize(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -171,7 +171,7 @@ _should_truncateElements_when_shrinkingViaResize(void)
 }
 
 static void
-_should_returnSuccess_when_resizeCalledWithZero(void)
+test_should_returnSuccess_when_resizeCalledWithZero(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -191,7 +191,7 @@ _should_returnSuccess_when_resizeCalledWithZero(void)
 }
 
 static void
-_should_matchCapacityToLength_when_shrinkToFitCalled(void)
+test_should_matchCapacityToLength_when_shrinkToFitCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -213,7 +213,7 @@ _should_matchCapacityToLength_when_shrinkToFitCalled(void)
 }
 
 static void
-_should_setZeroCapacity_when_shrinkCalledOnEmptyList(void)
+test_should_setZeroCapacity_when_shrinkCalledOnEmptyList(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -230,7 +230,7 @@ _should_setZeroCapacity_when_shrinkCalledOnEmptyList(void)
 }
 
 static void
-_should_preserveElements_when_shrinkToFitCalled(void)
+test_should_preserveElements_when_shrinkToFitCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -255,7 +255,7 @@ _should_preserveElements_when_shrinkToFitCalled(void)
 }
 
 static void
-_should_removeCurrentElement_when_removeCalledOnIterator(void)
+test_should_removeCurrentElement_when_removeCalledOnIterator(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -287,7 +287,7 @@ _should_removeCurrentElement_when_removeCalledOnIterator(void)
 }
 
 static void
-_should_removeAllElements_when_iteratorRemoveCalledRepeatedly(void)
+test_should_removeAllElements_when_iteratorRemoveCalledRepeatedly(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -310,7 +310,7 @@ _should_removeAllElements_when_iteratorRemoveCalledRepeatedly(void)
 }
 
 static void
-_should_removeMiddleElement_when_iteratorRemoveCalled(void)
+test_should_removeMiddleElement_when_iteratorRemoveCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -347,7 +347,7 @@ _should_removeMiddleElement_when_iteratorRemoveCalled(void)
 }
 
 static void
-_should_skipNoElements_when_removingDuringTraversal(void)
+test_should_skipNoElements_when_removingDuringTraversal(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -380,7 +380,7 @@ _should_skipNoElements_when_removingDuringTraversal(void)
 }
 
 static void
-_should_returnTrue_when_identicalListsCompared(void)
+test_should_returnTrue_when_identicalListsCompared(void)
 {
     /* Arrange */
     cutil_List *const list_a = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -404,7 +404,7 @@ _should_returnTrue_when_identicalListsCompared(void)
 }
 
 static void
-_should_returnFalse_when_listsWithDifferentOrderCompared(void)
+test_should_returnFalse_when_listsWithDifferentOrderCompared(void)
 {
     /* Arrange */
     cutil_List *const list_a = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -428,7 +428,7 @@ _should_returnFalse_when_listsWithDifferentOrderCompared(void)
 }
 
 static void
-_should_returnFalse_when_listsWithDifferentLengthsCompared(void)
+test_should_returnFalse_when_listsWithDifferentLengthsCompared(void)
 {
     /* Arrange */
     cutil_List *const list_a = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -477,7 +477,7 @@ _smoke_test_arraylist_generic_type(const cutil_GenericType *gt)
 }
 
 static void
-_should_initAndClearAll_when_genericTypeSingletonsUsed(void)
+test_should_initAndClearAll_when_genericTypeSingletonsUsed(void)
 {
     const cutil_GenericType *const ARRAYLIST_TYPES[] = {
       CUTIL_GENERIC_TYPE_ARRAYLIST_CHAR,   CUTIL_GENERIC_TYPE_ARRAYLIST_SHORT,
@@ -502,7 +502,7 @@ _should_initAndClearAll_when_genericTypeSingletonsUsed(void)
 }
 
 static void
-_should_appendToNestedList_when_arrayListGenericTypeUsed(void)
+test_should_appendToNestedList_when_arrayListGenericTypeUsed(void)
 {
     /* Arrange */
     const cutil_GenericType *const elem_type = CUTIL_GENERIC_TYPE_ARRAYLIST_INT;
@@ -522,7 +522,7 @@ _should_appendToNestedList_when_arrayListGenericTypeUsed(void)
 }
 
 static void
-_should_preserveCapacity_when_setCalled(void)
+test_should_preserveCapacity_when_setCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -544,7 +544,7 @@ _should_preserveCapacity_when_setCalled(void)
 }
 
 static void
-_should_setFirstElement_when_indexIsZero(void)
+test_should_setFirstElement_when_indexIsZero(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -566,7 +566,7 @@ _should_setFirstElement_when_indexIsZero(void)
 }
 
 static void
-_should_setLastElement_when_indexIsLengthMinusOne(void)
+test_should_setLastElement_when_indexIsLengthMinusOne(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -588,7 +588,7 @@ _should_setLastElement_when_indexIsLengthMinusOne(void)
 }
 
 static void
-_should_swapBidirectionally_when_memswapElemCalled(void)
+test_should_swapBidirectionally_when_memswapElemCalled(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -609,7 +609,7 @@ _should_swapBidirectionally_when_memswapElemCalled(void)
 }
 
 static void
-_should_returnFailure_when_memswapElemOutOfBounds(void)
+test_should_returnFailure_when_memswapElemOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -645,39 +645,39 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_haveZeroCapacity_when_newlyAllocated);
-    RUN_TEST(_should_increaseCapacity_when_firstElementAppended);
-    RUN_TEST(_should_haveCapacityGtOrEqLength_when_elementsAppended);
+    RUN_TEST(test_should_haveZeroCapacity_when_newlyAllocated);
+    RUN_TEST(test_should_increaseCapacity_when_firstElementAppended);
+    RUN_TEST(test_should_haveCapacityGtOrEqLength_when_elementsAppended);
 
-    RUN_TEST(_should_doubleCapacity_when_belowThreshold);
-    RUN_TEST(_should_growLinearly_when_atOrAboveThreshold);
+    RUN_TEST(test_should_doubleCapacity_when_belowThreshold);
+    RUN_TEST(test_should_growLinearly_when_atOrAboveThreshold);
 
-    RUN_TEST(_should_setCapacityExactly_when_resizeCalled);
-    RUN_TEST(_should_preserveElements_when_growingViaResize);
-    RUN_TEST(_should_truncateElements_when_shrinkingViaResize);
-    RUN_TEST(_should_returnSuccess_when_resizeCalledWithZero);
+    RUN_TEST(test_should_setCapacityExactly_when_resizeCalled);
+    RUN_TEST(test_should_preserveElements_when_growingViaResize);
+    RUN_TEST(test_should_truncateElements_when_shrinkingViaResize);
+    RUN_TEST(test_should_returnSuccess_when_resizeCalledWithZero);
 
-    RUN_TEST(_should_matchCapacityToLength_when_shrinkToFitCalled);
-    RUN_TEST(_should_setZeroCapacity_when_shrinkCalledOnEmptyList);
-    RUN_TEST(_should_preserveElements_when_shrinkToFitCalled);
+    RUN_TEST(test_should_matchCapacityToLength_when_shrinkToFitCalled);
+    RUN_TEST(test_should_setZeroCapacity_when_shrinkCalledOnEmptyList);
+    RUN_TEST(test_should_preserveElements_when_shrinkToFitCalled);
 
-    RUN_TEST(_should_removeCurrentElement_when_removeCalledOnIterator);
-    RUN_TEST(_should_removeAllElements_when_iteratorRemoveCalledRepeatedly);
-    RUN_TEST(_should_removeMiddleElement_when_iteratorRemoveCalled);
-    RUN_TEST(_should_skipNoElements_when_removingDuringTraversal);
+    RUN_TEST(test_should_removeCurrentElement_when_removeCalledOnIterator);
+    RUN_TEST(test_should_removeAllElements_when_iteratorRemoveCalledRepeatedly);
+    RUN_TEST(test_should_removeMiddleElement_when_iteratorRemoveCalled);
+    RUN_TEST(test_should_skipNoElements_when_removingDuringTraversal);
 
-    RUN_TEST(_should_returnTrue_when_identicalListsCompared);
-    RUN_TEST(_should_returnFalse_when_listsWithDifferentOrderCompared);
-    RUN_TEST(_should_returnFalse_when_listsWithDifferentLengthsCompared);
+    RUN_TEST(test_should_returnTrue_when_identicalListsCompared);
+    RUN_TEST(test_should_returnFalse_when_listsWithDifferentOrderCompared);
+    RUN_TEST(test_should_returnFalse_when_listsWithDifferentLengthsCompared);
 
-    RUN_TEST(_should_initAndClearAll_when_genericTypeSingletonsUsed);
-    RUN_TEST(_should_appendToNestedList_when_arrayListGenericTypeUsed);
+    RUN_TEST(test_should_initAndClearAll_when_genericTypeSingletonsUsed);
+    RUN_TEST(test_should_appendToNestedList_when_arrayListGenericTypeUsed);
 
-    RUN_TEST(_should_preserveCapacity_when_setCalled);
-    RUN_TEST(_should_setFirstElement_when_indexIsZero);
-    RUN_TEST(_should_setLastElement_when_indexIsLengthMinusOne);
-    RUN_TEST(_should_swapBidirectionally_when_memswapElemCalled);
-    RUN_TEST(_should_returnFailure_when_memswapElemOutOfBounds);
+    RUN_TEST(test_should_preserveCapacity_when_setCalled);
+    RUN_TEST(test_should_setFirstElement_when_indexIsZero);
+    RUN_TEST(test_should_setLastElement_when_indexIsLengthMinusOne);
+    RUN_TEST(test_should_swapBidirectionally_when_memswapElemCalled);
+    RUN_TEST(test_should_returnFailure_when_memswapElemOutOfBounds);
 
     return UNITY_END();
 }

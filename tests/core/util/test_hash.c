@@ -31,7 +31,7 @@
     } while (0)
 
 static void
-_should_returnValue_when_hashIntegers(void)
+test_should_returnValue_when_hashIntegers(void)
 {
     TEST_HASH_EQUAL(char, char, 'A', 65);
     TEST_HASH_EQUAL(short, short, 12345, 12345);
@@ -68,7 +68,7 @@ _should_returnValue_when_hashIntegers(void)
 }
 
 static void
-_should_returnZeroOrSomething_when_hashFloats(void)
+test_should_returnZeroOrSomething_when_hashFloats(void)
 {
     TEST_HASH_EQUAL(float, float, 0.0F, 0);
     TEST_HASH_NOT_EQUAL(float, float, 3.14159265f, 0);
@@ -81,7 +81,7 @@ _should_returnZeroOrSomething_when_hashFloats(void)
 }
 
 static void
-_should_combineHashesCorrectly_when_varyInput(void)
+test_should_combineHashesCorrectly_when_varyInput(void)
 {
     /* Arrange */
     const cutil_hash_t seed = 12345;
@@ -104,7 +104,7 @@ _should_combineHashesCorrectly_when_varyInput(void)
 }
 
 static void
-_should_hashBytesCorrectly_when_provideString(void)
+test_should_hashBytesCorrectly_when_provideString(void)
 {
     /* Arrange */
     const char data1[] = "test data";
@@ -127,7 +127,7 @@ _should_hashBytesCorrectly_when_provideString(void)
 }
 
 static void
-_should_hashStringCorrectly_when_provideEmptyAndNonEmpty(void)
+test_should_hashStringCorrectly_when_provideEmptyAndNonEmpty(void)
 {
     /* Arrange */
     const char *const str = "hello world";
@@ -158,11 +158,11 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnValue_when_hashIntegers);
-    RUN_TEST(_should_returnZeroOrSomething_when_hashFloats);
-    RUN_TEST(_should_combineHashesCorrectly_when_varyInput);
-    RUN_TEST(_should_hashBytesCorrectly_when_provideString);
-    RUN_TEST(_should_hashStringCorrectly_when_provideEmptyAndNonEmpty);
+    RUN_TEST(test_should_returnValue_when_hashIntegers);
+    RUN_TEST(test_should_returnZeroOrSomething_when_hashFloats);
+    RUN_TEST(test_should_combineHashesCorrectly_when_varyInput);
+    RUN_TEST(test_should_hashBytesCorrectly_when_provideString);
+    RUN_TEST(test_should_hashStringCorrectly_when_provideEmptyAndNonEmpty);
 
     return UNITY_END();
 }

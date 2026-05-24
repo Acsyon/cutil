@@ -17,7 +17,7 @@
         break
 
 static void
-_should_setShortoptsCorrectly_when_haveNoArgument(void)
+test_should_setShortoptsCorrectly_when_haveNoArgument(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "-a", "-b", "-c", NULL};
@@ -55,7 +55,7 @@ _should_setShortoptsCorrectly_when_haveNoArgument(void)
 }
 
 static void
-_should_setShortoptsCorrectly_when_haveArguments(void)
+test_should_setShortoptsCorrectly_when_haveArguments(void)
 {
     /* Arrange */
     char *const a_arg = "value";
@@ -102,7 +102,7 @@ _should_setShortoptsCorrectly_when_haveArguments(void)
 }
 
 static void
-_should_ignoreShortopts_when_haveDoubleDash(void)
+test_should_ignoreShortopts_when_haveDoubleDash(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--", "-a", "-b", "-c", NULL};
@@ -140,7 +140,7 @@ _should_ignoreShortopts_when_haveDoubleDash(void)
 }
 
 static void
-_should_detectInvalidShortopts_when_present(void)
+test_should_detectInvalidShortopts_when_present(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "-x", "-y", "-z", NULL};
@@ -182,7 +182,7 @@ _should_detectInvalidShortopts_when_present(void)
 }
 
 static void
-_should_setLongoptsCorrectly_when_haveNoArgument(void)
+test_should_setLongoptsCorrectly_when_haveNoArgument(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--alpha", "--beta", "--gamma", NULL};
@@ -229,7 +229,7 @@ _should_setLongoptsCorrectly_when_haveNoArgument(void)
 }
 
 static void
-_should_setLongoptsCorrectly_when_haveArguments(void)
+test_should_setLongoptsCorrectly_when_haveArguments(void)
 {
     /* Arrange */
     char *const a_arg = "value";
@@ -284,7 +284,7 @@ _should_setLongoptsCorrectly_when_haveArguments(void)
 }
 
 static void
-_should_ignoreLongopts_when_haveDoubleDash(void)
+test_should_ignoreLongopts_when_haveDoubleDash(void)
 {
     /* Arrange */
     char *const argv[] = {"program", "--", "-a", "-b", "-c", NULL};
@@ -331,7 +331,7 @@ _should_ignoreLongopts_when_haveDoubleDash(void)
 }
 
 static void
-_should_detectInvalidLongopts_when_present(void)
+test_should_detectInvalidLongopts_when_present(void)
 {
     /* Arrange */
 
@@ -405,14 +405,14 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_setShortoptsCorrectly_when_haveNoArgument);
-    RUN_TEST(_should_setShortoptsCorrectly_when_haveArguments);
-    RUN_TEST(_should_ignoreShortopts_when_haveDoubleDash);
-    RUN_TEST(_should_detectInvalidShortopts_when_present);
-    RUN_TEST(_should_setLongoptsCorrectly_when_haveNoArgument);
-    RUN_TEST(_should_setLongoptsCorrectly_when_haveArguments);
-    RUN_TEST(_should_ignoreLongopts_when_haveDoubleDash);
-    RUN_TEST(_should_detectInvalidLongopts_when_present);
+    RUN_TEST(test_should_setShortoptsCorrectly_when_haveNoArgument);
+    RUN_TEST(test_should_setShortoptsCorrectly_when_haveArguments);
+    RUN_TEST(test_should_ignoreShortopts_when_haveDoubleDash);
+    RUN_TEST(test_should_detectInvalidShortopts_when_present);
+    RUN_TEST(test_should_setLongoptsCorrectly_when_haveNoArgument);
+    RUN_TEST(test_should_setLongoptsCorrectly_when_haveArguments);
+    RUN_TEST(test_should_ignoreLongopts_when_haveDoubleDash);
+    RUN_TEST(test_should_detectInvalidLongopts_when_present);
 
     return UNITY_END();
 }

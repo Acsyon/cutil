@@ -4,7 +4,7 @@
 #include <cutil/core/string/builder.h>
 
 static void
-_should_beValid_when_descriptorIsChecked(void)
+test_should_beValid_when_descriptorIsChecked(void)
 {
     /* Act */
     const cutil_GenericType *const type = CUTIL_GENERIC_TYPE_STRING_BUILDER;
@@ -39,7 +39,7 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_beValid_when_descriptorIsChecked);
+    RUN_TEST(test_should_beValid_when_descriptorIsChecked);
 
     return UNITY_END();
 }

@@ -133,7 +133,7 @@ _int_prefixed_to_string_cb(
  * ---------------------------------------------------------------------- */
 
 static void
-_should_appendNothing_when_iteratorIsEmpty(void)
+test_should_appendNothing_when_iteratorIsEmpty(void)
 {
     /* Arrange */
     cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
@@ -158,7 +158,7 @@ _should_appendNothing_when_iteratorIsEmpty(void)
 }
 
 static void
-_should_appendSingleElement_when_iteratorHasOneElement(void)
+test_should_appendSingleElement_when_iteratorHasOneElement(void)
 {
     /* Arrange */
     const int vals[] = {42};
@@ -183,7 +183,7 @@ _should_appendSingleElement_when_iteratorHasOneElement(void)
 }
 
 static void
-_should_separateElementsWithDelimiter_when_iteratorHasMultipleElements(void)
+test_should_separateElementsWithDelimiter_when_iteratorHasMultipleElements(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
@@ -208,7 +208,7 @@ _should_separateElementsWithDelimiter_when_iteratorHasMultipleElements(void)
 }
 
 static void
-_should_useNullCtx_when_callbackIgnoresCtx(void)
+test_should_useNullCtx_when_callbackIgnoresCtx(void)
 {
     /* Arrange */
     const int vals[] = {7, 8};
@@ -233,7 +233,7 @@ _should_useNullCtx_when_callbackIgnoresCtx(void)
 }
 
 static void
-_should_useNonNullCtx_when_callbackUsesCtx(void)
+test_should_useNonNullCtx_when_callbackUsesCtx(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
@@ -265,7 +265,7 @@ _should_useNonNullCtx_when_callbackUsesCtx(void)
  * ---------------------------------------------------------------------- */
 
 static void
-_should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements(void)
+test_should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements(void)
 {
     /* Arrange */
     const int vals[] = {1, 22, 333};
@@ -285,7 +285,7 @@ _should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements(void)
 }
 
 static void
-_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator(void)
+test_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator(void)
 {
     /* Arrange */
     cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
@@ -308,7 +308,7 @@ _should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator(void)
  * ---------------------------------------------------------------------- */
 
 static void
-_should_returnNullString_when_toStringCalledWithNullIterator(void)
+test_should_returnNullString_when_toStringCalledWithNullIterator(void)
 {
     /* Arrange */
     char buf[8];
@@ -324,7 +324,7 @@ _should_returnNullString_when_toStringCalledWithNullIterator(void)
 }
 
 static void
-_should_renderWithBrackets_when_toStringCalledOnEmptyCollection(void)
+test_should_renderWithBrackets_when_toStringCalledOnEmptyCollection(void)
 {
     /* Arrange */
     cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
@@ -344,7 +344,7 @@ _should_renderWithBrackets_when_toStringCalledOnEmptyCollection(void)
 }
 
 static void
-_should_renderAllElements_when_toStringCalledOnNonEmptyCollection(void)
+test_should_renderAllElements_when_toStringCalledOnNonEmptyCollection(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
@@ -364,7 +364,7 @@ _should_renderAllElements_when_toStringCalledOnNonEmptyCollection(void)
 }
 
 static void
-_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
+test_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 {
     /* Arrange */
     const int vals[] = {42};
@@ -383,7 +383,7 @@ _should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 }
 
 static void
-_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     const int vals[] = {42};
@@ -419,22 +419,22 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_appendNothing_when_iteratorIsEmpty);
-    RUN_TEST(_should_appendSingleElement_when_iteratorHasOneElement);
+    RUN_TEST(test_should_appendNothing_when_iteratorIsEmpty);
+    RUN_TEST(test_should_appendSingleElement_when_iteratorHasOneElement);
     RUN_TEST(
-      _should_separateElementsWithDelimiter_when_iteratorHasMultipleElements
+      test_should_separateElementsWithDelimiter_when_iteratorHasMultipleElements
     );
-    RUN_TEST(_should_useNullCtx_when_callbackIgnoresCtx);
-    RUN_TEST(_should_useNonNullCtx_when_callbackUsesCtx);
+    RUN_TEST(test_should_useNullCtx_when_callbackIgnoresCtx);
+    RUN_TEST(test_should_useNonNullCtx_when_callbackUsesCtx);
     RUN_TEST(
-      _should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements
+      test_should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements
     );
-    RUN_TEST(_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator);
-    RUN_TEST(_should_returnNullString_when_toStringCalledWithNullIterator);
-    RUN_TEST(_should_renderWithBrackets_when_toStringCalledOnEmptyCollection);
-    RUN_TEST(_should_renderAllElements_when_toStringCalledOnNonEmptyCollection);
-    RUN_TEST(_should_returnRequiredLength_when_toStringCalledWithNullBuf);
-    RUN_TEST(_should_returnZero_when_toStringCalledWithTooSmallBuffer);
+    RUN_TEST(test_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator);
+    RUN_TEST(test_should_returnNullString_when_toStringCalledWithNullIterator);
+    RUN_TEST(test_should_renderWithBrackets_when_toStringCalledOnEmptyCollection);
+    RUN_TEST(test_should_renderAllElements_when_toStringCalledOnNonEmptyCollection);
+    RUN_TEST(test_should_returnRequiredLength_when_toStringCalledWithNullBuf);
+    RUN_TEST(test_should_returnZero_when_toStringCalledWithTooSmallBuffer);
 
     return UNITY_END();
 }

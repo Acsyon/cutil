@@ -4,7 +4,7 @@
 #include <cutil/core/util/macro.h>
 
 static void
-_should_returnNull_when_allocZeroBytes(void)
+test_should_returnNull_when_allocZeroBytes(void)
 {
     /* Arrange */
     const size_t SIZES[] = {1, 2, 4, 8, 16, 32};
@@ -23,7 +23,7 @@ _should_returnNull_when_allocZeroBytes(void)
 }
 
 static void
-_should_returnValidPtr_when_allocNonzeroBytes(void)
+test_should_returnValidPtr_when_allocNonzeroBytes(void)
 {
     /* Arrange */
     const size_t SIZES[] = {1, 2, 4, 8, 16, 32};
@@ -64,8 +64,8 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnNull_when_allocZeroBytes);
-    RUN_TEST(_should_returnValidPtr_when_allocNonzeroBytes);
+    RUN_TEST(test_should_returnNull_when_allocZeroBytes);
+    RUN_TEST(test_should_returnValidPtr_when_allocNonzeroBytes);
 
     return UNITY_END();
 }

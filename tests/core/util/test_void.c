@@ -4,7 +4,7 @@
 #include <cutil/core/util/macro.h>
 
 static void
-_should_returnCorrectElement_when_useVoidGetter(void)
+test_should_returnCorrectElement_when_useVoidGetter(void)
 {
     /* Arrange */
     size_t ELEMS[] = {1, 2, 4, 8, 16, 32, 64, 128};
@@ -23,7 +23,7 @@ _should_returnCorrectElement_when_useVoidGetter(void)
 }
 
 static void
-_should_swapContents_when_twoIntBuffersSwapped(void)
+test_should_swapContents_when_twoIntBuffersSwapped(void)
 {
     /* Arrange */
     int a = 42, b = 99;
@@ -38,7 +38,7 @@ _should_swapContents_when_twoIntBuffersSwapped(void)
 }
 
 static void
-_should_returnToOriginal_when_swappedTwice(void)
+test_should_returnToOriginal_when_swappedTwice(void)
 {
     /* Arrange */
     int a = 123, b = 456;
@@ -66,9 +66,9 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnCorrectElement_when_useVoidGetter);
-    RUN_TEST(_should_swapContents_when_twoIntBuffersSwapped);
-    RUN_TEST(_should_returnToOriginal_when_swappedTwice);
+    RUN_TEST(test_should_returnCorrectElement_when_useVoidGetter);
+    RUN_TEST(test_should_swapContents_when_twoIntBuffersSwapped);
+    RUN_TEST(test_should_returnToOriginal_when_swappedTwice);
 
     return UNITY_END();
 }

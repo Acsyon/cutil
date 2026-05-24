@@ -139,7 +139,7 @@ _make_iter(MockIterState *state, const cutil_IteratorType *type)
 /* --- ConstIterator dispatch shim tests ------------------------------------ */
 
 static void
-_should_callNext_when_nextCalledOnConstIter(void)
+test_should_callNext_when_nextCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -159,7 +159,7 @@ _should_callNext_when_nextCalledOnConstIter(void)
 }
 
 static void
-_should_returnFalse_when_nextReturnsItExhausted(void)
+test_should_returnFalse_when_nextReturnsItExhausted(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -178,7 +178,7 @@ _should_returnFalse_when_nextReturnsItExhausted(void)
 }
 
 static void
-_should_callGet_when_getCalledOnConstIter(void)
+test_should_callGet_when_getCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -199,7 +199,7 @@ _should_callGet_when_getCalledOnConstIter(void)
 }
 
 static void
-_should_callGetPtr_when_getPtrCalledOnConstIter(void)
+test_should_callGetPtr_when_getPtrCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -220,7 +220,7 @@ _should_callGetPtr_when_getPtrCalledOnConstIter(void)
 }
 
 static void
-_should_callFree_when_freeCalledOnConstIter(void)
+test_should_callFree_when_freeCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -237,7 +237,7 @@ _should_callFree_when_freeCalledOnConstIter(void)
 /* --- Iterator dispatch shim tests ----------------------------------------- */
 
 static void
-_should_callSet_when_setCalledOnIter(void)
+test_should_callSet_when_setCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -257,7 +257,7 @@ _should_callSet_when_setCalledOnIter(void)
 }
 
 static void
-_should_callRemove_when_removeCalledOnIter(void)
+test_should_callRemove_when_removeCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -276,7 +276,7 @@ _should_callRemove_when_removeCalledOnIter(void)
 }
 
 static void
-_should_returnFailure_when_setIsNull(void)
+test_should_returnFailure_when_setIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -296,7 +296,7 @@ _should_returnFailure_when_setIsNull(void)
 }
 
 static void
-_should_returnFailure_when_removeIsNull(void)
+test_should_returnFailure_when_removeIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -316,13 +316,13 @@ _should_returnFailure_when_removeIsNull(void)
 /* --- Null-pointer guard tests --------------------------------------------- */
 
 static void
-_should_returnFalse_when_iterIsNull(void)
+test_should_returnFalse_when_iterIsNull(void)
 {
     TEST_ASSERT_FALSE(cutil_ConstIterator_next(NULL));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_get(void)
+test_should_returnFailure_when_iterIsNull_get(void)
 {
     int buf = 0;
     TEST_ASSERT_EQUAL_INT(
@@ -331,20 +331,20 @@ _should_returnFailure_when_iterIsNull_get(void)
 }
 
 static void
-_should_returnNull_when_iterIsNull(void)
+test_should_returnNull_when_iterIsNull(void)
 {
     TEST_ASSERT_NULL(cutil_ConstIterator_get_ptr(NULL));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_set(void)
+test_should_returnFailure_when_iterIsNull_set(void)
 {
     int val = 0;
     TEST_ASSERT_EQUAL_INT(CUTIL_STATUS_FAILURE, cutil_Iterator_set(NULL, &val));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_remove(void)
+test_should_returnFailure_when_iterIsNull_remove(void)
 {
     TEST_ASSERT_EQUAL_INT(CUTIL_STATUS_FAILURE, cutil_Iterator_remove(NULL));
 }
@@ -352,7 +352,7 @@ _should_returnFailure_when_iterIsNull_remove(void)
 /* --- Rewind dispatch shim tests ------------------------------------------- */
 
 static void
-_should_callRewind_when_rewindCalledOnConstIter(void)
+test_should_callRewind_when_rewindCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -370,7 +370,7 @@ _should_callRewind_when_rewindCalledOnConstIter(void)
 }
 
 static void
-_should_callRewind_when_rewindCalledOnIter(void)
+test_should_callRewind_when_rewindCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -387,7 +387,7 @@ _should_callRewind_when_rewindCalledOnIter(void)
 }
 
 static void
-_should_doNothing_when_constIterRewindSlotIsNull(void)
+test_should_doNothing_when_constIterRewindSlotIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
@@ -418,27 +418,27 @@ main(void)
     UNITY_BEGIN();
 
     /* ConstIterator dispatch shim tests */
-    RUN_TEST(_should_callNext_when_nextCalledOnConstIter);
-    RUN_TEST(_should_returnFalse_when_nextReturnsItExhausted);
-    RUN_TEST(_should_callGet_when_getCalledOnConstIter);
-    RUN_TEST(_should_callGetPtr_when_getPtrCalledOnConstIter);
-    RUN_TEST(_should_callFree_when_freeCalledOnConstIter);
-    RUN_TEST(_should_callRewind_when_rewindCalledOnConstIter);
+    RUN_TEST(test_should_callNext_when_nextCalledOnConstIter);
+    RUN_TEST(test_should_returnFalse_when_nextReturnsItExhausted);
+    RUN_TEST(test_should_callGet_when_getCalledOnConstIter);
+    RUN_TEST(test_should_callGetPtr_when_getPtrCalledOnConstIter);
+    RUN_TEST(test_should_callFree_when_freeCalledOnConstIter);
+    RUN_TEST(test_should_callRewind_when_rewindCalledOnConstIter);
 
     /* Iterator dispatch shim tests */
-    RUN_TEST(_should_callSet_when_setCalledOnIter);
-    RUN_TEST(_should_callRemove_when_removeCalledOnIter);
-    RUN_TEST(_should_returnFailure_when_setIsNull);
-    RUN_TEST(_should_returnFailure_when_removeIsNull);
-    RUN_TEST(_should_callRewind_when_rewindCalledOnIter);
+    RUN_TEST(test_should_callSet_when_setCalledOnIter);
+    RUN_TEST(test_should_callRemove_when_removeCalledOnIter);
+    RUN_TEST(test_should_returnFailure_when_setIsNull);
+    RUN_TEST(test_should_returnFailure_when_removeIsNull);
+    RUN_TEST(test_should_callRewind_when_rewindCalledOnIter);
 
     /* Null-pointer guard tests */
-    RUN_TEST(_should_returnFalse_when_iterIsNull);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_get);
-    RUN_TEST(_should_returnNull_when_iterIsNull);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_set);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_remove);
-    RUN_TEST(_should_doNothing_when_constIterRewindSlotIsNull);
+    RUN_TEST(test_should_returnFalse_when_iterIsNull);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_get);
+    RUN_TEST(test_should_returnNull_when_iterIsNull);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_set);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_remove);
+    RUN_TEST(test_should_doNothing_when_constIterRewindSlotIsNull);
 
     return UNITY_END();
 }

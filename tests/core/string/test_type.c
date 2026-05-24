@@ -6,7 +6,7 @@
 #include <cutil/data/generic/type.h>
 
 static void
-_should_haveNullStr_when_createdFromNullString(void)
+test_should_haveNullStr_when_createdFromNullString(void)
 {
     /* Act */
     cutil_String *const s = cutil_String_from_string(NULL);
@@ -20,7 +20,7 @@ _should_haveNullStr_when_createdFromNullString(void)
 }
 
 static void
-_should_duplicateString_when_createdFromNonNullString(void)
+test_should_duplicateString_when_createdFromNonNullString(void)
 {
     /* Arrange */
     const char input[] = "hello";
@@ -39,7 +39,7 @@ _should_duplicateString_when_createdFromNonNullString(void)
 }
 
 static void
-_should_respectMaxlen_when_createdFromNstring(void)
+test_should_respectMaxlen_when_createdFromNstring(void)
 {
     /* Arrange */
     const size_t maxlen = 3;
@@ -58,7 +58,7 @@ _should_respectMaxlen_when_createdFromNstring(void)
 }
 
 static void
-_should_setNullAndZeroLength_when_cleared(void)
+test_should_setNullAndZeroLength_when_cleared(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string("hello");
@@ -75,7 +75,7 @@ _should_setNullAndZeroLength_when_cleared(void)
 }
 
 static void
-_should_copyString_when_copyCalledOnInitializedDst(void)
+test_should_copyString_when_copyCalledOnInitializedDst(void)
 {
     /* Arrange */
     cutil_String *const src = cutil_String_from_string("hello");
@@ -95,7 +95,7 @@ _should_copyString_when_copyCalledOnInitializedDst(void)
 }
 
 static void
-_should_returnTrue_when_deepEqualsCalledOnEqualStrings(void)
+test_should_returnTrue_when_deepEqualsCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_String *const lhs = cutil_String_from_string("hello");
@@ -113,7 +113,7 @@ _should_returnTrue_when_deepEqualsCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsCalledOnDifferentStrings(void)
+test_should_returnFalse_when_deepEqualsCalledOnDifferentStrings(void)
 {
     /* Arrange */
     cutil_String *const lhs = cutil_String_from_string("hello");
@@ -131,7 +131,7 @@ _should_returnFalse_when_deepEqualsCalledOnDifferentStrings(void)
 }
 
 static void
-_should_returnZero_when_compareCalledOnEqualStrings(void)
+test_should_returnZero_when_compareCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_String *const lhs = cutil_String_from_string("hello");
@@ -149,7 +149,7 @@ _should_returnZero_when_compareCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnNonZeroHash_when_hashCalledOnNonEmpty(void)
+test_should_returnNonZeroHash_when_hashCalledOnNonEmpty(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string("hello");
@@ -165,7 +165,7 @@ _should_returnNonZeroHash_when_hashCalledOnNonEmpty(void)
 }
 
 static void
-_should_returnZeroHash_when_hashCalledOnNullStr(void)
+test_should_returnZeroHash_when_hashCalledOnNullStr(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string(NULL);
@@ -181,7 +181,7 @@ _should_returnZeroHash_when_hashCalledOnNullStr(void)
 }
 
 static void
-_should_writeContent_when_toStringCalledWithAdequateBuffer(void)
+test_should_writeContent_when_toStringCalledWithAdequateBuffer(void)
 {
     /* Arrange */
     const char input[] = "hello";
@@ -200,7 +200,7 @@ _should_writeContent_when_toStringCalledWithAdequateBuffer(void)
 }
 
 static void
-_should_writeNullString_when_toStringCalledOnNullStr(void)
+test_should_writeNullString_when_toStringCalledOnNullStr(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string(NULL);
@@ -218,7 +218,7 @@ _should_writeNullString_when_toStringCalledOnNullStr(void)
 }
 
 static void
-_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string("hello world");
@@ -235,7 +235,7 @@ _should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 }
 
 static void
-_should_clearViaGeneric_when_clearGenericCalled(void)
+test_should_clearViaGeneric_when_clearGenericCalled(void)
 {
     /* Arrange */
     cutil_String *const s = cutil_String_from_string("hello");
@@ -252,7 +252,7 @@ _should_clearViaGeneric_when_clearGenericCalled(void)
 }
 
 static void
-_should_copyViaGeneric_when_copyGenericCalled(void)
+test_should_copyViaGeneric_when_copyGenericCalled(void)
 {
     /* Arrange */
     cutil_String *const src = cutil_String_from_string("hello");
@@ -271,7 +271,7 @@ _should_copyViaGeneric_when_copyGenericCalled(void)
 }
 
 static void
-_should_matchDeepEqualsGeneric_when_calledWithSameArgs(void)
+test_should_matchDeepEqualsGeneric_when_calledWithSameArgs(void)
 {
     /* Arrange */
     cutil_String *const lhs = cutil_String_from_string("hello");
@@ -290,7 +290,7 @@ _should_matchDeepEqualsGeneric_when_calledWithSameArgs(void)
 }
 
 static void
-_should_matchCompareGeneric_when_calledWithSameArgs(void)
+test_should_matchCompareGeneric_when_calledWithSameArgs(void)
 {
     /* Arrange */
     cutil_String *const lhs = cutil_String_from_string("abc");
@@ -313,7 +313,7 @@ _should_matchCompareGeneric_when_calledWithSameArgs(void)
 /* ========================================================================= */
 
 static void
-_should_haveNullStr_when_viewCreatedFromNullString(void)
+test_should_haveNullStr_when_viewCreatedFromNullString(void)
 {
     /* Act */
     cutil_StringView *const sv = cutil_StringView_from_string(NULL);
@@ -327,7 +327,7 @@ _should_haveNullStr_when_viewCreatedFromNullString(void)
 }
 
 static void
-_should_storePointer_when_viewCreatedFromNonNullString(void)
+test_should_storePointer_when_viewCreatedFromNonNullString(void)
 {
     /* Arrange */
     const char input[] = "hello";
@@ -344,7 +344,7 @@ _should_storePointer_when_viewCreatedFromNonNullString(void)
 }
 
 static void
-_should_respectMaxlen_when_viewCreatedFromNstring(void)
+test_should_respectMaxlen_when_viewCreatedFromNstring(void)
 {
     /* Arrange */
     const char *const input = "hello";
@@ -362,7 +362,7 @@ _should_respectMaxlen_when_viewCreatedFromNstring(void)
 }
 
 static void
-_should_setNullAndZeroLength_when_viewCleared(void)
+test_should_setNullAndZeroLength_when_viewCleared(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string("hello");
@@ -379,7 +379,7 @@ _should_setNullAndZeroLength_when_viewCleared(void)
 }
 
 static void
-_should_shallowCopy_when_viewCopyCalled(void)
+test_should_shallowCopy_when_viewCopyCalled(void)
 {
     /* Arrange */
     const char *const input = "hello";
@@ -399,7 +399,7 @@ _should_shallowCopy_when_viewCopyCalled(void)
 }
 
 static void
-_should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings(void)
+test_should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_StringView *const lhs = cutil_StringView_from_string("hello");
@@ -417,7 +417,7 @@ _should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings(void)
+test_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings(void)
 {
     /* Arrange */
     cutil_StringView *const lhs = cutil_StringView_from_string("hello");
@@ -435,7 +435,7 @@ _should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings(void)
 }
 
 static void
-_should_returnZero_when_viewCompareCalledOnEqualStrings(void)
+test_should_returnZero_when_viewCompareCalledOnEqualStrings(void)
 {
     /* Arrange */
     cutil_StringView *const lhs = cutil_StringView_from_string("hello");
@@ -453,7 +453,7 @@ _should_returnZero_when_viewCompareCalledOnEqualStrings(void)
 }
 
 static void
-_should_returnNonZeroHash_when_viewHashCalledOnNonEmpty(void)
+test_should_returnNonZeroHash_when_viewHashCalledOnNonEmpty(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string("hello");
@@ -469,7 +469,7 @@ _should_returnNonZeroHash_when_viewHashCalledOnNonEmpty(void)
 }
 
 static void
-_should_returnZeroHash_when_viewHashCalledOnNullStr(void)
+test_should_returnZeroHash_when_viewHashCalledOnNullStr(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string(NULL);
@@ -485,7 +485,7 @@ _should_returnZeroHash_when_viewHashCalledOnNullStr(void)
 }
 
 static void
-_should_writeContent_when_viewToStringCalledWithAdequateBuffer(void)
+test_should_writeContent_when_viewToStringCalledWithAdequateBuffer(void)
 {
     /* Arrange */
     const char input[] = "hello";
@@ -504,7 +504,7 @@ _should_writeContent_when_viewToStringCalledWithAdequateBuffer(void)
 }
 
 static void
-_should_writeNullString_when_viewToStringCalledOnNullStr(void)
+test_should_writeNullString_when_viewToStringCalledOnNullStr(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string(NULL);
@@ -522,7 +522,7 @@ _should_writeNullString_when_viewToStringCalledOnNullStr(void)
 }
 
 static void
-_should_returnZero_when_viewToStringCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_viewToStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string("hello world");
@@ -539,7 +539,7 @@ _should_returnZero_when_viewToStringCalledWithTooSmallBuffer(void)
 }
 
 static void
-_should_respectViewLength_when_viewToStringCalledAfterNstring(void)
+test_should_respectViewLength_when_viewToStringCalledAfterNstring(void)
 {
     /* Arrange */
     const char *const input = "hello";
@@ -559,7 +559,7 @@ _should_respectViewLength_when_viewToStringCalledAfterNstring(void)
 }
 
 static void
-_should_clearViaGeneric_when_viewClearGenericCalled(void)
+test_should_clearViaGeneric_when_viewClearGenericCalled(void)
 {
     /* Arrange */
     cutil_StringView *const sv = cutil_StringView_from_string("hello");
@@ -576,7 +576,7 @@ _should_clearViaGeneric_when_viewClearGenericCalled(void)
 }
 
 static void
-_should_copyViaGeneric_when_viewCopyGenericCalled(void)
+test_should_copyViaGeneric_when_viewCopyGenericCalled(void)
 {
     /* Arrange */
     const char *const input = "hello";
@@ -596,7 +596,7 @@ _should_copyViaGeneric_when_viewCopyGenericCalled(void)
 }
 
 static void
-_should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs(void)
+test_should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs(void)
 {
     /* Arrange */
     cutil_StringView *const lhs = cutil_StringView_from_string("hello");
@@ -615,7 +615,7 @@ _should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs(void)
 }
 
 static void
-_should_matchCompareGeneric_when_viewCalledWithSameArgs(void)
+test_should_matchCompareGeneric_when_viewCalledWithSameArgs(void)
 {
     /* Arrange */
     cutil_StringView *const lhs = cutil_StringView_from_string("abc");
@@ -647,43 +647,43 @@ main(void)
     UNITY_BEGIN();
 
     /* cutil_String */
-    RUN_TEST(_should_haveNullStr_when_createdFromNullString);
-    RUN_TEST(_should_duplicateString_when_createdFromNonNullString);
-    RUN_TEST(_should_respectMaxlen_when_createdFromNstring);
-    RUN_TEST(_should_setNullAndZeroLength_when_cleared);
-    RUN_TEST(_should_copyString_when_copyCalledOnInitializedDst);
-    RUN_TEST(_should_returnTrue_when_deepEqualsCalledOnEqualStrings);
-    RUN_TEST(_should_returnFalse_when_deepEqualsCalledOnDifferentStrings);
-    RUN_TEST(_should_returnZero_when_compareCalledOnEqualStrings);
-    RUN_TEST(_should_returnNonZeroHash_when_hashCalledOnNonEmpty);
-    RUN_TEST(_should_returnZeroHash_when_hashCalledOnNullStr);
-    RUN_TEST(_should_writeContent_when_toStringCalledWithAdequateBuffer);
-    RUN_TEST(_should_writeNullString_when_toStringCalledOnNullStr);
-    RUN_TEST(_should_returnZero_when_toStringCalledWithTooSmallBuffer);
-    RUN_TEST(_should_clearViaGeneric_when_clearGenericCalled);
-    RUN_TEST(_should_copyViaGeneric_when_copyGenericCalled);
-    RUN_TEST(_should_matchDeepEqualsGeneric_when_calledWithSameArgs);
-    RUN_TEST(_should_matchCompareGeneric_when_calledWithSameArgs);
+    RUN_TEST(test_should_haveNullStr_when_createdFromNullString);
+    RUN_TEST(test_should_duplicateString_when_createdFromNonNullString);
+    RUN_TEST(test_should_respectMaxlen_when_createdFromNstring);
+    RUN_TEST(test_should_setNullAndZeroLength_when_cleared);
+    RUN_TEST(test_should_copyString_when_copyCalledOnInitializedDst);
+    RUN_TEST(test_should_returnTrue_when_deepEqualsCalledOnEqualStrings);
+    RUN_TEST(test_should_returnFalse_when_deepEqualsCalledOnDifferentStrings);
+    RUN_TEST(test_should_returnZero_when_compareCalledOnEqualStrings);
+    RUN_TEST(test_should_returnNonZeroHash_when_hashCalledOnNonEmpty);
+    RUN_TEST(test_should_returnZeroHash_when_hashCalledOnNullStr);
+    RUN_TEST(test_should_writeContent_when_toStringCalledWithAdequateBuffer);
+    RUN_TEST(test_should_writeNullString_when_toStringCalledOnNullStr);
+    RUN_TEST(test_should_returnZero_when_toStringCalledWithTooSmallBuffer);
+    RUN_TEST(test_should_clearViaGeneric_when_clearGenericCalled);
+    RUN_TEST(test_should_copyViaGeneric_when_copyGenericCalled);
+    RUN_TEST(test_should_matchDeepEqualsGeneric_when_calledWithSameArgs);
+    RUN_TEST(test_should_matchCompareGeneric_when_calledWithSameArgs);
 
     /* cutil_StringView */
-    RUN_TEST(_should_haveNullStr_when_viewCreatedFromNullString);
-    RUN_TEST(_should_storePointer_when_viewCreatedFromNonNullString);
-    RUN_TEST(_should_respectMaxlen_when_viewCreatedFromNstring);
-    RUN_TEST(_should_setNullAndZeroLength_when_viewCleared);
-    RUN_TEST(_should_shallowCopy_when_viewCopyCalled);
-    RUN_TEST(_should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings);
-    RUN_TEST(_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings);
-    RUN_TEST(_should_returnZero_when_viewCompareCalledOnEqualStrings);
-    RUN_TEST(_should_returnNonZeroHash_when_viewHashCalledOnNonEmpty);
-    RUN_TEST(_should_returnZeroHash_when_viewHashCalledOnNullStr);
-    RUN_TEST(_should_writeContent_when_viewToStringCalledWithAdequateBuffer);
-    RUN_TEST(_should_writeNullString_when_viewToStringCalledOnNullStr);
-    RUN_TEST(_should_returnZero_when_viewToStringCalledWithTooSmallBuffer);
-    RUN_TEST(_should_respectViewLength_when_viewToStringCalledAfterNstring);
-    RUN_TEST(_should_clearViaGeneric_when_viewClearGenericCalled);
-    RUN_TEST(_should_copyViaGeneric_when_viewCopyGenericCalled);
-    RUN_TEST(_should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs);
-    RUN_TEST(_should_matchCompareGeneric_when_viewCalledWithSameArgs);
+    RUN_TEST(test_should_haveNullStr_when_viewCreatedFromNullString);
+    RUN_TEST(test_should_storePointer_when_viewCreatedFromNonNullString);
+    RUN_TEST(test_should_respectMaxlen_when_viewCreatedFromNstring);
+    RUN_TEST(test_should_setNullAndZeroLength_when_viewCleared);
+    RUN_TEST(test_should_shallowCopy_when_viewCopyCalled);
+    RUN_TEST(test_should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings);
+    RUN_TEST(test_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings);
+    RUN_TEST(test_should_returnZero_when_viewCompareCalledOnEqualStrings);
+    RUN_TEST(test_should_returnNonZeroHash_when_viewHashCalledOnNonEmpty);
+    RUN_TEST(test_should_returnZeroHash_when_viewHashCalledOnNullStr);
+    RUN_TEST(test_should_writeContent_when_viewToStringCalledWithAdequateBuffer);
+    RUN_TEST(test_should_writeNullString_when_viewToStringCalledOnNullStr);
+    RUN_TEST(test_should_returnZero_when_viewToStringCalledWithTooSmallBuffer);
+    RUN_TEST(test_should_respectViewLength_when_viewToStringCalledAfterNstring);
+    RUN_TEST(test_should_clearViaGeneric_when_viewClearGenericCalled);
+    RUN_TEST(test_should_copyViaGeneric_when_viewCopyGenericCalled);
+    RUN_TEST(test_should_matchDeepEqualsGeneric_when_viewCalledWithSameArgs);
+    RUN_TEST(test_should_matchCompareGeneric_when_viewCalledWithSameArgs);
 
     return UNITY_END();
 }

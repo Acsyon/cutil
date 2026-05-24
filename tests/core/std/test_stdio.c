@@ -5,7 +5,7 @@
 #include <cutil/core/util/macro.h>
 
 static void
-_should_notClose_when_haveNullOrStdStreams(void)
+test_should_notClose_when_haveNullOrStdStreams(void)
 {
     /* Arrange */
     FILE *const INS[] = {NULL, stdin, stdout, stderr};
@@ -23,7 +23,7 @@ _should_notClose_when_haveNullOrStdStreams(void)
 }
 
 static void
-_should_close_when_haveTmpfile(void)
+test_should_close_when_haveTmpfile(void)
 {
     /* Arrange */
     FILE *const in = tmpfile();
@@ -36,7 +36,7 @@ _should_close_when_haveTmpfile(void)
 }
 
 static void
-_should_returnCorrectSize_when_haveTmpfile(void)
+test_should_returnCorrectSize_when_haveTmpfile(void)
 {
     /* Arrange */
     char str[64] = {0};
@@ -74,9 +74,9 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_notClose_when_haveNullOrStdStreams);
-    RUN_TEST(_should_close_when_haveTmpfile);
-    RUN_TEST(_should_returnCorrectSize_when_haveTmpfile);
+    RUN_TEST(test_should_notClose_when_haveNullOrStdStreams);
+    RUN_TEST(test_should_close_when_haveTmpfile);
+    RUN_TEST(test_should_returnCorrectSize_when_haveTmpfile);
 
     return UNITY_END();
 }

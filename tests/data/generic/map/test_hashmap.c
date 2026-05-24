@@ -8,7 +8,7 @@
 
 /* Tests for cutil_HashMap_alloc */
 static void
-_should_allocateHashMap_when_createdWithValidKeyType(void)
+test_should_allocateHashMap_when_createdWithValidKeyType(void)
 {
     /* Arrange */
     const cutil_GenericType *const key_type = CUTIL_GENERIC_TYPE_INT;
@@ -28,7 +28,7 @@ _should_allocateHashMap_when_createdWithValidKeyType(void)
 }
 
 static void
-_should_allocateHashMap_when_createdWithValidValueType(void)
+test_should_allocateHashMap_when_createdWithValidValueType(void)
 {
     /* Arrange */
     const cutil_GenericType *const key_type = CUTIL_GENERIC_TYPE_U32;
@@ -47,7 +47,7 @@ _should_allocateHashMap_when_createdWithValidValueType(void)
 }
 
 static void
-_should_allocateHashMap_withVariousKeyTypes(void)
+test_should_allocateHashMap_withVariousKeyTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const key_types[] = {
@@ -73,7 +73,7 @@ _should_allocateHashMap_withVariousKeyTypes(void)
 }
 
 static void
-_should_allocateHashMap_withVariousValueTypes(void)
+test_should_allocateHashMap_withVariousValueTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const val_types[] = {
@@ -100,7 +100,7 @@ _should_allocateHashMap_withVariousValueTypes(void)
 
 /* Tests for cutil_Map_get_key_type */
 static void
-_should_returnKeyType_when_queried(void)
+test_should_returnKeyType_when_queried(void)
 {
     /* Arrange */
     const cutil_GenericType *const expected_key_type = CUTIL_GENERIC_TYPE_INT;
@@ -126,7 +126,7 @@ _should_returnKeyType_when_queried(void)
 }
 
 static void
-_should_returnKeyType_forVariousTypes(void)
+test_should_returnKeyType_forVariousTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const key_types[] = {
@@ -158,7 +158,7 @@ _should_returnKeyType_forVariousTypes(void)
 
 /* Tests for cutil_Map_get_val_type */
 static void
-_should_returnValueType_when_queried(void)
+test_should_returnValueType_when_queried(void)
 {
     /* Arrange */
     const cutil_GenericType *const key_type = CUTIL_GENERIC_TYPE_INT;
@@ -185,7 +185,7 @@ _should_returnValueType_when_queried(void)
 }
 
 static void
-_should_returnValueType_forVariousTypes(void)
+test_should_returnValueType_forVariousTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const val_types[] = {
@@ -217,7 +217,7 @@ _should_returnValueType_forVariousTypes(void)
 
 /* Tests for HashMap with different key and value type combinations */
 static void
-_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs(void)
+test_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs(void)
 {
     /* Arrange */
     const struct {
@@ -260,7 +260,7 @@ _should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs(void)
 /* Tests for HashMap iterator */
 
 static void
-_should_returnNonNull_when_getConstIteratorCalledOnHashMap(void)
+test_should_returnNonNull_when_getConstIteratorCalledOnHashMap(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -278,7 +278,7 @@ _should_returnNonNull_when_getConstIteratorCalledOnHashMap(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalledOnHashMap(void)
+test_should_returnNonNull_when_getIteratorCalledOnHashMap(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -296,7 +296,7 @@ _should_returnNonNull_when_getIteratorCalledOnHashMap(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledOnEmptyHashMapIterator(void)
+test_should_returnFalse_when_nextCalledOnEmptyHashMapIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -313,7 +313,7 @@ _should_returnFalse_when_nextCalledOnEmptyHashMapIterator(void)
 }
 
 static void
-_should_traverseAllKeys_when_iteratingHashMap(void)
+test_should_traverseAllKeys_when_iteratingHashMap(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -354,7 +354,7 @@ _should_traverseAllKeys_when_iteratingHashMap(void)
 }
 
 static void
-_should_copyKeyIntoBuffer_when_getCalledOnHashMapIterator(void)
+test_should_copyKeyIntoBuffer_when_getCalledOnHashMapIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -381,7 +381,7 @@ _should_copyKeyIntoBuffer_when_getCalledOnHashMapIterator(void)
 }
 
 static void
-_should_removeCurrentKey_when_removeCalledOnHashMapIterator(void)
+test_should_removeCurrentKey_when_removeCalledOnHashMapIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -417,7 +417,7 @@ _should_removeCurrentKey_when_removeCalledOnHashMapIterator(void)
 }
 
 static void
-_should_returnFailure_when_setCalledOnHashMapIterator(void)
+test_should_returnFailure_when_setCalledOnHashMapIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -443,7 +443,7 @@ _should_returnFailure_when_setCalledOnHashMapIterator(void)
 }
 
 static void
-_should_traverseAllKeys_when_constIteratorRewound(void)
+test_should_traverseAllKeys_when_constIteratorRewound(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -502,7 +502,7 @@ _should_traverseAllKeys_when_constIteratorRewound(void)
 }
 
 static void
-_should_traverseAllKeys_when_iteratorRewound(void)
+test_should_traverseAllKeys_when_iteratorRewound(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -561,7 +561,7 @@ _should_traverseAllKeys_when_iteratorRewound(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -589,7 +589,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
 {
     /* Arrange */
     cutil_Map *const map
@@ -629,28 +629,28 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_allocateHashMap_when_createdWithValidKeyType);
-    RUN_TEST(_should_allocateHashMap_when_createdWithValidValueType);
-    RUN_TEST(_should_allocateHashMap_withVariousKeyTypes);
-    RUN_TEST(_should_allocateHashMap_withVariousValueTypes);
-    RUN_TEST(_should_returnKeyType_when_queried);
-    RUN_TEST(_should_returnKeyType_forVariousTypes);
-    RUN_TEST(_should_returnValueType_when_queried);
-    RUN_TEST(_should_returnValueType_forVariousTypes);
-    RUN_TEST(_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs);
+    RUN_TEST(test_should_allocateHashMap_when_createdWithValidKeyType);
+    RUN_TEST(test_should_allocateHashMap_when_createdWithValidValueType);
+    RUN_TEST(test_should_allocateHashMap_withVariousKeyTypes);
+    RUN_TEST(test_should_allocateHashMap_withVariousValueTypes);
+    RUN_TEST(test_should_returnKeyType_when_queried);
+    RUN_TEST(test_should_returnKeyType_forVariousTypes);
+    RUN_TEST(test_should_returnValueType_when_queried);
+    RUN_TEST(test_should_returnValueType_forVariousTypes);
+    RUN_TEST(test_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs);
 
     /* Iterator tests */
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalledOnHashMap);
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalledOnHashMap);
-    RUN_TEST(_should_returnFalse_when_nextCalledOnEmptyHashMapIterator);
-    RUN_TEST(_should_traverseAllKeys_when_iteratingHashMap);
-    RUN_TEST(_should_copyKeyIntoBuffer_when_getCalledOnHashMapIterator);
-    RUN_TEST(_should_removeCurrentKey_when_removeCalledOnHashMapIterator);
-    RUN_TEST(_should_returnFailure_when_setCalledOnHashMapIterator);
-    RUN_TEST(_should_traverseAllKeys_when_constIteratorRewound);
-    RUN_TEST(_should_traverseAllKeys_when_iteratorRewound);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalledOnHashMap);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalledOnHashMap);
+    RUN_TEST(test_should_returnFalse_when_nextCalledOnEmptyHashMapIterator);
+    RUN_TEST(test_should_traverseAllKeys_when_iteratingHashMap);
+    RUN_TEST(test_should_copyKeyIntoBuffer_when_getCalledOnHashMapIterator);
+    RUN_TEST(test_should_removeCurrentKey_when_removeCalledOnHashMapIterator);
+    RUN_TEST(test_should_returnFailure_when_setCalledOnHashMapIterator);
+    RUN_TEST(test_should_traverseAllKeys_when_constIteratorRewound);
+    RUN_TEST(test_should_traverseAllKeys_when_iteratorRewound);
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     return UNITY_END();
 }

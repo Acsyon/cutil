@@ -243,7 +243,7 @@ _create_mock_map(void)
 
 /* Tests for cutil_MapType_equals */
 static void
-_should_returnTrue_when_mapTypesAreIdentical(void)
+test_should_returnTrue_when_mapTypesAreIdentical(void)
 {
     /* Arrange */
     const cutil_MapType type1 = {
@@ -265,7 +265,7 @@ _should_returnTrue_when_mapTypesAreIdentical(void)
 }
 
 static void
-_should_returnFalse_when_mapTypesAreDifferent(void)
+test_should_returnFalse_when_mapTypesAreDifferent(void)
 {
     /* Arrange */
     const cutil_MapType type1 = {.name = "Type1"};
@@ -280,7 +280,7 @@ _should_returnFalse_when_mapTypesAreDifferent(void)
 
 /* Tests for cutil_Map_free */
 static void
-_should_callFreeFunction_when_mapIsFreed(void)
+test_should_callFreeFunction_when_mapIsFreed(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -295,7 +295,7 @@ _should_callFreeFunction_when_mapIsFreed(void)
 }
 
 static void
-_should_doNothing_when_mapIsNull(void)
+test_should_doNothing_when_mapIsNull(void)
 {
     /* Act & Assert */
     cutil_Map_free(NULL);
@@ -304,7 +304,7 @@ _should_doNothing_when_mapIsNull(void)
 
 /* Tests for cutil_Map_reset */
 static void
-_should_callClearFunction_when_mapIsCleared(void)
+test_should_callClearFunction_when_mapIsCleared(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -323,7 +323,7 @@ _should_callClearFunction_when_mapIsCleared(void)
 
 /* Tests for cutil_Map_copy */
 static void
-_should_callCopyFunction_when_mapIsCopied(void)
+test_should_callCopyFunction_when_mapIsCopied(void)
 {
     /* Arrange */
     cutil_Map *const dst_map = _create_mock_map();
@@ -343,7 +343,7 @@ _should_callCopyFunction_when_mapIsCopied(void)
 }
 
 static void
-_should_notCopy_when_mapTypesIncompatible(void)
+test_should_notCopy_when_mapTypesIncompatible(void)
 {
     /* Arrange */
     cutil_MapType type1 = {.name = "Type1", .copy = &_mock_copy};
@@ -369,7 +369,7 @@ _should_notCopy_when_mapTypesIncompatible(void)
 
 /* Tests for cutil_Map_duplicate */
 static void
-_should_returnDuplicateMap_when_mapIsDuplicated(void)
+test_should_returnDuplicateMap_when_mapIsDuplicated(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -395,7 +395,7 @@ _should_returnDuplicateMap_when_mapIsDuplicated(void)
 
 /* Tests for cutil_Map_get_count */
 static void
-_should_returnCount_when_mapCountIsRequested(void)
+test_should_returnCount_when_mapCountIsRequested(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -413,7 +413,7 @@ _should_returnCount_when_mapCountIsRequested(void)
 }
 
 static void
-_should_returnZero_when_mapIsEmpty(void)
+test_should_returnZero_when_mapIsEmpty(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -432,7 +432,7 @@ _should_returnZero_when_mapIsEmpty(void)
 
 /* Tests for cutil_Map_remove */
 static void
-_should_callRemoveFunction_when_keyIsRemoved(void)
+test_should_callRemoveFunction_when_keyIsRemoved(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -453,7 +453,7 @@ _should_callRemoveFunction_when_keyIsRemoved(void)
 
 /* Tests for cutil_Map_contains */
 static void
-_should_returnTrue_when_mapContainsKey(void)
+test_should_returnTrue_when_mapContainsKey(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -471,7 +471,7 @@ _should_returnTrue_when_mapContainsKey(void)
 
 /* Tests for cutil_Map_get */
 static void
-_should_callGetFunction_when_valueIsRetrieved(void)
+test_should_callGetFunction_when_valueIsRetrieved(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -493,7 +493,7 @@ _should_callGetFunction_when_valueIsRetrieved(void)
 
 /* Tests for cutil_Map_get_ptr */
 static void
-_should_returnPointer_when_keyIsFound(void)
+test_should_returnPointer_when_keyIsFound(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -512,7 +512,7 @@ _should_returnPointer_when_keyIsFound(void)
 
 /* Tests for cutil_Map_set */
 static void
-_should_callSetFunction_when_keyValuePairIsInserted(void)
+test_should_callSetFunction_when_keyValuePairIsInserted(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -534,7 +534,7 @@ _should_callSetFunction_when_keyValuePairIsInserted(void)
 
 /* Tests for cutil_Map_get_vtable */
 static void
-_should_returnVtable_when_vtableIsRequested(void)
+test_should_returnVtable_when_vtableIsRequested(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -551,7 +551,7 @@ _should_returnVtable_when_vtableIsRequested(void)
 }
 
 static void
-_should_returnNull_when_vtableMapIsNull(void)
+test_should_returnNull_when_vtableMapIsNull(void)
 {
     /* Act & Assert */
     TEST_ASSERT_NULL(cutil_Map_get_vtable(NULL));
@@ -559,7 +559,7 @@ _should_returnNull_when_vtableMapIsNull(void)
 
 /* Tests for cutil_Map_get_key_type */
 static void
-_should_callGetKeyTypeFunction_when_keyTypeIsQueried(void)
+test_should_callGetKeyTypeFunction_when_keyTypeIsQueried(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -576,7 +576,7 @@ _should_callGetKeyTypeFunction_when_keyTypeIsQueried(void)
 
 /* Tests for cutil_Map_get_val_type */
 static void
-_should_callGetValTypeFunction_when_valTypeIsQueried(void)
+test_should_callGetValTypeFunction_when_valTypeIsQueried(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -594,7 +594,7 @@ _should_callGetValTypeFunction_when_valTypeIsQueried(void)
 /* Tests for cutil_Map iterator shims */
 
 static void
-_should_callGetConstIterator_when_getConstIteratorCalledOnMap(void)
+test_should_callGetConstIterator_when_getConstIteratorCalledOnMap(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -613,7 +613,7 @@ _should_callGetConstIterator_when_getConstIteratorCalledOnMap(void)
 }
 
 static void
-_should_callGetIterator_when_getIteratorCalledOnMap(void)
+test_should_callGetIterator_when_getIteratorCalledOnMap(void)
 {
     /* Arrange */
     cutil_Map *const map = _create_mock_map();
@@ -632,13 +632,13 @@ _should_callGetIterator_when_getIteratorCalledOnMap(void)
 }
 
 static void
-_should_returnNull_when_getConstIteratorCalledOnNullMap(void)
+test_should_returnNull_when_getConstIteratorCalledOnNullMap(void)
 {
     TEST_ASSERT_NULL(cutil_Map_get_const_iterator(NULL));
 }
 
 static void
-_should_returnNull_when_getIteratorCalledOnNullMap(void)
+test_should_returnNull_when_getIteratorCalledOnNullMap(void)
 {
     TEST_ASSERT_NULL(cutil_Map_get_iterator(NULL));
 }
@@ -677,7 +677,7 @@ _hashmap_factory_u32_i8(void)
 }
 
 static void
-_should_returnSuccess_when_singleEntrySet(void)
+test_should_returnSuccess_when_singleEntrySet(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -696,7 +696,7 @@ _should_returnSuccess_when_singleEntrySet(void)
 }
 
 static void
-_should_returnCorrectValue_when_getAfterSet(void)
+test_should_returnCorrectValue_when_getAfterSet(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -717,7 +717,7 @@ _should_returnCorrectValue_when_getAfterSet(void)
 }
 
 static void
-_should_returnNonNullPtr_when_getPtrAfterSet(void)
+test_should_returnNonNullPtr_when_getPtrAfterSet(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -737,7 +737,7 @@ _should_returnNonNullPtr_when_getPtrAfterSet(void)
 }
 
 static void
-_should_returnNull_when_getPtrForMissingKey(void)
+test_should_returnNull_when_getPtrForMissingKey(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -754,7 +754,7 @@ _should_returnNull_when_getPtrForMissingKey(void)
 }
 
 static void
-_should_returnZeroCount_when_mapIsNewlyAllocated(void)
+test_should_returnZeroCount_when_mapIsNewlyAllocated(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -770,7 +770,7 @@ _should_returnZeroCount_when_mapIsNewlyAllocated(void)
 }
 
 static void
-_should_incrementCountWithEachUniqueEntry(void)
+test_should_incrementCountWithEachUniqueEntry(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -791,7 +791,7 @@ _should_incrementCountWithEachUniqueEntry(void)
 }
 
 static void
-_should_returnTrue_when_containsExistingKey(void)
+test_should_returnTrue_when_containsExistingKey(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -810,7 +810,7 @@ _should_returnTrue_when_containsExistingKey(void)
 }
 
 static void
-_should_returnFalse_when_containsMissingKey(void)
+test_should_returnFalse_when_containsMissingKey(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -827,7 +827,7 @@ _should_returnFalse_when_containsMissingKey(void)
 }
 
 static void
-_should_returnSuccess_when_removingExistingKey(void)
+test_should_returnSuccess_when_removingExistingKey(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -848,7 +848,7 @@ _should_returnSuccess_when_removingExistingKey(void)
 }
 
 static void
-_should_returnFailure_when_removingMissingKey(void)
+test_should_returnFailure_when_removingMissingKey(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -865,7 +865,7 @@ _should_returnFailure_when_removingMissingKey(void)
 }
 
 static void
-_should_decrementCount_when_existingKeyRemoved(void)
+test_should_decrementCount_when_existingKeyRemoved(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -887,7 +887,7 @@ _should_decrementCount_when_existingKeyRemoved(void)
 }
 
 static void
-_should_returnZeroCount_when_resetAfterFill(void)
+test_should_returnZeroCount_when_resetAfterFill(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -911,7 +911,7 @@ _should_returnZeroCount_when_resetAfterFill(void)
 }
 
 static void
-_should_returnUpdatedValue_when_keySetTwice(void)
+test_should_returnUpdatedValue_when_keySetTwice(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -934,7 +934,7 @@ _should_returnUpdatedValue_when_keySetTwice(void)
 }
 
 static void
-_should_matchAllEntries_when_copied(void)
+test_should_matchAllEntries_when_copied(void)
 {
     /* Arrange */
     cutil_Map *const src = g_current_factory();
@@ -964,7 +964,7 @@ _should_matchAllEntries_when_copied(void)
 }
 
 static void
-_should_beIndependent_when_dstModifiedAfterCopy(void)
+test_should_beIndependent_when_dstModifiedAfterCopy(void)
 {
     /* Arrange */
     cutil_Map *const src = g_current_factory();
@@ -990,7 +990,7 @@ _should_beIndependent_when_dstModifiedAfterCopy(void)
 }
 
 static void
-_should_matchAllEntries_when_duplicated(void)
+test_should_matchAllEntries_when_duplicated(void)
 {
     /* Arrange */
     cutil_Map *const src = g_current_factory();
@@ -1020,7 +1020,7 @@ _should_matchAllEntries_when_duplicated(void)
 }
 
 static void
-_should_beIndependent_when_dupModifiedAfterDuplicate(void)
+test_should_beIndependent_when_dupModifiedAfterDuplicate(void)
 {
     /* Arrange */
     cutil_Map *const src = g_current_factory();
@@ -1045,7 +1045,7 @@ _should_beIndependent_when_dupModifiedAfterDuplicate(void)
 }
 
 static void
-_should_setAndGetSucceed_withVariousKeyValueTypes(void)
+test_should_setAndGetSucceed_withVariousKeyValueTypes(void)
 {
     /* Arrange */
     struct {
@@ -1088,7 +1088,7 @@ _should_setAndGetSucceed_withVariousKeyValueTypes(void)
 }
 
 static void
-_should_returnNonNull_when_getConstIteratorCalled(void)
+test_should_returnNonNull_when_getConstIteratorCalled(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1105,7 +1105,7 @@ _should_returnNonNull_when_getConstIteratorCalled(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalled(void)
+test_should_returnNonNull_when_getIteratorCalled(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1122,7 +1122,7 @@ _should_returnNonNull_when_getIteratorCalled(void)
 }
 
 static void
-_should_traverseAllKeys_when_constIteratorRewoundOnMap(void)
+test_should_traverseAllKeys_when_constIteratorRewoundOnMap(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1178,7 +1178,7 @@ _should_traverseAllKeys_when_constIteratorRewoundOnMap(void)
 }
 
 static void
-_should_traverseAllKeys_when_iteratorRewoundOnMap(void)
+test_should_traverseAllKeys_when_iteratorRewoundOnMap(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1234,7 +1234,7 @@ _should_traverseAllKeys_when_iteratorRewoundOnMap(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnConstMap(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnConstMap(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1260,7 +1260,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnConstMap(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap(void)
 {
     /* Arrange */
     cutil_Map *const map = g_current_factory();
@@ -1288,7 +1288,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap(void)
 /* --- deep_equals tests --- */
 
 static void
-_should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries(void)
+test_should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries(void)
 {
     /* Arrange */
     cutil_Map *const a = g_current_factory();
@@ -1315,7 +1315,7 @@ _should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues(void)
+test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues(void)
 {
     /* Arrange */
     cutil_Map *const a = g_current_factory();
@@ -1339,7 +1339,7 @@ _should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount(void)
+test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount(void)
 {
     /* Arrange */
     cutil_Map *const a = g_current_factory();
@@ -1365,7 +1365,7 @@ _should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount(void)
 }
 
 static void
-_should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
+test_should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
 {
     /* Arrange */
     cutil_Map *const a = g_current_factory();
@@ -1384,7 +1384,7 @@ _should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
 /* --- compare tests --- */
 
 static void
-_should_returnZero_when_compareCalledWithSamePointer(void)
+test_should_returnZero_when_compareCalledWithSamePointer(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1402,7 +1402,7 @@ _should_returnZero_when_compareCalledWithSamePointer(void)
 }
 
 static void
-_should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount(void)
+test_should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount(void)
 {
     /* Arrange */
     cutil_Map *const small_map = g_current_factory();
@@ -1430,7 +1430,7 @@ _should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount(void)
 }
 
 static void
-_should_handleNullInputs_when_compareCalledWithNulls(void)
+test_should_handleNullInputs_when_compareCalledWithNulls(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1449,7 +1449,7 @@ _should_handleNullInputs_when_compareCalledWithNulls(void)
 /* --- hash tests --- */
 
 static void
-_should_returnSameHash_when_hashCalledTwiceOnSameMap(void)
+test_should_returnSameHash_when_hashCalledTwiceOnSameMap(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1470,7 +1470,7 @@ _should_returnSameHash_when_hashCalledTwiceOnSameMap(void)
 }
 
 static void
-_should_returnZero_when_hashCalledOnNullOrEmptyMap(void)
+test_should_returnZero_when_hashCalledOnNullOrEmptyMap(void)
 {
     /* Arrange */
     cutil_Map *const empty = g_current_factory();
@@ -1484,7 +1484,7 @@ _should_returnZero_when_hashCalledOnNullOrEmptyMap(void)
 }
 
 static void
-_should_returnDifferentHash_when_mapsHaveDifferentValues(void)
+test_should_returnDifferentHash_when_mapsHaveDifferentValues(void)
 {
     /* Arrange */
     cutil_Map *const a = g_current_factory();
@@ -1508,7 +1508,7 @@ _should_returnDifferentHash_when_mapsHaveDifferentValues(void)
 /* --- to_string tests --- */
 
 static void
-_should_renderEmptyBraces_when_toStringCalledOnEmptyMap(void)
+test_should_renderEmptyBraces_when_toStringCalledOnEmptyMap(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1526,7 +1526,7 @@ _should_renderEmptyBraces_when_toStringCalledOnEmptyMap(void)
 }
 
 static void
-_should_renderSingleEntry_when_toStringCalledOnSingletonMap(void)
+test_should_renderSingleEntry_when_toStringCalledOnSingletonMap(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1546,7 +1546,7 @@ _should_renderSingleEntry_when_toStringCalledOnSingletonMap(void)
 }
 
 static void
-_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
+test_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1564,7 +1564,7 @@ _should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 }
 
 static void
-_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1583,7 +1583,7 @@ _should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 }
 
 static void
-_should_renderAllEntries_when_toStringCalledOnMultiEntryMap(void)
+test_should_renderAllEntries_when_toStringCalledOnMultiEntryMap(void)
 {
     /* Arrange */
     cutil_Map *const m = g_current_factory();
@@ -1625,82 +1625,82 @@ main(void)
     UNITY_BEGIN();
 
     /* --- Mock-based vtable dispatch tests (shim layer verification) --- */
-    RUN_TEST(_should_returnTrue_when_mapTypesAreIdentical);
-    RUN_TEST(_should_returnFalse_when_mapTypesAreDifferent);
-    RUN_TEST(_should_callFreeFunction_when_mapIsFreed);
-    RUN_TEST(_should_doNothing_when_mapIsNull);
-    RUN_TEST(_should_callClearFunction_when_mapIsCleared);
-    RUN_TEST(_should_callCopyFunction_when_mapIsCopied);
-    RUN_TEST(_should_notCopy_when_mapTypesIncompatible);
-    RUN_TEST(_should_returnDuplicateMap_when_mapIsDuplicated);
-    RUN_TEST(_should_returnCount_when_mapCountIsRequested);
-    RUN_TEST(_should_returnZero_when_mapIsEmpty);
-    RUN_TEST(_should_callRemoveFunction_when_keyIsRemoved);
-    RUN_TEST(_should_returnTrue_when_mapContainsKey);
-    RUN_TEST(_should_callGetFunction_when_valueIsRetrieved);
-    RUN_TEST(_should_returnPointer_when_keyIsFound);
-    RUN_TEST(_should_callSetFunction_when_keyValuePairIsInserted);
-    RUN_TEST(_should_returnVtable_when_vtableIsRequested);
-    RUN_TEST(_should_returnNull_when_vtableMapIsNull);
-    RUN_TEST(_should_callGetKeyTypeFunction_when_keyTypeIsQueried);
-    RUN_TEST(_should_callGetValTypeFunction_when_valTypeIsQueried);
+    RUN_TEST(test_should_returnTrue_when_mapTypesAreIdentical);
+    RUN_TEST(test_should_returnFalse_when_mapTypesAreDifferent);
+    RUN_TEST(test_should_callFreeFunction_when_mapIsFreed);
+    RUN_TEST(test_should_doNothing_when_mapIsNull);
+    RUN_TEST(test_should_callClearFunction_when_mapIsCleared);
+    RUN_TEST(test_should_callCopyFunction_when_mapIsCopied);
+    RUN_TEST(test_should_notCopy_when_mapTypesIncompatible);
+    RUN_TEST(test_should_returnDuplicateMap_when_mapIsDuplicated);
+    RUN_TEST(test_should_returnCount_when_mapCountIsRequested);
+    RUN_TEST(test_should_returnZero_when_mapIsEmpty);
+    RUN_TEST(test_should_callRemoveFunction_when_keyIsRemoved);
+    RUN_TEST(test_should_returnTrue_when_mapContainsKey);
+    RUN_TEST(test_should_callGetFunction_when_valueIsRetrieved);
+    RUN_TEST(test_should_returnPointer_when_keyIsFound);
+    RUN_TEST(test_should_callSetFunction_when_keyValuePairIsInserted);
+    RUN_TEST(test_should_returnVtable_when_vtableIsRequested);
+    RUN_TEST(test_should_returnNull_when_vtableMapIsNull);
+    RUN_TEST(test_should_callGetKeyTypeFunction_when_keyTypeIsQueried);
+    RUN_TEST(test_should_callGetValTypeFunction_when_valTypeIsQueried);
 
     /* Iterator shim tests */
-    RUN_TEST(_should_callGetConstIterator_when_getConstIteratorCalledOnMap);
-    RUN_TEST(_should_callGetIterator_when_getIteratorCalledOnMap);
-    RUN_TEST(_should_returnNull_when_getConstIteratorCalledOnNullMap);
-    RUN_TEST(_should_returnNull_when_getIteratorCalledOnNullMap);
+    RUN_TEST(test_should_callGetConstIterator_when_getConstIteratorCalledOnMap);
+    RUN_TEST(test_should_callGetIterator_when_getIteratorCalledOnMap);
+    RUN_TEST(test_should_returnNull_when_getConstIteratorCalledOnNullMap);
+    RUN_TEST(test_should_returnNull_when_getIteratorCalledOnNullMap);
 
     /* --- HashMap (INT, INT) — full interface coverage --- */
     g_current_factory = _hashmap_factory_int_int;
-    RUN_TEST(_should_returnSuccess_when_singleEntrySet);
-    RUN_TEST(_should_returnCorrectValue_when_getAfterSet);
-    RUN_TEST(_should_returnNonNullPtr_when_getPtrAfterSet);
-    RUN_TEST(_should_returnNull_when_getPtrForMissingKey);
-    RUN_TEST(_should_returnZeroCount_when_mapIsNewlyAllocated);
-    RUN_TEST(_should_incrementCountWithEachUniqueEntry);
-    RUN_TEST(_should_returnTrue_when_containsExistingKey);
-    RUN_TEST(_should_returnFalse_when_containsMissingKey);
-    RUN_TEST(_should_returnSuccess_when_removingExistingKey);
-    RUN_TEST(_should_returnFailure_when_removingMissingKey);
-    RUN_TEST(_should_decrementCount_when_existingKeyRemoved);
-    RUN_TEST(_should_returnZeroCount_when_resetAfterFill);
-    RUN_TEST(_should_returnUpdatedValue_when_keySetTwice);
-    RUN_TEST(_should_matchAllEntries_when_copied);
-    RUN_TEST(_should_beIndependent_when_dstModifiedAfterCopy);
-    RUN_TEST(_should_matchAllEntries_when_duplicated);
-    RUN_TEST(_should_beIndependent_when_dupModifiedAfterDuplicate);
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalled);
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalled);
-    RUN_TEST(_should_traverseAllKeys_when_constIteratorRewoundOnMap);
-    RUN_TEST(_should_traverseAllKeys_when_iteratorRewoundOnMap);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnConstMap);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap);
+    RUN_TEST(test_should_returnSuccess_when_singleEntrySet);
+    RUN_TEST(test_should_returnCorrectValue_when_getAfterSet);
+    RUN_TEST(test_should_returnNonNullPtr_when_getPtrAfterSet);
+    RUN_TEST(test_should_returnNull_when_getPtrForMissingKey);
+    RUN_TEST(test_should_returnZeroCount_when_mapIsNewlyAllocated);
+    RUN_TEST(test_should_incrementCountWithEachUniqueEntry);
+    RUN_TEST(test_should_returnTrue_when_containsExistingKey);
+    RUN_TEST(test_should_returnFalse_when_containsMissingKey);
+    RUN_TEST(test_should_returnSuccess_when_removingExistingKey);
+    RUN_TEST(test_should_returnFailure_when_removingMissingKey);
+    RUN_TEST(test_should_decrementCount_when_existingKeyRemoved);
+    RUN_TEST(test_should_returnZeroCount_when_resetAfterFill);
+    RUN_TEST(test_should_returnUpdatedValue_when_keySetTwice);
+    RUN_TEST(test_should_matchAllEntries_when_copied);
+    RUN_TEST(test_should_beIndependent_when_dstModifiedAfterCopy);
+    RUN_TEST(test_should_matchAllEntries_when_duplicated);
+    RUN_TEST(test_should_beIndependent_when_dupModifiedAfterDuplicate);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalled);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalled);
+    RUN_TEST(test_should_traverseAllKeys_when_constIteratorRewoundOnMap);
+    RUN_TEST(test_should_traverseAllKeys_when_iteratorRewoundOnMap);
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstMap);
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap);
 
     /* --- deep_equals / compare / hash / to_string (HashMapIntInt) --- */
     g_current_factory = _hashmap_factory_int_int;
-    RUN_TEST(_should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries);
+    RUN_TEST(test_should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries);
     RUN_TEST(
-      _should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues
+      test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues
     );
-    RUN_TEST(_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount);
-    RUN_TEST(_should_handleNullInputs_when_deepEqualsCalledWithNulls);
-    RUN_TEST(_should_returnZero_when_compareCalledWithSamePointer);
+    RUN_TEST(test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount);
+    RUN_TEST(test_should_handleNullInputs_when_deepEqualsCalledWithNulls);
+    RUN_TEST(test_should_returnZero_when_compareCalledWithSamePointer);
     RUN_TEST(
-      _should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount
+      test_should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount
     );
-    RUN_TEST(_should_handleNullInputs_when_compareCalledWithNulls);
-    RUN_TEST(_should_returnSameHash_when_hashCalledTwiceOnSameMap);
-    RUN_TEST(_should_returnZero_when_hashCalledOnNullOrEmptyMap);
-    RUN_TEST(_should_returnDifferentHash_when_mapsHaveDifferentValues);
-    RUN_TEST(_should_renderEmptyBraces_when_toStringCalledOnEmptyMap);
-    RUN_TEST(_should_renderSingleEntry_when_toStringCalledOnSingletonMap);
-    RUN_TEST(_should_returnRequiredLength_when_toStringCalledWithNullBuf);
-    RUN_TEST(_should_returnZero_when_toStringCalledWithTooSmallBuffer);
-    RUN_TEST(_should_renderAllEntries_when_toStringCalledOnMultiEntryMap);
+    RUN_TEST(test_should_handleNullInputs_when_compareCalledWithNulls);
+    RUN_TEST(test_should_returnSameHash_when_hashCalledTwiceOnSameMap);
+    RUN_TEST(test_should_returnZero_when_hashCalledOnNullOrEmptyMap);
+    RUN_TEST(test_should_returnDifferentHash_when_mapsHaveDifferentValues);
+    RUN_TEST(test_should_renderEmptyBraces_when_toStringCalledOnEmptyMap);
+    RUN_TEST(test_should_renderSingleEntry_when_toStringCalledOnSingletonMap);
+    RUN_TEST(test_should_returnRequiredLength_when_toStringCalledWithNullBuf);
+    RUN_TEST(test_should_returnZero_when_toStringCalledWithTooSmallBuffer);
+    RUN_TEST(test_should_renderAllEntries_when_toStringCalledOnMultiEntryMap);
 
     /* --- Type-variety test (not factory-driven) --- */
-    RUN_TEST(_should_setAndGetSucceed_withVariousKeyValueTypes);
+    RUN_TEST(test_should_setAndGetSucceed_withVariousKeyValueTypes);
 
     return UNITY_END();
 }

@@ -16,7 +16,7 @@ static const char *const LONG_STRINGS[] = {
 static const size_t NUM_LONG = CUTIL_GET_NATIVE_ARRAY_SIZE(LONG_STRINGS);
 
 static void
-_should_returnStrlen_when_stringIsShorterThanMaxlen(void)
+test_should_returnStrlen_when_stringIsShorterThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
@@ -33,7 +33,7 @@ _should_returnStrlen_when_stringIsShorterThanMaxlen(void)
 }
 
 static void
-_should_returnMaxlen_when_stringIsLongerThanMaxlen(void)
+test_should_returnMaxlen_when_stringIsLongerThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
@@ -67,7 +67,7 @@ _strdup_test_fnc_aux(size_t num, const char *const strs[])
 }
 
 static void
-_should_duplicateStringCorrectly_when_useStrdup(void)
+test_should_duplicateStringCorrectly_when_useStrdup(void)
 {
     /* Act */
     /* Assert */
@@ -76,7 +76,7 @@ _should_duplicateStringCorrectly_when_useStrdup(void)
 }
 
 static void
-_should_duplicateFullString_when_stringIsShorterThanMaxlen(void)
+test_should_duplicateFullString_when_stringIsShorterThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
@@ -96,7 +96,7 @@ _should_duplicateFullString_when_stringIsShorterThanMaxlen(void)
 }
 
 static void
-_should_duplicateFullString_when_stringIsLongerThanMaxlen(void)
+test_should_duplicateFullString_when_stringIsLongerThanMaxlen(void)
 {
     /* Arrange */
     const size_t maxlen = 10;
@@ -117,7 +117,7 @@ _should_duplicateFullString_when_stringIsLongerThanMaxlen(void)
 }
 
 static void
-_should_returnNull_when_strdupReceivesNull(void)
+test_should_returnNull_when_strdupReceivesNull(void)
 {
     /* Act */
     char *const res = cutil_strdup(NULL);
@@ -127,7 +127,7 @@ _should_returnNull_when_strdupReceivesNull(void)
 }
 
 static void
-_should_returnNull_when_strndupReceivesNull(void)
+test_should_returnNull_when_strndupReceivesNull(void)
 {
     /* Act */
     char *const res = cutil_strndup(NULL, 10);
@@ -149,13 +149,13 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnStrlen_when_stringIsShorterThanMaxlen);
-    RUN_TEST(_should_returnMaxlen_when_stringIsLongerThanMaxlen);
-    RUN_TEST(_should_duplicateStringCorrectly_when_useStrdup);
-    RUN_TEST(_should_duplicateFullString_when_stringIsShorterThanMaxlen);
-    RUN_TEST(_should_duplicateFullString_when_stringIsLongerThanMaxlen);
-    RUN_TEST(_should_returnNull_when_strdupReceivesNull);
-    RUN_TEST(_should_returnNull_when_strndupReceivesNull);
+    RUN_TEST(test_should_returnStrlen_when_stringIsShorterThanMaxlen);
+    RUN_TEST(test_should_returnMaxlen_when_stringIsLongerThanMaxlen);
+    RUN_TEST(test_should_duplicateStringCorrectly_when_useStrdup);
+    RUN_TEST(test_should_duplicateFullString_when_stringIsShorterThanMaxlen);
+    RUN_TEST(test_should_duplicateFullString_when_stringIsLongerThanMaxlen);
+    RUN_TEST(test_should_returnNull_when_strdupReceivesNull);
+    RUN_TEST(test_should_returnNull_when_strndupReceivesNull);
 
     return UNITY_END();
 }

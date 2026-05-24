@@ -18,7 +18,7 @@ _string_comparison_bytes(const char *const data[2])
 }
 
 static void
-_should_compareBytesCorrectly_when_compareDataCompletely(void)
+test_should_compareBytesCorrectly_when_compareDataCompletely(void)
 {
     /* Arrange */
     const char *const DATA0 = "Test Data";
@@ -51,7 +51,7 @@ _should_compareBytesCorrectly_when_compareDataCompletely(void)
 }
 
 static void
-_should_compareBytesCorrectly_when_compareStringsPartially(void)
+test_should_compareBytesCorrectly_when_compareStringsPartially(void)
 {
     /* Arrange */
     const char *const DATA[][2] = {
@@ -66,7 +66,7 @@ _should_compareBytesCorrectly_when_compareStringsPartially(void)
 }
 
 static void
-_should_compareBytesCorrectly_when_compareNullPointers(void)
+test_should_compareBytesCorrectly_when_compareNullPointers(void)
 {
     const char DATA[] = "Test";
     const size_t len = sizeof DATA;
@@ -80,7 +80,7 @@ _should_compareBytesCorrectly_when_compareNullPointers(void)
 }
 
 static void
-_should_compareSizesCorrectly_when_compareDifferentSizes(void)
+test_should_compareSizesCorrectly_when_compareDifferentSizes(void)
 {
     /* Arrange */
     const char DATA1[] = "Data One";
@@ -94,7 +94,7 @@ _should_compareSizesCorrectly_when_compareDifferentSizes(void)
 }
 
 static void
-_should_compareSizesCorrectly_when_compareZeroSizes(void)
+test_should_compareSizesCorrectly_when_compareZeroSizes(void)
 {
     /* Arrange */
     const char DATA1[] = "Any";
@@ -108,7 +108,7 @@ _should_compareSizesCorrectly_when_compareZeroSizes(void)
 }
 
 static void
-_should_compareSizesCorrectly_when_compareNullPointers(void)
+test_should_compareSizesCorrectly_when_compareNullPointers(void)
 {
     /* Arrange */
     const char DATA[] = "Test";
@@ -188,7 +188,7 @@ const float FLOAT_INPUT[] = {
 };
 
 static void
-_should_compareCorrectly_when_useSignedInput(void)
+test_should_compareCorrectly_when_useSignedInput(void)
 {
     const size_t COUNT = CUTIL_GET_NATIVE_ARRAY_SIZE(SIGNED_INPUT);
     for (size_t i_lhs = 0; i_lhs < COUNT; ++i_lhs) {
@@ -207,7 +207,7 @@ _should_compareCorrectly_when_useSignedInput(void)
 }
 
 static void
-_should_compareCorrectly_when_useUnsignedInput(void)
+test_should_compareCorrectly_when_useUnsignedInput(void)
 {
     const size_t COUNT = CUTIL_GET_NATIVE_ARRAY_SIZE(UNSIGNED_INPUT);
     for (size_t i_lhs = 0; i_lhs < COUNT; ++i_lhs) {
@@ -228,7 +228,7 @@ _should_compareCorrectly_when_useUnsignedInput(void)
 }
 
 static void
-_should_compareCorrectly_when_useFloatInput(void)
+test_should_compareCorrectly_when_useFloatInput(void)
 {
     const size_t COUNT = CUTIL_GET_NATIVE_ARRAY_SIZE(FLOAT_INPUT);
     for (size_t i_lhs = 0; i_lhs < COUNT; ++i_lhs) {
@@ -253,15 +253,15 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_compareBytesCorrectly_when_compareDataCompletely);
-    RUN_TEST(_should_compareBytesCorrectly_when_compareStringsPartially);
-    RUN_TEST(_should_compareBytesCorrectly_when_compareNullPointers);
-    RUN_TEST(_should_compareSizesCorrectly_when_compareDifferentSizes);
-    RUN_TEST(_should_compareSizesCorrectly_when_compareZeroSizes);
-    RUN_TEST(_should_compareSizesCorrectly_when_compareNullPointers);
-    RUN_TEST(_should_compareCorrectly_when_useSignedInput);
-    RUN_TEST(_should_compareCorrectly_when_useUnsignedInput);
-    RUN_TEST(_should_compareCorrectly_when_useFloatInput);
+    RUN_TEST(test_should_compareBytesCorrectly_when_compareDataCompletely);
+    RUN_TEST(test_should_compareBytesCorrectly_when_compareStringsPartially);
+    RUN_TEST(test_should_compareBytesCorrectly_when_compareNullPointers);
+    RUN_TEST(test_should_compareSizesCorrectly_when_compareDifferentSizes);
+    RUN_TEST(test_should_compareSizesCorrectly_when_compareZeroSizes);
+    RUN_TEST(test_should_compareSizesCorrectly_when_compareNullPointers);
+    RUN_TEST(test_should_compareCorrectly_when_useSignedInput);
+    RUN_TEST(test_should_compareCorrectly_when_useUnsignedInput);
+    RUN_TEST(test_should_compareCorrectly_when_useFloatInput);
 
     return UNITY_END();
 }

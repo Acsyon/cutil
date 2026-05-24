@@ -91,7 +91,7 @@ _tostring_fnc_count(const void *data, char *buf, size_t bufsize)
 }
 
 static void
-_should_returnSize_when_haveDifferentSizes(void)
+test_should_returnSize_when_haveDifferentSizes(void)
 {
     /* Arrange */
     const size_t SIZES[] = {0, 1, 2, 4, 8, 16, 32, 64, 128};
@@ -110,7 +110,7 @@ _should_returnSize_when_haveDifferentSizes(void)
 }
 
 static void
-_should_returnInvalid_when_typeIsNull(void)
+test_should_returnInvalid_when_typeIsNull(void)
 {
     /* Act */
     cutil_Bool valid = cutil_GenericType_is_valid(NULL);
@@ -120,7 +120,7 @@ _should_returnInvalid_when_typeIsNull(void)
 }
 
 static void
-_should_returnInvalid_when_sizeIsZero(void)
+test_should_returnInvalid_when_sizeIsZero(void)
 {
     /* Arrange */
     const cutil_GenericType type = {
@@ -136,7 +136,7 @@ _should_returnInvalid_when_sizeIsZero(void)
 }
 
 static void
-_should_returnValid_when_sizeIsNonzero(void)
+test_should_returnValid_when_sizeIsNonzero(void)
 {
     /* Arrange */
     const size_t SIZES[] = {1, 2, 4, 8, 16, 32, 64, 128};
@@ -154,7 +154,7 @@ _should_returnValid_when_sizeIsNonzero(void)
 }
 
 static void
-_should_compareEqual_when_typesAreIdentical(void)
+test_should_compareEqual_when_typesAreIdentical(void)
 {
     /* Arrange */
     const cutil_GenericType type1 = {.size = 4, .init = &_noop_one};
@@ -168,7 +168,7 @@ _should_compareEqual_when_typesAreIdentical(void)
 }
 
 static void
-_should_compareNotEqual_when_typesAreDifferent(void)
+test_should_compareNotEqual_when_typesAreDifferent(void)
 {
     /* Arrange */
     const cutil_GenericType type1 = {.size = 4};
@@ -182,7 +182,7 @@ _should_compareNotEqual_when_typesAreDifferent(void)
 }
 
 static void
-_should_callInitAppropriateCount_when_applyInit(void)
+test_should_callInitAppropriateCount_when_applyInit(void)
 {
     /* Arrange */
     int ARRAY[64] = {0};
@@ -199,7 +199,7 @@ _should_callInitAppropriateCount_when_applyInit(void)
 }
 
 static void
-_should_callClearAppropriateCount_when_applyClear(void)
+test_should_callClearAppropriateCount_when_applyClear(void)
 {
     /* Arrange */
     int ARRAY[64] = {0};
@@ -216,7 +216,7 @@ _should_callClearAppropriateCount_when_applyClear(void)
 }
 
 static void
-_should_callCopyAppropriateCount_when_applyCopy(void)
+test_should_callCopyAppropriateCount_when_applyCopy(void)
 {
     /* Arrange */
     int SRC[64] = {0};
@@ -234,7 +234,7 @@ _should_callCopyAppropriateCount_when_applyCopy(void)
 }
 
 static void
-_should_notCallFuncs_when_functionsAreNull(void)
+test_should_notCallFuncs_when_functionsAreNull(void)
 {
     /* Arrange */
     int SRC[64] = {0};
@@ -255,7 +255,7 @@ _should_notCallFuncs_when_functionsAreNull(void)
 }
 
 static void
-_should_callInitOnNewElements_when_reallocGrows(void)
+test_should_callInitOnNewElements_when_reallocGrows(void)
 {
     /* Arrange */
     const size_t old_num = 10;
@@ -274,7 +274,7 @@ _should_callInitOnNewElements_when_reallocGrows(void)
 }
 
 static void
-_should_callClearOnRemovedElements_when_reallocShrinks(void)
+test_should_callClearOnRemovedElements_when_reallocShrinks(void)
 {
     /* Arrange */
     const size_t old_num = 20;
@@ -293,7 +293,7 @@ _should_callClearOnRemovedElements_when_reallocShrinks(void)
 }
 
 static void
-_should_useFallbackHash_when_functionIsNull(void)
+test_should_useFallbackHash_when_functionIsNull(void)
 {
     /* Arrange */
     const int val = 42;
@@ -308,7 +308,7 @@ _should_useFallbackHash_when_functionIsNull(void)
 }
 
 static void
-_should_useCustomHash_when_functionIsProvided(void)
+test_should_useCustomHash_when_functionIsProvided(void)
 {
     /* Arrange */
     const int val = 42;
@@ -327,7 +327,7 @@ _should_useCustomHash_when_functionIsProvided(void)
 }
 
 static void
-_should_useFallbackCompare_when_functionIsNull(void)
+test_should_useFallbackCompare_when_functionIsNull(void)
 {
     /* Arrange */
     const int a = 5, b = 5;
@@ -341,7 +341,7 @@ _should_useFallbackCompare_when_functionIsNull(void)
 }
 
 static void
-_should_useCustomCompare_when_functionIsProvided(void)
+test_should_useCustomCompare_when_functionIsProvided(void)
 {
     /* Arrange */
     const int a = 5, b = 10;
@@ -360,7 +360,7 @@ _should_useCustomCompare_when_functionIsProvided(void)
 }
 
 static void
-_should_useFallbackDeepEquals_when_functionIsNull(void)
+test_should_useFallbackDeepEquals_when_functionIsNull(void)
 {
     /* Arrange */
     const int a = 7, b = 7;
@@ -375,7 +375,7 @@ _should_useFallbackDeepEquals_when_functionIsNull(void)
 }
 
 static void
-_should_useCustomDeepEquals_when_functionIsProvided(void)
+test_should_useCustomDeepEquals_when_functionIsProvided(void)
 {
     /* Arrange */
     const int a = 7, b = 9;
@@ -393,7 +393,7 @@ _should_useCustomDeepEquals_when_functionIsProvided(void)
 }
 
 static void
-_should_useFallbackToString_when_functionIsNull(void)
+test_should_useFallbackToString_when_functionIsNull(void)
 {
     /* Arrange */
     const int val = 42;
@@ -411,7 +411,7 @@ _should_useFallbackToString_when_functionIsNull(void)
 }
 
 static void
-_should_useCustomToString_when_functionIsProvided(void)
+test_should_useCustomToString_when_functionIsProvided(void)
 {
     /* Arrange */
     const int val = 123;
@@ -431,7 +431,7 @@ _should_useCustomToString_when_functionIsProvided(void)
 }
 
 static void
-_should_querySize_when_bufferIsNull(void)
+test_should_querySize_when_bufferIsNull(void)
 {
     /* Arrange */
     const int val = 42;
@@ -454,7 +454,7 @@ _should_querySize_when_bufferIsNull(void)
 }
 
 static void
-_should_returnTrue_when_nativeTypeDeepEqualsEqualValues(void)
+test_should_returnTrue_when_nativeTypeDeepEqualsEqualValues(void)
 {
     /* Signed integer native types */
     {
@@ -534,7 +534,7 @@ _should_returnTrue_when_nativeTypeDeepEqualsEqualValues(void)
 }
 
 static void
-_should_returnFalse_when_nativeTypeDeepEqualsUnequalValues(void)
+test_should_returnFalse_when_nativeTypeDeepEqualsUnequalValues(void)
 {
     /* Signed integer native types */
     {
@@ -614,7 +614,7 @@ _should_returnFalse_when_nativeTypeDeepEqualsUnequalValues(void)
 }
 
 static void
-_should_returnCorrectString_when_nativeTypeToStringIntegers(void)
+test_should_returnCorrectString_when_nativeTypeToStringIntegers(void)
 {
     char buf[64];
     char expected[64];
@@ -700,7 +700,7 @@ _should_returnCorrectString_when_nativeTypeToStringIntegers(void)
 }
 
 static void
-_should_returnCorrectString_when_nativeTypeToStringFloats(void)
+test_should_returnCorrectString_when_nativeTypeToStringFloats(void)
 {
     char buf[64];
     char expected[64];
@@ -742,7 +742,7 @@ _should_returnCorrectString_when_nativeTypeToStringFloats(void)
 }
 
 static void
-_should_haveValidType_when_useNativeTypes(void)
+test_should_haveValidType_when_useNativeTypes(void)
 {
 #define MAKE_TYPE_INFO(TYPE, ID_UPPER, ID_LOWER)                               \
     {                                                                          \
@@ -813,32 +813,32 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnSize_when_haveDifferentSizes);
-    RUN_TEST(_should_returnInvalid_when_typeIsNull);
-    RUN_TEST(_should_returnInvalid_when_sizeIsZero);
-    RUN_TEST(_should_returnValid_when_sizeIsNonzero);
-    RUN_TEST(_should_compareEqual_when_typesAreIdentical);
-    RUN_TEST(_should_compareNotEqual_when_typesAreDifferent);
-    RUN_TEST(_should_callInitAppropriateCount_when_applyInit);
-    RUN_TEST(_should_callClearAppropriateCount_when_applyClear);
-    RUN_TEST(_should_callCopyAppropriateCount_when_applyCopy);
-    RUN_TEST(_should_notCallFuncs_when_functionsAreNull);
-    RUN_TEST(_should_callInitOnNewElements_when_reallocGrows);
-    RUN_TEST(_should_callClearOnRemovedElements_when_reallocShrinks);
-    RUN_TEST(_should_useFallbackHash_when_functionIsNull);
-    RUN_TEST(_should_useCustomHash_when_functionIsProvided);
-    RUN_TEST(_should_useFallbackCompare_when_functionIsNull);
-    RUN_TEST(_should_useCustomCompare_when_functionIsProvided);
-    RUN_TEST(_should_useFallbackDeepEquals_when_functionIsNull);
-    RUN_TEST(_should_useCustomDeepEquals_when_functionIsProvided);
-    RUN_TEST(_should_useFallbackToString_when_functionIsNull);
-    RUN_TEST(_should_useCustomToString_when_functionIsProvided);
-    RUN_TEST(_should_querySize_when_bufferIsNull);
-    RUN_TEST(_should_haveValidType_when_useNativeTypes);
-    RUN_TEST(_should_returnTrue_when_nativeTypeDeepEqualsEqualValues);
-    RUN_TEST(_should_returnFalse_when_nativeTypeDeepEqualsUnequalValues);
-    RUN_TEST(_should_returnCorrectString_when_nativeTypeToStringIntegers);
-    RUN_TEST(_should_returnCorrectString_when_nativeTypeToStringFloats);
+    RUN_TEST(test_should_returnSize_when_haveDifferentSizes);
+    RUN_TEST(test_should_returnInvalid_when_typeIsNull);
+    RUN_TEST(test_should_returnInvalid_when_sizeIsZero);
+    RUN_TEST(test_should_returnValid_when_sizeIsNonzero);
+    RUN_TEST(test_should_compareEqual_when_typesAreIdentical);
+    RUN_TEST(test_should_compareNotEqual_when_typesAreDifferent);
+    RUN_TEST(test_should_callInitAppropriateCount_when_applyInit);
+    RUN_TEST(test_should_callClearAppropriateCount_when_applyClear);
+    RUN_TEST(test_should_callCopyAppropriateCount_when_applyCopy);
+    RUN_TEST(test_should_notCallFuncs_when_functionsAreNull);
+    RUN_TEST(test_should_callInitOnNewElements_when_reallocGrows);
+    RUN_TEST(test_should_callClearOnRemovedElements_when_reallocShrinks);
+    RUN_TEST(test_should_useFallbackHash_when_functionIsNull);
+    RUN_TEST(test_should_useCustomHash_when_functionIsProvided);
+    RUN_TEST(test_should_useFallbackCompare_when_functionIsNull);
+    RUN_TEST(test_should_useCustomCompare_when_functionIsProvided);
+    RUN_TEST(test_should_useFallbackDeepEquals_when_functionIsNull);
+    RUN_TEST(test_should_useCustomDeepEquals_when_functionIsProvided);
+    RUN_TEST(test_should_useFallbackToString_when_functionIsNull);
+    RUN_TEST(test_should_useCustomToString_when_functionIsProvided);
+    RUN_TEST(test_should_querySize_when_bufferIsNull);
+    RUN_TEST(test_should_haveValidType_when_useNativeTypes);
+    RUN_TEST(test_should_returnTrue_when_nativeTypeDeepEqualsEqualValues);
+    RUN_TEST(test_should_returnFalse_when_nativeTypeDeepEqualsUnequalValues);
+    RUN_TEST(test_should_returnCorrectString_when_nativeTypeToStringIntegers);
+    RUN_TEST(test_should_returnCorrectString_when_nativeTypeToStringFloats);
 
     return UNITY_END();
 }

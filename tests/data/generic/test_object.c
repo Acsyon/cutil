@@ -7,7 +7,7 @@
 #include <cutil/data/generic/type.h>
 
 static void
-_should_returnEmptyObject_when_alloc(void)
+test_should_returnEmptyObject_when_alloc(void)
 {
     /* Arrange / Act */
     cutil_GenericObject *const obj = cutil_GenericObject_alloc();
@@ -22,7 +22,7 @@ _should_returnEmptyObject_when_alloc(void)
 }
 
 static void
-_should_copyData_when_createWithValidTypeAndData(void)
+test_should_copyData_when_createWithValidTypeAndData(void)
 {
     /* Arrange */
     const int value = 42;
@@ -47,7 +47,7 @@ _should_copyData_when_createWithValidTypeAndData(void)
 }
 
 static void
-_should_initData_when_createWithNullData(void)
+test_should_initData_when_createWithNullData(void)
 {
     /* Arrange / Act */
     cutil_GenericObject *const obj
@@ -65,7 +65,7 @@ _should_initData_when_createWithNullData(void)
 }
 
 static void
-_should_resetToEmpty_when_clear(void)
+test_should_resetToEmpty_when_clear(void)
 {
     /* Arrange */
     const int value = 7;
@@ -84,7 +84,7 @@ _should_resetToEmpty_when_clear(void)
 }
 
 static void
-_should_beIdempotent_when_clearTwice(void)
+test_should_beIdempotent_when_clearTwice(void)
 {
     /* Arrange */
     const int value = 5;
@@ -104,7 +104,7 @@ _should_beIdempotent_when_clearTwice(void)
 }
 
 static void
-_should_deepCopyData_when_copy(void)
+test_should_deepCopyData_when_copy(void)
 {
     /* Arrange */
     const int value = 123;
@@ -131,7 +131,7 @@ _should_deepCopyData_when_copy(void)
 }
 
 static void
-_should_clearDest_when_copyFromEmptySource(void)
+test_should_clearDest_when_copyFromEmptySource(void)
 {
     /* Arrange */
     int value = 10;
@@ -152,7 +152,7 @@ _should_clearDest_when_copyFromEmptySource(void)
 }
 
 static void
-_should_returnType_when_getTypeOnCreatedObject(void)
+test_should_returnType_when_getTypeOnCreatedObject(void)
 {
     /* Arrange */
     const int value = 1;
@@ -170,7 +170,7 @@ _should_returnType_when_getTypeOnCreatedObject(void)
 }
 
 static void
-_should_returnData_when_getDataOnCreatedObject(void)
+test_should_returnData_when_getDataOnCreatedObject(void)
 {
     /* Arrange */
     const int value = 55;
@@ -189,7 +189,7 @@ _should_returnData_when_getDataOnCreatedObject(void)
 }
 
 static void
-_should_returnNull_when_getDataOnEmptyObject(void)
+test_should_returnNull_when_getDataOnEmptyObject(void)
 {
     /* Arrange */
     cutil_GenericObject *const obj = cutil_GenericObject_alloc();
@@ -202,7 +202,7 @@ _should_returnNull_when_getDataOnEmptyObject(void)
 }
 
 static void
-_should_zeroFields_when_genericInit(void)
+test_should_zeroFields_when_genericInit(void)
 {
     /* Arrange */
     cutil_GenericObject *const obj = cutil_GenericObject_alloc();
@@ -221,7 +221,7 @@ _should_zeroFields_when_genericInit(void)
 }
 
 static void
-_should_releaseData_when_genericClear(void)
+test_should_releaseData_when_genericClear(void)
 {
     /* Arrange */
     const int value = 42;
@@ -240,7 +240,7 @@ _should_releaseData_when_genericClear(void)
 }
 
 static void
-_should_deepCopy_when_genericCopy(void)
+test_should_deepCopy_when_genericCopy(void)
 {
     /* Arrange */
     const int value = 77;
@@ -263,7 +263,7 @@ _should_deepCopy_when_genericCopy(void)
 }
 
 static void
-_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData(void)
+test_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData(void)
 {
     /* Arrange */
     const int value = 42;
@@ -281,7 +281,7 @@ _should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData(void)
 }
 
 static void
-_should_returnFalse_when_genericDeepEqualsWithDifferentTypes(void)
+test_should_returnFalse_when_genericDeepEqualsWithDifferentTypes(void)
 {
     /* Arrange */
     const int ival = 42;
@@ -300,7 +300,7 @@ _should_returnFalse_when_genericDeepEqualsWithDifferentTypes(void)
 }
 
 static void
-_should_returnFalse_when_genericDeepEqualsWithDifferentData(void)
+test_should_returnFalse_when_genericDeepEqualsWithDifferentData(void)
 {
     /* Arrange */
     const int val1 = 1;
@@ -319,7 +319,7 @@ _should_returnFalse_when_genericDeepEqualsWithDifferentData(void)
 }
 
 static void
-_should_orderByTypeNameThenValue_when_genericCompare(void)
+test_should_orderByTypeNameThenValue_when_genericCompare(void)
 {
     /* Arrange */
     const int val1 = 1;
@@ -349,7 +349,7 @@ _should_orderByTypeNameThenValue_when_genericCompare(void)
 }
 
 static void
-_should_returnConsistentHash_when_genericHash(void)
+test_should_returnConsistentHash_when_genericHash(void)
 {
     /* Arrange */
     const int value = 42;
@@ -377,7 +377,7 @@ _should_returnConsistentHash_when_genericHash(void)
 }
 
 static void
-_should_formatCorrectly_when_genericToString(void)
+test_should_formatCorrectly_when_genericToString(void)
 {
     /* Arrange */
     const int value = 42;
@@ -407,7 +407,7 @@ _should_formatCorrectly_when_genericToString(void)
 }
 
 static void
-_should_haveCorrectNameAndSize_when_inspectTypeDescriptor(void)
+test_should_haveCorrectNameAndSize_when_inspectTypeDescriptor(void)
 {
     /* Act / Assert */
     TEST_ASSERT_EQUAL_STRING(
@@ -419,7 +419,7 @@ _should_haveCorrectNameAndSize_when_inspectTypeDescriptor(void)
 }
 
 static void
-_should_haveAllCallbacks_when_inspectTypeDescriptor(void)
+test_should_haveAllCallbacks_when_inspectTypeDescriptor(void)
 {
     /* Act / Assert */
     TEST_ASSERT_NOT_NULL(CUTIL_GENERIC_TYPE_GENERIC_OBJECT->init);
@@ -432,7 +432,7 @@ _should_haveAllCallbacks_when_inspectTypeDescriptor(void)
 }
 
 static void
-_should_deepCopyCompositeInner_when_createWithStringType(void)
+test_should_deepCopyCompositeInner_when_createWithStringType(void)
 {
     /* Arrange */
     cutil_String *const src_str = cutil_String_from_string("hello");
@@ -460,7 +460,7 @@ _should_deepCopyCompositeInner_when_createWithStringType(void)
 }
 
 static void
-_should_returnTrue_when_genericDeepEqualsWithBothEmpty(void)
+test_should_returnTrue_when_genericDeepEqualsWithBothEmpty(void)
 {
     /* Arrange */
     cutil_GenericObject *const a = cutil_GenericObject_alloc();
@@ -487,34 +487,34 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnEmptyObject_when_alloc);
-    RUN_TEST(_should_copyData_when_createWithValidTypeAndData);
-    RUN_TEST(_should_initData_when_createWithNullData);
-    RUN_TEST(_should_resetToEmpty_when_clear);
-    RUN_TEST(_should_beIdempotent_when_clearTwice);
-    RUN_TEST(_should_deepCopyData_when_copy);
-    RUN_TEST(_should_clearDest_when_copyFromEmptySource);
+    RUN_TEST(test_should_returnEmptyObject_when_alloc);
+    RUN_TEST(test_should_copyData_when_createWithValidTypeAndData);
+    RUN_TEST(test_should_initData_when_createWithNullData);
+    RUN_TEST(test_should_resetToEmpty_when_clear);
+    RUN_TEST(test_should_beIdempotent_when_clearTwice);
+    RUN_TEST(test_should_deepCopyData_when_copy);
+    RUN_TEST(test_should_clearDest_when_copyFromEmptySource);
 
-    RUN_TEST(_should_returnType_when_getTypeOnCreatedObject);
-    RUN_TEST(_should_returnData_when_getDataOnCreatedObject);
-    RUN_TEST(_should_returnNull_when_getDataOnEmptyObject);
+    RUN_TEST(test_should_returnType_when_getTypeOnCreatedObject);
+    RUN_TEST(test_should_returnData_when_getDataOnCreatedObject);
+    RUN_TEST(test_should_returnNull_when_getDataOnEmptyObject);
 
-    RUN_TEST(_should_zeroFields_when_genericInit);
-    RUN_TEST(_should_releaseData_when_genericClear);
-    RUN_TEST(_should_deepCopy_when_genericCopy);
-    RUN_TEST(_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData);
-    RUN_TEST(_should_returnFalse_when_genericDeepEqualsWithDifferentTypes);
-    RUN_TEST(_should_returnFalse_when_genericDeepEqualsWithDifferentData);
-    RUN_TEST(_should_orderByTypeNameThenValue_when_genericCompare);
-    RUN_TEST(_should_returnConsistentHash_when_genericHash);
-    RUN_TEST(_should_formatCorrectly_when_genericToString);
+    RUN_TEST(test_should_zeroFields_when_genericInit);
+    RUN_TEST(test_should_releaseData_when_genericClear);
+    RUN_TEST(test_should_deepCopy_when_genericCopy);
+    RUN_TEST(test_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData);
+    RUN_TEST(test_should_returnFalse_when_genericDeepEqualsWithDifferentTypes);
+    RUN_TEST(test_should_returnFalse_when_genericDeepEqualsWithDifferentData);
+    RUN_TEST(test_should_orderByTypeNameThenValue_when_genericCompare);
+    RUN_TEST(test_should_returnConsistentHash_when_genericHash);
+    RUN_TEST(test_should_formatCorrectly_when_genericToString);
 
-    RUN_TEST(_should_haveCorrectNameAndSize_when_inspectTypeDescriptor);
-    RUN_TEST(_should_haveAllCallbacks_when_inspectTypeDescriptor);
+    RUN_TEST(test_should_haveCorrectNameAndSize_when_inspectTypeDescriptor);
+    RUN_TEST(test_should_haveAllCallbacks_when_inspectTypeDescriptor);
 
-    RUN_TEST(_should_deepCopyCompositeInner_when_createWithStringType);
+    RUN_TEST(test_should_deepCopyCompositeInner_when_createWithStringType);
 
-    RUN_TEST(_should_returnTrue_when_genericDeepEqualsWithBothEmpty);
+    RUN_TEST(test_should_returnTrue_when_genericDeepEqualsWithBothEmpty);
 
     return UNITY_END();
 }

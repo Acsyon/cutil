@@ -17,7 +17,7 @@ tearDown(void)
 {}
 
 static void
-_should_returnFailure_when_pathIsNull(void)
+test_should_returnFailure_when_pathIsNull(void)
 {
     /* Act */
     const cutil_Status result = cutil_mkdirp(NULL, 0755);
@@ -27,7 +27,7 @@ _should_returnFailure_when_pathIsNull(void)
 }
 
 static void
-_should_createDirectory_when_pathDoesNotExist(void)
+test_should_createDirectory_when_pathDoesNotExist(void)
 {
     /* Arrange */
     char path[256];
@@ -45,7 +45,7 @@ _should_createDirectory_when_pathDoesNotExist(void)
 }
 
 static void
-_should_returnSuccess_when_directoryAlreadyExists(void)
+test_should_returnSuccess_when_directoryAlreadyExists(void)
 {
     /* Arrange */
     char path[256];
@@ -64,7 +64,7 @@ _should_returnSuccess_when_directoryAlreadyExists(void)
 }
 
 static void
-_should_createNestedDirectories_when_intermediatesAbsent(void)
+test_should_createNestedDirectories_when_intermediatesAbsent(void)
 {
     /* Arrange */
     char parent[256];
@@ -86,7 +86,7 @@ _should_createNestedDirectories_when_intermediatesAbsent(void)
 }
 
 static void
-_should_createDirectory_when_parentExistsAndNotRecursive(void)
+test_should_createDirectory_when_parentExistsAndNotRecursive(void)
 {
     /* Arrange */
     char path[256];
@@ -107,7 +107,7 @@ _should_createDirectory_when_parentExistsAndNotRecursive(void)
 }
 
 static void
-_should_returnFailure_when_parentAbsentAndNotRecursive(void)
+test_should_returnFailure_when_parentAbsentAndNotRecursive(void)
 {
     /* Arrange */
     char path[256];
@@ -124,7 +124,7 @@ _should_returnFailure_when_parentAbsentAndNotRecursive(void)
 }
 
 static void
-_should_returnFailure_when_rmPathIsNull(void)
+test_should_returnFailure_when_rmPathIsNull(void)
 {
     /* Act */
     const cutil_Status result = cutil_rm(NULL, CUTIL_FALSE);
@@ -134,7 +134,7 @@ _should_returnFailure_when_rmPathIsNull(void)
 }
 
 static void
-_should_returnFailure_when_pathDoesNotExist(void)
+test_should_returnFailure_when_pathDoesNotExist(void)
 {
     /* Arrange */
     char path[256];
@@ -148,7 +148,7 @@ _should_returnFailure_when_pathDoesNotExist(void)
 }
 
 static void
-_should_removeFile_when_pathIsRegularFile(void)
+test_should_removeFile_when_pathIsRegularFile(void)
 {
     /* Arrange */
     char path[256];
@@ -166,7 +166,7 @@ _should_removeFile_when_pathIsRegularFile(void)
 }
 
 static void
-_should_returnFailure_when_directoryNotEmptyAndNotRecursive(void)
+test_should_returnFailure_when_directoryNotEmptyAndNotRecursive(void)
 {
     /* Arrange */
     char parent[256];
@@ -189,7 +189,7 @@ _should_returnFailure_when_directoryNotEmptyAndNotRecursive(void)
 }
 
 static void
-_should_removeDirectoryRecursively_when_directoryHasContents(void)
+test_should_removeDirectoryRecursively_when_directoryHasContents(void)
 {
     /* Arrange */
     char parent[256];
@@ -209,7 +209,7 @@ _should_removeDirectoryRecursively_when_directoryHasContents(void)
 }
 
 static void
-_should_returnFalse_when_isdirPathDoesNotExist(void)
+test_should_returnFalse_when_isdirPathDoesNotExist(void)
 {
     /* Arrange */
     char path[256];
@@ -220,7 +220,7 @@ _should_returnFalse_when_isdirPathDoesNotExist(void)
 }
 
 static void
-_should_returnFalse_when_isdirPathIsFile(void)
+test_should_returnFalse_when_isdirPathIsFile(void)
 {
     /* Arrange */
     char path[256];
@@ -237,14 +237,14 @@ _should_returnFalse_when_isdirPathIsFile(void)
 }
 
 static void
-_should_returnFalse_when_isdirPathIsNull(void)
+test_should_returnFalse_when_isdirPathIsNull(void)
 {
     /* Act */ /* Assert */
     TEST_ASSERT_FALSE(cutil_isdir(NULL));
 }
 
 static void
-_should_returnTrue_when_pathIsRegularFile(void)
+test_should_returnTrue_when_pathIsRegularFile(void)
 {
     /* Arrange */
     char path[256];
@@ -263,7 +263,7 @@ _should_returnTrue_when_pathIsRegularFile(void)
 }
 
 static void
-_should_returnFalse_when_isfilePathIsDirectory(void)
+test_should_returnFalse_when_isfilePathIsDirectory(void)
 {
     /* Arrange */
     char path[256];
@@ -278,7 +278,7 @@ _should_returnFalse_when_isfilePathIsDirectory(void)
 }
 
 static void
-_should_returnFalse_when_isfilePathDoesNotExist(void)
+test_should_returnFalse_when_isfilePathDoesNotExist(void)
 {
     /* Arrange */
     char path[256];
@@ -289,7 +289,7 @@ _should_returnFalse_when_isfilePathDoesNotExist(void)
 }
 
 static void
-_should_returnFalse_when_isfilePathIsNull(void)
+test_should_returnFalse_when_isfilePathIsNull(void)
 {
     /* Act */ /* Assert */
     TEST_ASSERT_FALSE(cutil_isfile(NULL));
@@ -300,28 +300,28 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_returnFailure_when_pathIsNull);
-    RUN_TEST(_should_createDirectory_when_pathDoesNotExist);
-    RUN_TEST(_should_returnSuccess_when_directoryAlreadyExists);
-    RUN_TEST(_should_createNestedDirectories_when_intermediatesAbsent);
+    RUN_TEST(test_should_returnFailure_when_pathIsNull);
+    RUN_TEST(test_should_createDirectory_when_pathDoesNotExist);
+    RUN_TEST(test_should_returnSuccess_when_directoryAlreadyExists);
+    RUN_TEST(test_should_createNestedDirectories_when_intermediatesAbsent);
 
-    RUN_TEST(_should_createDirectory_when_parentExistsAndNotRecursive);
-    RUN_TEST(_should_returnFailure_when_parentAbsentAndNotRecursive);
+    RUN_TEST(test_should_createDirectory_when_parentExistsAndNotRecursive);
+    RUN_TEST(test_should_returnFailure_when_parentAbsentAndNotRecursive);
 
-    RUN_TEST(_should_returnFailure_when_rmPathIsNull);
-    RUN_TEST(_should_returnFailure_when_pathDoesNotExist);
-    RUN_TEST(_should_removeFile_when_pathIsRegularFile);
-    RUN_TEST(_should_returnFailure_when_directoryNotEmptyAndNotRecursive);
-    RUN_TEST(_should_removeDirectoryRecursively_when_directoryHasContents);
+    RUN_TEST(test_should_returnFailure_when_rmPathIsNull);
+    RUN_TEST(test_should_returnFailure_when_pathDoesNotExist);
+    RUN_TEST(test_should_removeFile_when_pathIsRegularFile);
+    RUN_TEST(test_should_returnFailure_when_directoryNotEmptyAndNotRecursive);
+    RUN_TEST(test_should_removeDirectoryRecursively_when_directoryHasContents);
 
-    RUN_TEST(_should_returnFalse_when_isdirPathDoesNotExist);
-    RUN_TEST(_should_returnFalse_when_isdirPathIsFile);
-    RUN_TEST(_should_returnFalse_when_isdirPathIsNull);
+    RUN_TEST(test_should_returnFalse_when_isdirPathDoesNotExist);
+    RUN_TEST(test_should_returnFalse_when_isdirPathIsFile);
+    RUN_TEST(test_should_returnFalse_when_isdirPathIsNull);
 
-    RUN_TEST(_should_returnTrue_when_pathIsRegularFile);
-    RUN_TEST(_should_returnFalse_when_isfilePathIsDirectory);
-    RUN_TEST(_should_returnFalse_when_isfilePathDoesNotExist);
-    RUN_TEST(_should_returnFalse_when_isfilePathIsNull);
+    RUN_TEST(test_should_returnTrue_when_pathIsRegularFile);
+    RUN_TEST(test_should_returnFalse_when_isfilePathIsDirectory);
+    RUN_TEST(test_should_returnFalse_when_isfilePathDoesNotExist);
+    RUN_TEST(test_should_returnFalse_when_isfilePathIsNull);
 
     TEST_ASSERT_TRUE(cutil_rmr(PATH_BASE) == CUTIL_STATUS_SUCCESS);
 

@@ -47,7 +47,7 @@ _read_file_contents(FILE *stream)
 }
 
 static void
-_should_createLoggerCorrectly_when_useDefault(void)
+test_should_createLoggerCorrectly_when_useDefault(void)
 {
     /* Arrange */
     /* Act */
@@ -62,7 +62,7 @@ _should_createLoggerCorrectly_when_useDefault(void)
 }
 
 static void
-_should_createLoggerCorrectly_when_useLevel(void)
+test_should_createLoggerCorrectly_when_useLevel(void)
 {
     FOREACH_LEVEL(level)
     {
@@ -80,7 +80,7 @@ _should_createLoggerCorrectly_when_useLevel(void)
 }
 
 static void
-_should_setLogLevel_when_haveValidLevel(void)
+test_should_setLogLevel_when_haveValidLevel(void)
 {
     /* Arrange */
     cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
@@ -102,7 +102,7 @@ _should_setLogLevel_when_haveValidLevel(void)
 }
 
 static void
-_should_notSetLogLevel_when_haveInvalidLevel(void)
+test_should_notSetLogLevel_when_haveInvalidLevel(void)
 {
     /* Arrange */
     cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
@@ -121,7 +121,7 @@ _should_notSetLogLevel_when_haveInvalidLevel(void)
 }
 
 static void
-_should_outputCorrectly_when_haveMultipleHandlers(void)
+test_should_outputCorrectly_when_haveMultipleHandlers(void)
 {
     /* Arrange */
     FILE *const stream1 = _create_test_file();
@@ -157,7 +157,7 @@ _should_outputCorrectly_when_haveMultipleHandlers(void)
 }
 
 static void
-_should_formatCorrectly_when_callMessageFunctions(void)
+test_should_formatCorrectly_when_callMessageFunctions(void)
 {
     /* Arrange */
     FILE *const stream = _create_test_file();
@@ -189,7 +189,7 @@ _should_formatCorrectly_when_callMessageFunctions(void)
 }
 
 static void
-_should_autoCloseStream_when_destroyLogger(void)
+test_should_autoCloseStream_when_destroyLogger(void)
 {
     /* Arrange */
     FILE *const stream = _create_test_file();
@@ -220,13 +220,13 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_createLoggerCorrectly_when_useDefault);
-    RUN_TEST(_should_createLoggerCorrectly_when_useLevel);
-    RUN_TEST(_should_setLogLevel_when_haveValidLevel);
-    RUN_TEST(_should_notSetLogLevel_when_haveInvalidLevel);
-    RUN_TEST(_should_outputCorrectly_when_haveMultipleHandlers);
-    RUN_TEST(_should_formatCorrectly_when_callMessageFunctions);
-    RUN_TEST(_should_autoCloseStream_when_destroyLogger);
+    RUN_TEST(test_should_createLoggerCorrectly_when_useDefault);
+    RUN_TEST(test_should_createLoggerCorrectly_when_useLevel);
+    RUN_TEST(test_should_setLogLevel_when_haveValidLevel);
+    RUN_TEST(test_should_notSetLogLevel_when_haveInvalidLevel);
+    RUN_TEST(test_should_outputCorrectly_when_haveMultipleHandlers);
+    RUN_TEST(test_should_formatCorrectly_when_callMessageFunctions);
+    RUN_TEST(test_should_autoCloseStream_when_destroyLogger);
 
     return UNITY_END();
 }
