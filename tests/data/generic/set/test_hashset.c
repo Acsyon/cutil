@@ -635,11 +635,15 @@ main(void)
     RUN_TEST(test_should_returnNonNull_when_getIteratorCalledOnHashSet);
     RUN_TEST(test_should_returnFalse_when_nextCalledOnEmptyHashSetIterator);
     RUN_TEST(test_should_traverseAllElements_when_iteratingHashSet);
-    RUN_TEST(test_should_removeCurrentElement_when_removeCalledOnHashSetIterator);
+    RUN_TEST(
+      test_should_removeCurrentElement_when_removeCalledOnHashSetIterator
+    );
     RUN_TEST(test_should_returnFailure_when_setCalledOnHashSetIterator);
     RUN_TEST(test_should_traverseAllElements_when_constIteratorRewound);
     RUN_TEST(test_should_traverseAllElements_when_iteratorRewound);
-    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator
+    );
     RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     /* Generic-type descriptor tests */

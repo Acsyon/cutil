@@ -453,7 +453,7 @@ test_should_returnFalse_when_listsWithDifferentLengthsCompared(void)
 }
 
 static void
-_smoke_test_arraylist_generic_type(const cutil_GenericType *gt)
+sf_smoke_test_arraylist_generic_type(const cutil_GenericType *gt)
 {
     /* Arrange */
     static const size_t NUM_SLOTS = 2UL;
@@ -497,7 +497,7 @@ test_should_initAndClearAll_when_genericTypeSingletonsUsed(void)
       = CUTIL_GET_NATIVE_ARRAY_SIZE(ARRAYLIST_TYPES);
 
     for (size_t i = 0; i < NUM_ARRAYLIST_TYPES; ++i) {
-        _smoke_test_arraylist_generic_type(ARRAYLIST_TYPES[i]);
+        sf_smoke_test_arraylist_generic_type(ARRAYLIST_TYPES[i]);
     }
 }
 

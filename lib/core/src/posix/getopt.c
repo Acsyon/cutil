@@ -42,7 +42,7 @@ int cutil_optopt = '?';
  * If it points to '\0' or is NULL, we are done for the current `argv` element
  * and can advance to the next one.
  */
-static char *_nextchar;
+static char *sv_nextchar;
 
 int
 cutil_getopt(int argc, char *const *argv, const char *optstring)
@@ -70,7 +70,7 @@ cutil_getopt_long(
     }
 
     /* Analyse new `argv` element */
-    if (_nextchar == NULL || *_nextchar == '\0') {
+    if (sv_nextchar == NULL || *sv_nextchar == '\0') {
         /* Stop if we encounter `argv` element "--" */
         if (cutil_optind != argc && strcmp(argv[cutil_optind], "--") == 0) {
             return -1;
@@ -87,16 +87,16 @@ cutil_getopt_long(
         }
 
         /* For valid element, skip initial dash(es) */
-        _nextchar = &argv[cutil_optind][1];
+        sv_nextchar = &argv[cutil_optind][1];
         if (longopts != NULL && argv[cutil_optind][1] == '-') {
-            ++_nextchar;
+            ++sv_nextchar;
         }
     }
 
     /* Check if current element is a long option */
     if (longopts != NULL && argv[cutil_optind][1] == '-') {
         /* Search end of option */
-        char *optend = _nextchar;
+        char *optend = sv_nextchar;
         while (*optend != '\0' && *optend != '=') {
             ++optend;
         }
@@ -106,7 +106,7 @@ cutil_getopt_long(
         const cutil_Option *opt;
         int idx;
         for (opt = longopts, idx = 0; opt->name; ++opt, ++idx) {
-            if (strncmp(opt->name, _nextchar, optend - _nextchar) == 0) {
+            if (strncmp(opt->name, sv_nextchar, optend - sv_nextchar) == 0) {
                 found = 1;
                 break;
             }
@@ -144,7 +144,7 @@ cutil_getopt_long(
                     return (shortopts[0] == ':') ? ':' : '?';
                 }
             }
-            _nextchar += strlen(_nextchar);
+            sv_nextchar += strlen(sv_nextchar);
             if (indexptr != NULL) {
                 *indexptr = idx;
             }
@@ -159,10 +159,10 @@ cutil_getopt_long(
         if (cutil_opterr != 0) {
             const char tmp = *optend;
             *optend = '\0';
-            cutil_log_warn(_("Unrecognized option '--%s'\n"), _nextchar);
+            cutil_log_warn(_("Unrecognized option '--%s'\n"), sv_nextchar);
             *optend = tmp;
         }
-        _nextchar = NULL;
+        sv_nextchar = NULL;
         ++cutil_optind;
         cutil_optopt = 0;
         return '?';
@@ -171,13 +171,13 @@ cutil_getopt_long(
     /* Handle short option */
     {
         /* Search character in `shortopts` */
-        char c = *_nextchar;
+        char c = *sv_nextchar;
         char *tmp = strchr(shortopts, c);
-        ++_nextchar;
+        ++sv_nextchar;
 
         /* Increment `cutil_optind` if we arrived at last character of current
          * `argv` element. */
-        if (*_nextchar == '\0') {
+        if (*sv_nextchar == '\0') {
             ++cutil_optind;
         }
 
@@ -193,8 +193,8 @@ cutil_getopt_long(
         if (tmp[1] == ':') {
             /* This option requires an argument. Therefore, the next
              * character cannot be in the same `argv` element. */
-            if (*_nextchar != '\0') {
-                cutil_optarg = _nextchar;
+            if (*sv_nextchar != '\0') {
+                cutil_optarg = sv_nextchar;
                 ++cutil_optind;
             } else if (cutil_optind == argc) {
                 if (cutil_opterr != 0) {
@@ -210,7 +210,7 @@ cutil_getopt_long(
                 cutil_optarg = argv[cutil_optind];
                 ++cutil_optind;
             }
-            _nextchar = NULL;
+            sv_nextchar = NULL;
         }
         return c;
     }

@@ -20,7 +20,7 @@ priv_cutil_String_init_default(void *vs)
 }
 
 static cutil_String *
-_cutil_String_alloc(void)
+sf_cutil_String_alloc(void)
 {
     cutil_String *const s = CUTIL_MALLOC_OBJECT(s);
 
@@ -32,7 +32,7 @@ _cutil_String_alloc(void)
 cutil_String *
 cutil_String_from_string(const char *str)
 {
-    cutil_String *const s = _cutil_String_alloc();
+    cutil_String *const s = sf_cutil_String_alloc();
 
     if (str != NULL) {
         s->str = cutil_strdup(str);
@@ -45,7 +45,7 @@ cutil_String_from_string(const char *str)
 cutil_String *
 cutil_String_from_nstring(const char *str, size_t maxlen)
 {
-    cutil_String *const s = _cutil_String_alloc();
+    cutil_String *const s = sf_cutil_String_alloc();
 
     if (str != NULL) {
         s->str = cutil_strndup(str, maxlen);
@@ -194,7 +194,7 @@ priv_cutil_StringView_init_default(void *vsv)
 }
 
 static cutil_StringView *
-_cutil_StringView_alloc(void)
+sf_cutil_StringView_alloc(void)
 {
     cutil_StringView *const sv = CUTIL_MALLOC_OBJECT(sv);
 
@@ -206,7 +206,7 @@ _cutil_StringView_alloc(void)
 cutil_StringView *
 cutil_StringView_from_string(const char *str)
 {
-    cutil_StringView *const sv = _cutil_StringView_alloc();
+    cutil_StringView *const sv = sf_cutil_StringView_alloc();
 
     if (str != NULL) {
         sv->str = str;
@@ -219,7 +219,7 @@ cutil_StringView_from_string(const char *str)
 cutil_StringView *
 cutil_StringView_from_nstring(const char *str, size_t maxlen)
 {
-    cutil_StringView *const sv = _cutil_StringView_alloc();
+    cutil_StringView *const sv = sf_cutil_StringView_alloc();
 
     if (str != NULL) {
         sv->str = str;

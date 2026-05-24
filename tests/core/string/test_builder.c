@@ -981,18 +981,28 @@ main(void)
       test_should_returnFalse_when_deepEqualsGenericCalledOnDifferentStrings
     );
     RUN_TEST(test_should_returnTrue_when_deepEqualsGenericCalledOnSamePointer);
-    RUN_TEST(test_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull);
+    RUN_TEST(
+      test_should_returnFalse_when_deepEqualsGenericCalledOnNullAndNonNull
+    );
     RUN_TEST(test_should_returnTrue_when_deepEqualsGenericCalledOnTwoNulls);
     RUN_TEST(test_should_returnZero_when_compareGenericCalledOnEqualStrings);
     RUN_TEST(test_should_returnNegative_when_compareGenericCalledOnLesserFirst);
-    RUN_TEST(test_should_returnPositive_when_compareGenericCalledOnGreaterFirst);
+    RUN_TEST(
+      test_should_returnPositive_when_compareGenericCalledOnGreaterFirst
+    );
     RUN_TEST(test_should_returnNegative_when_compareGenericCalledOnNullFirst);
-    RUN_TEST(test_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder);
+    RUN_TEST(
+      test_should_returnNonZeroHash_when_hashGenericCalledOnNonEmptyBuilder
+    );
     RUN_TEST(test_should_returnZeroHash_when_hashGenericCalledOnEmptyBuilder);
     RUN_TEST(test_should_returnZeroHash_when_hashGenericCalledOnNullBuilder);
     RUN_TEST(test_should_writeNullString_when_toStringGenericCalledOnNull);
-    RUN_TEST(test_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer);
-    RUN_TEST(test_should_writeContent_when_toStringGenericCalledWithAdequateBuffer);
+    RUN_TEST(
+      test_should_returnZero_when_toStringGenericCalledWithTooSmallBuffer
+    );
+    RUN_TEST(
+      test_should_writeContent_when_toStringGenericCalledWithAdequateBuffer
+    );
     RUN_TEST(test_should_clearBuilder_when_clearGenericCalled);
     RUN_TEST(test_should_copyBuilder_when_copyGenericCalled);
 

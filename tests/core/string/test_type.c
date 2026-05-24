@@ -672,11 +672,15 @@ main(void)
     RUN_TEST(test_should_setNullAndZeroLength_when_viewCleared);
     RUN_TEST(test_should_shallowCopy_when_viewCopyCalled);
     RUN_TEST(test_should_returnTrue_when_viewDeepEqualsCalledOnEqualStrings);
-    RUN_TEST(test_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings);
+    RUN_TEST(
+      test_should_returnFalse_when_viewDeepEqualsCalledOnDifferentStrings
+    );
     RUN_TEST(test_should_returnZero_when_viewCompareCalledOnEqualStrings);
     RUN_TEST(test_should_returnNonZeroHash_when_viewHashCalledOnNonEmpty);
     RUN_TEST(test_should_returnZeroHash_when_viewHashCalledOnNullStr);
-    RUN_TEST(test_should_writeContent_when_viewToStringCalledWithAdequateBuffer);
+    RUN_TEST(
+      test_should_writeContent_when_viewToStringCalledWithAdequateBuffer
+    );
     RUN_TEST(test_should_writeNullString_when_viewToStringCalledOnNullStr);
     RUN_TEST(test_should_returnZero_when_viewToStringCalledWithTooSmallBuffer);
     RUN_TEST(test_should_respectViewLength_when_viewToStringCalledAfterNstring);

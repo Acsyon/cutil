@@ -22,13 +22,13 @@ typedef struct {
     int set_count;
     int get_const_iterator_count;
     int get_iterator_count;
-} MockMapData;
+} s_MockMapData;
 
 /* Mock vtable functions */
 static void
-_mock_free(void *data)
+sf_mock_free(void *data)
 {
-    MockMapData *const mock = data;
+    s_MockMapData *const mock = data;
     if (mock) {
         ++mock->free_count;
         free(mock);
@@ -36,41 +36,41 @@ _mock_free(void *data)
 }
 
 static void
-_mock_reset(void *data)
+sf_mock_reset(void *data)
 {
-    MockMapData *const mock = data;
+    s_MockMapData *const mock = data;
     if (mock) {
         ++mock->reset_count;
     }
 }
 
 static void
-_mock_copy(void *dst, const void *src)
+sf_mock_copy(void *dst, const void *src)
 {
-    MockMapData *const dst_mock = dst;
-    const MockMapData *const src_mock = src;
+    s_MockMapData *const dst_mock = dst;
+    const s_MockMapData *const src_mock = src;
     if (dst_mock && src_mock) {
         ++dst_mock->copy_count;
     }
 }
 
 static void *
-_mock_duplicate(const void *data)
+sf_mock_duplicate(const void *data)
 {
-    MockMapData *const src = CUTIL_CONST_CAST(data);
+    s_MockMapData *const src = CUTIL_CONST_CAST(data);
     if (!src) {
         return NULL;
     }
-    MockMapData *const dup = CUTIL_MALLOC_OBJECT(dup);
+    s_MockMapData *const dup = CUTIL_MALLOC_OBJECT(dup);
     *dup = *src;
     ++src->duplicate_count;
     return dup;
 }
 
 static size_t
-_mock_get_count(const void *data)
+sf_mock_get_count(const void *data)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_count_count;
         return (size_t) mock->get_count_val;
@@ -79,9 +79,9 @@ _mock_get_count(const void *data)
 }
 
 static int
-_mock_remove(void *data, const void *key)
+sf_mock_remove(void *data, const void *key)
 {
-    MockMapData *const mock = data;
+    s_MockMapData *const mock = data;
     CUTIL_UNUSED(key);
     if (mock) {
         ++mock->remove_count;
@@ -90,9 +90,9 @@ _mock_remove(void *data, const void *key)
 }
 
 static cutil_Bool
-_mock_contains(const void *data, const void *key)
+sf_mock_contains(const void *data, const void *key)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(key);
     if (mock) {
         ++mock->contains_count;
@@ -102,9 +102,9 @@ _mock_contains(const void *data, const void *key)
 }
 
 static int
-_mock_get(const void *data, const void *key, void *val)
+sf_mock_get(const void *data, const void *key, void *val)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(key);
     CUTIL_UNUSED(val);
     if (mock) {
@@ -114,9 +114,9 @@ _mock_get(const void *data, const void *key, void *val)
 }
 
 static const void *
-_mock_get_ptr(const void *data, const void *key)
+sf_mock_get_ptr(const void *data, const void *key)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(key);
     if (mock) {
         return mock;
@@ -125,9 +125,9 @@ _mock_get_ptr(const void *data, const void *key)
 }
 
 static int
-_mock_set(void *data, const void *key, const void *val)
+sf_mock_set(void *data, const void *key, const void *val)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(key);
     CUTIL_UNUSED(val);
     if (mock) {
@@ -137,14 +137,14 @@ _mock_set(void *data, const void *key, const void *val)
 }
 
 static const cutil_GenericType *
-_mock_get_key_type(const void *data)
+sf_mock_get_key_type(const void *data)
 {
     CUTIL_UNUSED(data);
     return CUTIL_GENERIC_TYPE_INT;
 }
 
 static const cutil_GenericType *
-_mock_get_val_type(const void *data)
+sf_mock_get_val_type(const void *data)
 {
     CUTIL_UNUSED(data);
     return CUTIL_GENERIC_TYPE_DOUBLE;
@@ -153,13 +153,13 @@ _mock_get_val_type(const void *data)
 /* --- Stub iterator infrastructure for map iterator dispatch tests --------- */
 
 static void
-_mock_map_iter_free(void *data)
+sf_mock_map_iter_free(void *data)
 {
     free(data);
 }
 
 static cutil_Bool
-_mock_map_iter_next(void *data)
+sf_mock_map_iter_next(void *data)
 {
     CUTIL_UNUSED(data);
     return CUTIL_FALSE;
@@ -167,18 +167,18 @@ _mock_map_iter_next(void *data)
 
 static const cutil_ConstIteratorType MOCK_MAP_ITER_CONST_TYPE = {
   .name = "MockMapConstIter",
-  .free = &_mock_map_iter_free,
+  .free = &sf_mock_map_iter_free,
   .rewind = NULL,
-  .next = &_mock_map_iter_next,
+  .next = &sf_mock_map_iter_next,
   .get = NULL,
   .get_ptr = NULL,
 };
 
 static const cutil_IteratorType MOCK_MAP_ITER_TYPE = {
   .name = "MockMapIter",
-  .free = &_mock_map_iter_free,
+  .free = &sf_mock_map_iter_free,
   .rewind = NULL,
-  .next = &_mock_map_iter_next,
+  .next = &sf_mock_map_iter_next,
   .get = NULL,
   .get_ptr = NULL,
   .set = NULL,
@@ -186,9 +186,9 @@ static const cutil_IteratorType MOCK_MAP_ITER_TYPE = {
 };
 
 static cutil_ConstIterator *
-_mock_get_const_iterator(const void *data)
+sf_mock_get_const_iterator(const void *data)
 {
-    MockMapData *const mock = CUTIL_CONST_CAST(data);
+    s_MockMapData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_const_iterator_count;
     }
@@ -199,9 +199,9 @@ _mock_get_const_iterator(const void *data)
 }
 
 static cutil_Iterator *
-_mock_get_iterator(void *data)
+sf_mock_get_iterator(void *data)
 {
-    MockMapData *const mock = data;
+    s_MockMapData *const mock = data;
     if (mock) {
         ++mock->get_iterator_count;
     }
@@ -214,27 +214,27 @@ _mock_get_iterator(void *data)
 /* Mock MapType */
 static const cutil_MapType MOCK_MAP_TYPE = {
   .name = "MockMap",
-  .free = &_mock_free,
-  .reset = &_mock_reset,
-  .copy = &_mock_copy,
-  .duplicate = &_mock_duplicate,
-  .get_count = &_mock_get_count,
-  .remove = &_mock_remove,
-  .contains = &_mock_contains,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
-  .set = &_mock_set,
-  .get_key_type = &_mock_get_key_type,
-  .get_val_type = &_mock_get_val_type,
-  .get_const_iterator = &_mock_get_const_iterator,
-  .get_iterator = &_mock_get_iterator,
+  .free = &sf_mock_free,
+  .reset = &sf_mock_reset,
+  .copy = &sf_mock_copy,
+  .duplicate = &sf_mock_duplicate,
+  .get_count = &sf_mock_get_count,
+  .remove = &sf_mock_remove,
+  .contains = &sf_mock_contains,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
+  .set = &sf_mock_set,
+  .get_key_type = &sf_mock_get_key_type,
+  .get_val_type = &sf_mock_get_val_type,
+  .get_const_iterator = &sf_mock_get_const_iterator,
+  .get_iterator = &sf_mock_get_iterator,
 };
 
 static cutil_Map *
-_create_mock_map(void)
+sf_create_mock_map(void)
 {
-    MockMapData *const data = CUTIL_MALLOC_OBJECT(data);
-    *data = (MockMapData) {0};
+    s_MockMapData *const data = CUTIL_MALLOC_OBJECT(data);
+    *data = (s_MockMapData) {0};
     cutil_Map *const map = CUTIL_MALLOC_OBJECT(map);
     map->vtable = &MOCK_MAP_TYPE;
     map->data = data;
@@ -248,13 +248,13 @@ test_should_returnTrue_when_mapTypesAreIdentical(void)
     /* Arrange */
     const cutil_MapType type1 = {
       .name = "Test",
-      .free = &_mock_free,
-      .reset = &_mock_reset,
+      .free = &sf_mock_free,
+      .reset = &sf_mock_reset,
     };
     const cutil_MapType type2 = {
       .name = "Test",
-      .free = &_mock_free,
-      .reset = &_mock_reset,
+      .free = &sf_mock_free,
+      .reset = &sf_mock_reset,
     };
 
     /* Act */
@@ -283,7 +283,7 @@ static void
 test_should_callFreeFunction_when_mapIsFreed(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
 
     /* Act */
     cutil_Map_free(map);
@@ -307,8 +307,8 @@ static void
 test_should_callClearFunction_when_mapIsCleared(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     const int initial_reset_count = mock->reset_count;
 
     /* Act */
@@ -326,9 +326,9 @@ static void
 test_should_callCopyFunction_when_mapIsCopied(void)
 {
     /* Arrange */
-    cutil_Map *const dst_map = _create_mock_map();
-    cutil_Map *const src_map = _create_mock_map();
-    MockMapData *const dst_mock = dst_map->data;
+    cutil_Map *const dst_map = sf_create_mock_map();
+    cutil_Map *const src_map = sf_create_mock_map();
+    s_MockMapData *const dst_mock = dst_map->data;
     const int initial_copy_count = dst_mock->copy_count;
 
     /* Act */
@@ -346,12 +346,12 @@ static void
 test_should_notCopy_when_mapTypesIncompatible(void)
 {
     /* Arrange */
-    cutil_MapType type1 = {.name = "Type1", .copy = &_mock_copy};
-    cutil_MapType type2 = {.name = "Type2", .copy = &_mock_copy};
-    MockMapData *const dst_data = CUTIL_MALLOC_OBJECT(dst_data);
-    *dst_data = (MockMapData) {0};
-    MockMapData *const src_data = CUTIL_MALLOC_OBJECT(src_data);
-    *src_data = (MockMapData) {0};
+    cutil_MapType type1 = {.name = "Type1", .copy = &sf_mock_copy};
+    cutil_MapType type2 = {.name = "Type2", .copy = &sf_mock_copy};
+    s_MockMapData *const dst_data = CUTIL_MALLOC_OBJECT(dst_data);
+    *dst_data = (s_MockMapData) {0};
+    s_MockMapData *const src_data = CUTIL_MALLOC_OBJECT(src_data);
+    *src_data = (s_MockMapData) {0};
     cutil_Map dst_map = {.vtable = &type1, .data = dst_data};
     cutil_Map src_map = {.vtable = &type2, .data = src_data};
     const int initial_copy_count = dst_data->copy_count;
@@ -372,8 +372,8 @@ static void
 test_should_returnDuplicateMap_when_mapIsDuplicated(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     mock->get_count_val = 42;
     const int initial_dup_count = mock->duplicate_count;
 
@@ -384,7 +384,7 @@ test_should_returnDuplicateMap_when_mapIsDuplicated(void)
     TEST_ASSERT_NOT_NULL(dup);
     TEST_ASSERT_EQUAL_PTR(map->vtable, dup->vtable);
     TEST_ASSERT_NOT_NULL(dup->data);
-    MockMapData *const dup_mock = dup->data;
+    s_MockMapData *const dup_mock = dup->data;
     TEST_ASSERT_EQUAL_INT(initial_dup_count + 1, mock->duplicate_count);
     TEST_ASSERT_EQUAL_INT(42, dup_mock->get_count_val);
 
@@ -398,8 +398,8 @@ static void
 test_should_returnCount_when_mapCountIsRequested(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     mock->get_count_val = 100;
 
     /* Act */
@@ -416,8 +416,8 @@ static void
 test_should_returnZero_when_mapIsEmpty(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     mock->get_count_val = 0;
 
     /* Act */
@@ -435,8 +435,8 @@ static void
 test_should_callRemoveFunction_when_keyIsRemoved(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     const int initial_remove_count = mock->remove_count;
     const int key = 42;
 
@@ -456,7 +456,7 @@ static void
 test_should_returnTrue_when_mapContainsKey(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
     const int key = 42;
 
     /* Act */
@@ -474,8 +474,8 @@ static void
 test_should_callGetFunction_when_valueIsRetrieved(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     const int initial_get_count = mock->get_count_count;
     const int key = 42;
     int value = 0;
@@ -496,7 +496,7 @@ static void
 test_should_returnPointer_when_keyIsFound(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
     const int key = 42;
 
     /* Act */
@@ -515,8 +515,8 @@ static void
 test_should_callSetFunction_when_keyValuePairIsInserted(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
     const int initial_set_count = mock->set_count;
     const int key = 42;
     const int value = 100;
@@ -537,7 +537,7 @@ static void
 test_should_returnVtable_when_vtableIsRequested(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
 
     /* Act */
     const cutil_MapType *const vtable = cutil_Map_get_vtable(map);
@@ -562,7 +562,7 @@ static void
 test_should_callGetKeyTypeFunction_when_keyTypeIsQueried(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
 
     /* Act */
     const cutil_GenericType *const key_type = cutil_Map_get_key_type(map);
@@ -579,7 +579,7 @@ static void
 test_should_callGetValTypeFunction_when_valTypeIsQueried(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
+    cutil_Map *const map = sf_create_mock_map();
 
     /* Act */
     const cutil_GenericType *const val_type = cutil_Map_get_val_type(map);
@@ -597,8 +597,8 @@ static void
 test_should_callGetConstIterator_when_getConstIteratorCalledOnMap(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
 
     /* Act */
     cutil_ConstIterator *const it = cutil_Map_get_const_iterator(map);
@@ -616,8 +616,8 @@ static void
 test_should_callGetIterator_when_getIteratorCalledOnMap(void)
 {
     /* Arrange */
-    cutil_Map *const map = _create_mock_map();
-    MockMapData *const mock = map->data;
+    cutil_Map *const map = sf_create_mock_map();
+    s_MockMapData *const mock = map->data;
 
     /* Act */
     cutil_Iterator *const it = cutil_Map_get_iterator(map);
@@ -657,13 +657,13 @@ typedef cutil_Map *(*MapFactory)(void);
 static MapFactory g_current_factory = NULL;
 
 static cutil_Map *
-_hashmap_factory_int_int(void)
+sf_hashmap_factory_int_int(void)
 {
     return cutil_HashMap_alloc(CUTIL_GENERIC_TYPE_INT, CUTIL_GENERIC_TYPE_INT);
 }
 
 static cutil_Map *
-_hashmap_factory_int_double(void)
+sf_hashmap_factory_int_double(void)
 {
     return cutil_HashMap_alloc(
       CUTIL_GENERIC_TYPE_INT, CUTIL_GENERIC_TYPE_DOUBLE
@@ -671,7 +671,7 @@ _hashmap_factory_int_double(void)
 }
 
 static cutil_Map *
-_hashmap_factory_u32_i8(void)
+sf_hashmap_factory_u32_i8(void)
 {
     return cutil_HashMap_alloc(CUTIL_GENERIC_TYPE_U32, CUTIL_GENERIC_TYPE_I8);
 }
@@ -1054,17 +1054,17 @@ test_should_setAndGetSucceed_withVariousKeyValueTypes(void)
         const void *const val;
     } SETUPS[] = {
       {
-        .factory = &_hashmap_factory_int_int,
+        .factory = &sf_hashmap_factory_int_int,
         .key = (const int[]) {1},
         .val = (const int[]) {42},
       },
       {
-        .factory = &_hashmap_factory_int_double,
+        .factory = &sf_hashmap_factory_int_double,
         .key = (const int[]) {1},
         .val = (const double[]) {42.0},
       },
       {
-        .factory = &_hashmap_factory_u32_i8,
+        .factory = &sf_hashmap_factory_u32_i8,
         .key = (const uint32_t[]) {1},
         .val = (const int8_t[]) {42},
       },
@@ -1402,7 +1402,9 @@ test_should_returnZero_when_compareCalledWithSamePointer(void)
 }
 
 static void
-test_should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount(void)
+test_should_returnConsistentSign_when_compareCalledOnMapsWithDifferentCount(
+  void
+)
 {
     /* Arrange */
     cutil_Map *const small_map = g_current_factory();
@@ -1652,7 +1654,7 @@ main(void)
     RUN_TEST(test_should_returnNull_when_getIteratorCalledOnNullMap);
 
     /* --- HashMap (INT, INT) — full interface coverage --- */
-    g_current_factory = _hashmap_factory_int_int;
+    g_current_factory = sf_hashmap_factory_int_int;
     RUN_TEST(test_should_returnSuccess_when_singleEntrySet);
     RUN_TEST(test_should_returnCorrectValue_when_getAfterSet);
     RUN_TEST(test_should_returnNonNullPtr_when_getPtrAfterSet);
@@ -1675,15 +1677,19 @@ main(void)
     RUN_TEST(test_should_traverseAllKeys_when_constIteratorRewoundOnMap);
     RUN_TEST(test_should_traverseAllKeys_when_iteratorRewoundOnMap);
     RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstMap);
-    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableMap
+    );
 
     /* --- deep_equals / compare / hash / to_string (HashMapIntInt) --- */
-    g_current_factory = _hashmap_factory_int_int;
+    g_current_factory = sf_hashmap_factory_int_int;
     RUN_TEST(test_should_returnTrue_when_deepEqualsCalledOnMapsWithSameEntries);
     RUN_TEST(
       test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentValues
     );
-    RUN_TEST(test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount);
+    RUN_TEST(
+      test_should_returnFalse_when_deepEqualsCalledOnMapsWithDifferentCount
+    );
     RUN_TEST(test_should_handleNullInputs_when_deepEqualsCalledWithNulls);
     RUN_TEST(test_should_returnZero_when_compareCalledWithSamePointer);
     RUN_TEST(

@@ -7,78 +7,78 @@
 #include <cutil/core/util/macro.h>
 
 static void
-_noop_one(void *obj)
+sf_noop_one(void *obj)
 {
     CUTIL_UNUSED(obj);
 }
 
-static size_t _init_ctr = 0;
+static size_t sv_init_ctr = 0;
 
 static void
-_init_fnc_count(void *obj)
+sf_init_fnc_count(void *obj)
 {
     CUTIL_UNUSED(obj);
-    ++_init_ctr;
+    ++sv_init_ctr;
 }
 
-static size_t _clear_ctr = 0;
+static size_t sv_clear_ctr = 0;
 
 static void
-_clear_fnc_count(void *obj)
+sf_clear_fnc_count(void *obj)
 {
     CUTIL_UNUSED(obj);
-    ++_clear_ctr;
+    ++sv_clear_ctr;
 }
 
-static size_t _copy_ctr = 0;
+static size_t sv_copy_ctr = 0;
 
 static void
-_copy_fnc_count(void *dst, const void *src)
+sf_copy_fnc_count(void *dst, const void *src)
 {
     CUTIL_UNUSED(dst);
     CUTIL_UNUSED(src);
-    ++_copy_ctr;
+    ++sv_copy_ctr;
 }
 
-static size_t _hash_ctr = 0;
+static size_t sv_hash_ctr = 0;
 
 static uint64_t
-_hash_fnc_count(const void *ptr)
+sf_hash_fnc_count(const void *ptr)
 {
     CUTIL_UNUSED(ptr);
-    ++_hash_ctr;
+    ++sv_hash_ctr;
     return UINT64_C(0xCAFEBABE);
 }
 
-static size_t _comp_ctr = 0;
+static size_t sv_comp_ctr = 0;
 
 static int
-_comp_fnc_count(const void *lhs, const void *rhs)
+sf_comp_fnc_count(const void *lhs, const void *rhs)
 {
     CUTIL_UNUSED(lhs);
     CUTIL_UNUSED(rhs);
-    ++_comp_ctr;
+    ++sv_comp_ctr;
     return 42;
 }
 
-static size_t _deepeq_ctr = 0;
+static size_t sv_deepeq_ctr = 0;
 
 static cutil_Bool
-_deepeq_fnc_count(const void *lhs, const void *rhs)
+sf_deepeq_fnc_count(const void *lhs, const void *rhs)
 {
     CUTIL_UNUSED(lhs);
     CUTIL_UNUSED(rhs);
-    ++_deepeq_ctr;
+    ++sv_deepeq_ctr;
     return true;
 }
 
-static size_t _tostring_ctr = 0;
+static size_t sv_tostring_ctr = 0;
 
 static size_t
-_tostring_fnc_count(const void *data, char *buf, size_t bufsize)
+sf_tostring_fnc_count(const void *data, char *buf, size_t bufsize)
 {
     CUTIL_UNUSED(data);
-    ++_tostring_ctr;
+    ++sv_tostring_ctr;
     const char *const msg = "OK";
     const size_t len = 2; /* strlen("OK") */
     if (buf == NULL || bufsize == 0) {
@@ -157,8 +157,8 @@ static void
 test_should_compareEqual_when_typesAreIdentical(void)
 {
     /* Arrange */
-    const cutil_GenericType type1 = {.size = 4, .init = &_noop_one};
-    const cutil_GenericType type2 = {.size = 4, .init = &_noop_one};
+    const cutil_GenericType type1 = {.size = 4, .init = &sf_noop_one};
+    const cutil_GenericType type2 = {.size = 4, .init = &sf_noop_one};
 
     /* Act */
     const cutil_Bool equals = cutil_GenericType_equals(&type1, &type2);
@@ -187,15 +187,15 @@ test_should_callInitAppropriateCount_when_applyInit(void)
     /* Arrange */
     int ARRAY[64] = {0};
     const cutil_GenericType type
-      = {.size = sizeof *ARRAY, .init = &_init_fnc_count};
-    _init_ctr = 0;
+      = {.size = sizeof *ARRAY, .init = &sf_init_fnc_count};
+    sv_init_ctr = 0;
 
     /* Act */
     const size_t num = 32;
     cutil_GenericType_apply_init_mult(&type, ARRAY, num);
 
     /* Assert */
-    TEST_ASSERT_EQUAL_size_t(num, _init_ctr);
+    TEST_ASSERT_EQUAL_size_t(num, sv_init_ctr);
 }
 
 static void
@@ -204,15 +204,15 @@ test_should_callClearAppropriateCount_when_applyClear(void)
     /* Arrange */
     int ARRAY[64] = {0};
     const cutil_GenericType type
-      = {.size = sizeof *ARRAY, .clear = &_clear_fnc_count};
-    _clear_ctr = 0;
+      = {.size = sizeof *ARRAY, .clear = &sf_clear_fnc_count};
+    sv_clear_ctr = 0;
     const size_t num = 24;
 
     /* Act */
     cutil_GenericType_apply_clear_mult(&type, ARRAY, num);
 
     /* Assert */
-    TEST_ASSERT_EQUAL_size_t(num, _clear_ctr);
+    TEST_ASSERT_EQUAL_size_t(num, sv_clear_ctr);
 }
 
 static void
@@ -222,15 +222,15 @@ test_should_callCopyAppropriateCount_when_applyCopy(void)
     int SRC[64] = {0};
     int DST[64] = {0};
     const cutil_GenericType type
-      = {.size = sizeof *SRC, .copy = &_copy_fnc_count};
-    _copy_ctr = 0;
+      = {.size = sizeof *SRC, .copy = &sf_copy_fnc_count};
+    sv_copy_ctr = 0;
     const size_t num = 16;
 
     /* Act */
     cutil_GenericType_apply_copy_mult(&type, DST, SRC, num);
 
     /* Assert */
-    TEST_ASSERT_EQUAL_size_t(num, _copy_ctr);
+    TEST_ASSERT_EQUAL_size_t(num, sv_copy_ctr);
 }
 
 static void
@@ -262,14 +262,14 @@ test_should_callInitOnNewElements_when_reallocGrows(void)
     const size_t new_num = 20;
     int *data = CUTIL_MALLOC_MULT(data, old_num);
     const cutil_GenericType type
-      = {.size = sizeof *data, .init = &_init_fnc_count};
-    _init_ctr = 0;
+      = {.size = sizeof *data, .init = &sf_init_fnc_count};
+    sv_init_ctr = 0;
 
     /* Act */
     data = cutil_GenericType_apply_realloc(&type, data, old_num, new_num);
 
     /* Assert */
-    TEST_ASSERT_EQUAL_size_t(new_num - old_num, _init_ctr);
+    TEST_ASSERT_EQUAL_size_t(new_num - old_num, sv_init_ctr);
     free(data);
 }
 
@@ -281,14 +281,14 @@ test_should_callClearOnRemovedElements_when_reallocShrinks(void)
     const size_t new_num = 10;
     int *data = CUTIL_MALLOC_MULT(data, old_num);
     const cutil_GenericType type
-      = {.size = sizeof(int), .clear = &_clear_fnc_count};
-    _clear_ctr = 0;
+      = {.size = sizeof(int), .clear = &sf_clear_fnc_count};
+    sv_clear_ctr = 0;
 
     /* Act */
     data = cutil_GenericType_apply_realloc(&type, data, old_num, new_num);
 
     /* Assert */
-    TEST_ASSERT_EQUAL_size_t(old_num - new_num, _clear_ctr);
+    TEST_ASSERT_EQUAL_size_t(old_num - new_num, sv_clear_ctr);
     free(data);
 }
 
@@ -314,16 +314,16 @@ test_should_useCustomHash_when_functionIsProvided(void)
     const int val = 42;
     const cutil_GenericType type = {
       .size = sizeof val,
-      .hash = &_hash_fnc_count,
+      .hash = &sf_hash_fnc_count,
     };
-    _hash_ctr = 0;
+    sv_hash_ctr = 0;
 
     /* Act */
     const uint64_t result = cutil_GenericType_apply_hash(&type, &val);
 
     /* Assert */
     TEST_ASSERT_EQUAL_UINT64(UINT64_C(0xCAFEBABE), result);
-    TEST_ASSERT_EQUAL_size_t(1, _hash_ctr);
+    TEST_ASSERT_EQUAL_size_t(1, sv_hash_ctr);
 }
 
 static void
@@ -347,16 +347,16 @@ test_should_useCustomCompare_when_functionIsProvided(void)
     const int a = 5, b = 10;
     const cutil_GenericType type = {
       .size = sizeof a,
-      .comp = &_comp_fnc_count,
+      .comp = &sf_comp_fnc_count,
     };
-    _comp_ctr = 0;
+    sv_comp_ctr = 0;
 
     /* Act */
     const int result = cutil_GenericType_apply_compare(&type, &a, &b);
 
     /* Assert */
     TEST_ASSERT_EQUAL_INT(42, result);
-    TEST_ASSERT_EQUAL_size_t(1, _comp_ctr);
+    TEST_ASSERT_EQUAL_size_t(1, sv_comp_ctr);
 }
 
 static void
@@ -380,8 +380,8 @@ test_should_useCustomDeepEquals_when_functionIsProvided(void)
     /* Arrange */
     const int a = 7, b = 9;
     const cutil_GenericType type
-      = {.size = sizeof a, .deep_equals = &_deepeq_fnc_count};
-    _deepeq_ctr = 0;
+      = {.size = sizeof a, .deep_equals = &sf_deepeq_fnc_count};
+    sv_deepeq_ctr = 0;
 
     /* Act */
     const cutil_Bool result
@@ -389,7 +389,7 @@ test_should_useCustomDeepEquals_when_functionIsProvided(void)
 
     /* Assert */
     TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_EQUAL_size_t(1, _deepeq_ctr);
+    TEST_ASSERT_EQUAL_size_t(1, sv_deepeq_ctr);
 }
 
 static void
@@ -416,8 +416,8 @@ test_should_useCustomToString_when_functionIsProvided(void)
     /* Arrange */
     const int val = 123;
     const cutil_GenericType type
-      = {.size = sizeof val, .to_string = &_tostring_fnc_count};
-    _tostring_ctr = 0;
+      = {.size = sizeof val, .to_string = &sf_tostring_fnc_count};
+    sv_tostring_ctr = 0;
     char buf[256];
 
     /* Act */
@@ -427,7 +427,7 @@ test_should_useCustomToString_when_functionIsProvided(void)
     /* Assert */
     TEST_ASSERT_EQUAL_STRING("OK", buf);
     TEST_ASSERT_EQUAL_size_t(2, len);
-    TEST_ASSERT_EQUAL_size_t(1, _tostring_ctr);
+    TEST_ASSERT_EQUAL_size_t(1, sv_tostring_ctr);
 }
 
 static void

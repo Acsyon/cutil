@@ -26,7 +26,7 @@
 /**
  * @brief Initial capacity for logger handler storage.
  *
- * Defines how many log handlers (`_cutil_LogHandler`) a new logger can hold
+ * Defines how many log handlers (`sf_cutil_LogHandler`) a new logger can hold
  * before requiring reallocation.
  *
  * @note Current implementation uses a fixed-size array that warns when full.
@@ -54,14 +54,14 @@ static const char *const CUTIL_LOG_LEVEL_PREFIXES[] = {
  * @note Access via `cutil_get_global_logger()`/`cutil_set_global_logger()`.
  * @warning Never modify directly - use designated functions.
  */
-static cutil_Logger *_cutil_global_logger = NULL;
+static cutil_Logger *sv_cutil_global_logger = NULL;
 
 /**
  * @brief Tracks whether `atexit()` cleanup has been registered.
  *
  * Prevents duplicate registration of `_cutil_free_global_logger`.
  */
-static cutil_Bool _free_global_logger_at_exit = false;
+static cutil_Bool sv_free_global_logger_at_exit = false;
 
 /**
  * Validates if a log level value is within the defined range.
@@ -72,7 +72,7 @@ static cutil_Bool _free_global_logger_at_exit = false;
  *         false otherwise
  */
 static inline cutil_Bool
-_cutil_LogLevel_is_valid(enum cutil_LogLevel level)
+sf_cutil_LogLevel_is_valid(enum cutil_LogLevel level)
 {
     return !(level < CUTIL_LOG_TRACE || level > CUTIL_LOG_FATAL);
 }
@@ -85,7 +85,7 @@ _cutil_LogLevel_is_valid(enum cutil_LogLevel level)
  * - A minimum log level filter
  * - A flag controlling stream lifecycle management
  */
-struct _cutil_LogHandler {
+struct s_cutil_LogHandler {
     FILE *stream;              /**< Output stream (e.g., stdout, file) */
     enum cutil_LogLevel level; /**< Minimum log level to process */
     cutil_Bool close; /**< Should stream be closed when handler is destroyed? */
@@ -100,8 +100,8 @@ struct _cutil_LogHandler {
  * @param[in] close Whether to close the stream when the handler is destroyed
  */
 static void
-_cutil_LogHandler_init(
-  struct _cutil_LogHandler *handler,
+sf_cutil_LogHandler_init(
+  struct s_cutil_LogHandler *handler,
   FILE *stream,
   enum cutil_LogLevel level,
   cutil_Bool close
@@ -121,7 +121,7 @@ _cutil_LogHandler_init(
  * @param[in] handler Pointer to the handler to close
  */
 static void
-_cutil_LogHandler_close(struct _cutil_LogHandler *handler)
+sf_cutil_LogHandler_close(struct s_cutil_LogHandler *handler)
 {
     CUTIL_NULL_CHECK(handler);
     if (handler->close) {
@@ -144,8 +144,8 @@ _cutil_LogHandler_close(struct _cutil_LogHandler *handler)
  * 3. Newline-terminated output
  */
 static void
-_cutil_LogHandler_vmessage(
-  struct _cutil_LogHandler *handler,
+sf_cutil_LogHandler_vmessage(
+  struct s_cutil_LogHandler *handler,
   enum cutil_LogLevel level,
   const char *format,
   va_list args
@@ -174,11 +174,11 @@ _cutil_LogHandler_vmessage(
  * @note All instances should be created via `cutil_Logger_create()` or
  *       `cutil_Logger_create_default()`.
  */
-struct _cutil_Logger {
+struct s_cutil_Logger {
     enum cutil_LogLevel level; /**< Minimum log level for message processing */
     int num_handlers;          /**< Current number of active handlers */
-    struct _cutil_LogHandler *handlers; /**< Array of log output handlers */
-    int capacity;                       /**< Allocated size of handlers array */
+    struct s_cutil_LogHandler *handlers; /**< Array of log output handlers */
+    int capacity; /**< Allocated size of handlers array */
 };
 
 cutil_Logger *
@@ -223,7 +223,7 @@ cutil_Logger_free(cutil_Logger *log)
     CUTIL_RETURN_IF_NULL(log);
 
     for (int i = 0; i < log->num_handlers; ++i) {
-        _cutil_LogHandler_close(&log->handlers[i]);
+        sf_cutil_LogHandler_close(&log->handlers[i]);
     }
     free(log->handlers);
 
@@ -241,7 +241,7 @@ enum cutil_LogLevel
 cutil_Logger_set_level(cutil_Logger *log, enum cutil_LogLevel level)
 {
     CUTIL_NULL_CHECK(log);
-    if (!_cutil_LogLevel_is_valid(level)) {
+    if (!sf_cutil_LogLevel_is_valid(level)) {
         cutil_Logger_warn(log, "Cannot change log level: invalid value!");
         return log->level;
     }
@@ -273,8 +273,9 @@ cutil_Logger_add_handler_full(
         );
         return;
     }
-    struct _cutil_LogHandler *const handler = &log->handlers[log->num_handlers];
-    _cutil_LogHandler_init(handler, stream, level, close);
+    struct s_cutil_LogHandler *const handler
+      = &log->handlers[log->num_handlers];
+    sf_cutil_LogHandler_init(handler, stream, level, close);
     ++log->num_handlers;
 }
 
@@ -289,7 +290,7 @@ cutil_Logger_add_handler_full(
  * @param[in] args va_list of variadic arguments
  */
 static void
-_cutil_Logger_vmessage(
+sf_cutil_Logger_vmessage(
   cutil_Logger *log, enum cutil_LogLevel level, const char *format, va_list args
 )
 {
@@ -299,14 +300,14 @@ _cutil_Logger_vmessage(
         return;
     }
     for (int i = 0; i < log->num_handlers; ++i) {
-        _cutil_LogHandler_vmessage(&log->handlers[i], level, format, args);
+        sf_cutil_LogHandler_vmessage(&log->handlers[i], level, format, args);
     }
 }
 
 void
 cutil_Logger_vtrace(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_TRACE, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_TRACE, format, args);
 }
 
 void
@@ -321,7 +322,7 @@ cutil_Logger_trace(cutil_Logger *log, const char *format, ...)
 void
 cutil_Logger_vdebug(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_DEBUG, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_DEBUG, format, args);
 }
 
 void
@@ -336,7 +337,7 @@ cutil_Logger_debug(cutil_Logger *log, const char *format, ...)
 void
 cutil_Logger_vinfo(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_INFO, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_INFO, format, args);
 }
 
 void
@@ -351,7 +352,7 @@ cutil_Logger_info(cutil_Logger *log, const char *format, ...)
 void
 cutil_Logger_vwarn(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_WARN, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_WARN, format, args);
 }
 
 void
@@ -366,7 +367,7 @@ cutil_Logger_warn(cutil_Logger *log, const char *format, ...)
 void
 cutil_Logger_verror(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_ERROR, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_ERROR, format, args);
 }
 
 void
@@ -381,7 +382,7 @@ cutil_Logger_error(cutil_Logger *log, const char *format, ...)
 void
 cutil_Logger_vfatal(cutil_Logger *log, const char *format, va_list args)
 {
-    _cutil_Logger_vmessage(log, CUTIL_LOG_FATAL, format, args);
+    sf_cutil_Logger_vmessage(log, CUTIL_LOG_FATAL, format, args);
 }
 
 void
@@ -399,27 +400,27 @@ cutil_Logger_fatal(cutil_Logger *log, const char *format, ...)
  * @note Registered via atexit() when the global logger is first set.
  */
 static void
-_cutil_free_global_logger(void)
+sf_cutil_free_global_logger(void)
 {
-    cutil_Logger_free(_cutil_global_logger);
-    _cutil_global_logger = NULL;
+    cutil_Logger_free(sv_cutil_global_logger);
+    sv_cutil_global_logger = NULL;
 }
 
 cutil_Logger *
 cutil_get_global_logger(void)
 {
-    return _cutil_global_logger;
+    return sv_cutil_global_logger;
 }
 
 cutil_Logger *
 cutil_set_global_logger(cutil_Logger *log)
 {
-    if (!_free_global_logger_at_exit) {
-        atexit(&_cutil_free_global_logger);
-        _free_global_logger_at_exit = true;
+    if (!sv_free_global_logger_at_exit) {
+        atexit(&sf_cutil_free_global_logger);
+        sv_free_global_logger_at_exit = true;
     }
-    cutil_Logger *const old_logger = _cutil_global_logger;
-    _cutil_global_logger = log;
+    cutil_Logger *const old_logger = sv_cutil_global_logger;
+    sv_cutil_global_logger = log;
     return old_logger;
 }
 
@@ -433,16 +434,18 @@ cutil_set_global_logger(cutil_Logger *log)
  * @note If no global logger is set, the message is silently dropped.
  */
 static void
-_cutil_log_vmessage(enum cutil_LogLevel level, const char *format, va_list args)
+sf_cutil_log_vmessage(
+  enum cutil_LogLevel level, const char *format, va_list args
+)
 {
     cutil_Logger *const log = cutil_get_global_logger();
-    _cutil_Logger_vmessage(log, level, format, args);
+    sf_cutil_Logger_vmessage(log, level, format, args);
 }
 
 void
 cutil_log_vtrace(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_TRACE, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_TRACE, format, args);
 }
 
 void
@@ -457,7 +460,7 @@ cutil_log_trace(const char *format, ...)
 void
 cutil_log_vdebug(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_DEBUG, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_DEBUG, format, args);
 }
 
 void
@@ -472,7 +475,7 @@ cutil_log_debug(const char *format, ...)
 void
 cutil_log_vinfo(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_INFO, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_INFO, format, args);
 }
 
 void
@@ -487,7 +490,7 @@ cutil_log_info(const char *format, ...)
 void
 cutil_log_vwarn(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_WARN, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_WARN, format, args);
 }
 
 void
@@ -502,7 +505,7 @@ cutil_log_warn(const char *format, ...)
 void
 cutil_log_verror(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_ERROR, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_ERROR, format, args);
 }
 
 void
@@ -517,7 +520,7 @@ cutil_log_error(const char *format, ...)
 void
 cutil_log_vfatal(const char *format, va_list args)
 {
-    _cutil_log_vmessage(CUTIL_LOG_FATAL, format, args);
+    sf_cutil_log_vmessage(CUTIL_LOG_FATAL, format, args);
 }
 
 void

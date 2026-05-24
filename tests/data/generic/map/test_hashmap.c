@@ -637,7 +637,9 @@ main(void)
     RUN_TEST(test_should_returnKeyType_forVariousTypes);
     RUN_TEST(test_should_returnValueType_when_queried);
     RUN_TEST(test_should_returnValueType_forVariousTypes);
-    RUN_TEST(test_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs);
+    RUN_TEST(
+      test_should_preserveKeyAndValueTypes_whenCreatedWithDifferentPairs
+    );
 
     /* Iterator tests */
     RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalledOnHashMap);
@@ -649,7 +651,9 @@ main(void)
     RUN_TEST(test_should_returnFailure_when_setCalledOnHashMapIterator);
     RUN_TEST(test_should_traverseAllKeys_when_constIteratorRewound);
     RUN_TEST(test_should_traverseAllKeys_when_iteratorRewound);
-    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator
+    );
     RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     return UNITY_END();

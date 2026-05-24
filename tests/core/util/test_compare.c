@@ -6,7 +6,7 @@
 #include <cutil/core/util/macro.h>
 
 static void
-_string_comparison_bytes(const char *const data[2])
+sf_string_comparison_bytes(const char *const data[2])
 {
     const size_t len0 = strlen(data[0]);
     const size_t len1 = strlen(data[1]);
@@ -40,9 +40,9 @@ test_should_compareBytesCorrectly_when_compareDataCompletely(void)
 
     /* Act */
     /* Assert */
-    _string_comparison_bytes((const char *[]) {DATA0, DATA0});
+    sf_string_comparison_bytes((const char *[]) {DATA0, DATA0});
     for (size_t i = 0; i < NUM_DATA; ++i) {
-        _string_comparison_bytes(DATA[i]);
+        sf_string_comparison_bytes(DATA[i]);
     }
     TEST_ASSERT_EQUAL_INT(0, cutil_compare_bytes(DATA1, DATA1, sizeof DATA1));
     TEST_ASSERT_EQUAL_INT(1, cutil_compare_bytes(DATA1, DATA2, sizeof DATA1));

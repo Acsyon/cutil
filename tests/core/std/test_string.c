@@ -50,7 +50,7 @@ test_should_returnMaxlen_when_stringIsLongerThanMaxlen(void)
 }
 
 static void
-_strdup_test_fnc_aux(size_t num, const char *const strs[])
+sf_strdup_test_fnc_aux(size_t num, const char *const strs[])
 {
     for (size_t i = 0; i < num; ++i) {
         const char *const str = strs[i];
@@ -71,8 +71,8 @@ test_should_duplicateStringCorrectly_when_useStrdup(void)
 {
     /* Act */
     /* Assert */
-    _strdup_test_fnc_aux(NUM_SHORT, SHORT_STRINGS);
-    _strdup_test_fnc_aux(NUM_LONG, LONG_STRINGS);
+    sf_strdup_test_fnc_aux(NUM_SHORT, SHORT_STRINGS);
+    sf_strdup_test_fnc_aux(NUM_LONG, LONG_STRINGS);
 }
 
 static void

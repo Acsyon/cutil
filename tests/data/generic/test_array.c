@@ -329,7 +329,7 @@ test_should_getPointerCorrectly(void)
 }
 
 static inline size_t
-_int_to_string(const void *data, char *buf, size_t buflen)
+sf_int_to_string(const void *data, char *buf, size_t buflen)
 {
     return CUTIL_GENERIC_TYPE_INT->to_string(data, buf, buflen);
 }
@@ -657,7 +657,7 @@ test_should_toStringSerializeEmptyArray(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     cutil_Array *const arr = cutil_Array_alloc(&type, 0);
 
     char buf[8];
@@ -678,7 +678,7 @@ test_should_toStringSerializeElements(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 3;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -705,7 +705,7 @@ test_should_toStringReturnRequiredSize_when_bufIsNull(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 3;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -739,7 +739,7 @@ test_should_toStringReturnZero_when_bufferTooSmall(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 2;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -765,7 +765,7 @@ test_should_toStringWriteNulTerminator(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 2;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -1181,7 +1181,9 @@ main(void)
     RUN_TEST(test_should_returnFalse_when_nextCalledOnCapacityZeroArray);
     RUN_TEST(test_should_traverseAllElements_when_constIteratorRewound);
     RUN_TEST(test_should_traverseAllElements_when_iteratorRewound);
-    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator
+    );
     RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     return UNITY_END();

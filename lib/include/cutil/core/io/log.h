@@ -50,7 +50,7 @@ enum cutil_LogLevel {
  * @note All instances must be created via cutil_Logger_create() family
  * @warning Never attempt to allocate or access members directly
  */
-typedef struct _cutil_Logger cutil_Logger;
+typedef struct s_cutil_Logger cutil_Logger;
 
 /**
  * Creates a new logger instance with default configuration.

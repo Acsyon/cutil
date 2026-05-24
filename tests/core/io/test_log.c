@@ -19,13 +19,13 @@
 #define FOREACH_LEVEL(VAR) LEVEL_FOR_LOOP(VAR, CUTIL_LOG_TRACE, CUTIL_LOG_FATAL)
 
 static FILE *
-_create_test_file(void)
+sf_create_test_file(void)
 {
     return tmpfile();
 }
 
 static void
-_destroy_test_file(FILE *stream)
+sf_destroy_test_file(FILE *stream)
 {
     if (stream == NULL) {
         return;
@@ -35,7 +35,7 @@ _destroy_test_file(FILE *stream)
 }
 
 static char *
-_read_file_contents(FILE *stream)
+sf_read_file_contents(FILE *stream)
 {
     fseek(stream, 0, SEEK_END);
     long length = ftell(stream);
@@ -124,8 +124,8 @@ static void
 test_should_outputCorrectly_when_haveMultipleHandlers(void)
 {
     /* Arrange */
-    FILE *const stream1 = _create_test_file();
-    FILE *const stream2 = _create_test_file();
+    FILE *const stream1 = sf_create_test_file();
+    FILE *const stream2 = sf_create_test_file();
     cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_DEBUG);
 
     cutil_Logger_add_handler(log, stream1, CUTIL_LOG_DEBUG);
@@ -138,13 +138,13 @@ test_should_outputCorrectly_when_haveMultipleHandlers(void)
 
     /* Assert  */
     fflush(stream1);
-    char *content1 = _read_file_contents(stream1);
+    char *content1 = sf_read_file_contents(stream1);
     TEST_ASSERT_NOT_NULL(strstr(content1, "Debug message"));
     TEST_ASSERT_NOT_NULL(strstr(content1, "Info message"));
     TEST_ASSERT_NOT_NULL(strstr(content1, "Warning message"));
 
     fflush(stream2);
-    char *content2 = _read_file_contents(stream2);
+    char *content2 = sf_read_file_contents(stream2);
     TEST_ASSERT_NULL(strstr(content2, "Debug message"));
     TEST_ASSERT_NULL(strstr(content2, "Info message"));
     TEST_ASSERT_NOT_NULL(strstr(content2, "Warning message"));
@@ -152,7 +152,7 @@ test_should_outputCorrectly_when_haveMultipleHandlers(void)
     /* Cleanup */
     free(content1);
     free(content2);
-    _destroy_test_file(stream2);
+    sf_destroy_test_file(stream2);
     cutil_Logger_free(log);
 }
 
@@ -160,7 +160,7 @@ static void
 test_should_formatCorrectly_when_callMessageFunctions(void)
 {
     /* Arrange */
-    FILE *const stream = _create_test_file();
+    FILE *const stream = sf_create_test_file();
     cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_TRACE);
     cutil_Logger_add_handler(log, stream, CUTIL_LOG_TRACE);
 
@@ -174,7 +174,7 @@ test_should_formatCorrectly_when_callMessageFunctions(void)
 
     /* Assert */
     fflush(stream);
-    char *const content = _read_file_contents(stream);
+    char *const content = sf_read_file_contents(stream);
 
     TEST_ASSERT_NOT_NULL(strstr(content, "[TRACE] Trace 1"));
     TEST_ASSERT_NOT_NULL(strstr(content, "[DEBUG] Debug test"));
@@ -192,7 +192,7 @@ static void
 test_should_autoCloseStream_when_destroyLogger(void)
 {
     /* Arrange */
-    FILE *const stream = _create_test_file();
+    FILE *const stream = sf_create_test_file();
     cutil_Logger *const log = cutil_Logger_create(CUTIL_LOG_INFO);
     cutil_Logger_add_handler(log, stream, CUTIL_LOG_INFO);
 

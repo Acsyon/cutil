@@ -19,25 +19,25 @@ typedef struct {
     const int *vals;
     size_t count;
     size_t idx;
-} _MockIntIter;
+} s_MockIntIter;
 
 static void
-_mock_free(void *data)
+sf_mock_free(void *data)
 {
     free(data);
 }
 
 static void
-_mock_rewind(void *data)
+sf_mock_rewind(void *data)
 {
-    _MockIntIter *const it = data;
+    s_MockIntIter *const it = data;
     it->idx = REWOUND_SENTINEL;
 }
 
 static cutil_Bool
-_mock_next(void *data)
+sf_mock_next(void *data)
 {
-    _MockIntIter *const it = data;
+    s_MockIntIter *const it = data;
     if (it->idx != REWOUND_SENTINEL && it->idx >= it->count) {
         return CUTIL_FALSE;
     }
@@ -46,9 +46,9 @@ _mock_next(void *data)
 }
 
 static int
-_mock_get(const void *data, void *out)
+sf_mock_get(const void *data, void *out)
 {
-    const _MockIntIter *const it = data;
+    const s_MockIntIter *const it = data;
     if (it->idx >= it->count) {
         return 1;
     }
@@ -57,9 +57,9 @@ _mock_get(const void *data, void *out)
 }
 
 static const void *
-_mock_get_ptr(const void *data)
+sf_mock_get_ptr(const void *data)
 {
-    const _MockIntIter *const it = data;
+    const s_MockIntIter *const it = data;
     if (it->idx >= it->count) {
         return NULL;
     }
@@ -68,20 +68,20 @@ _mock_get_ptr(const void *data)
 
 static const cutil_ConstIteratorType MOCK_INT_VTABLE = {
   .name = "MockIntIter",
-  .free = &_mock_free,
-  .rewind = &_mock_rewind,
-  .next = &_mock_next,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
+  .free = &sf_mock_free,
+  .rewind = &sf_mock_rewind,
+  .next = &sf_mock_next,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
 };
 
 static cutil_ConstIterator *
-_make_int_iter(const int *vals, size_t n)
+sf_make_int_iter(const int *vals, size_t n)
 {
-    _MockIntIter *const iter_data = CUTIL_MALLOC_OBJECT(iter_data);
+    s_MockIntIter *const iter_data = CUTIL_MALLOC_OBJECT(iter_data);
     iter_data->vals = vals;
     iter_data->count = n;
-    _mock_rewind(iter_data);
+    sf_mock_rewind(iter_data);
 
     cutil_ConstIterator *const it = CUTIL_MALLOC_OBJECT(it);
     it->vtable = &MOCK_INT_VTABLE;
@@ -103,7 +103,7 @@ static const cutil_SequenceDelimiters DEFAULT_SEQ_DELIMS = {
 };
 
 static size_t
-_int_to_string_test_cb(
+sf_int_to_string_test_cb(
   const void *elem, char *buf, size_t buflen, const void *ctx
 )
 {
@@ -116,7 +116,7 @@ _int_to_string_test_cb(
 }
 
 static size_t
-_int_prefixed_to_string_cb(
+sf_int_prefixed_to_string_cb(
   const void *elem, char *buf, size_t buflen, const void *ctx
 )
 {
@@ -136,14 +136,14 @@ static void
 test_should_appendNothing_when_iteratorIsEmpty(void)
 {
     /* Arrange */
-    cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
+    cutil_ConstIterator *const it = sf_make_int_iter(NULL, 0);
     cutil_SequenceLengths lens = {0, 0, 0};
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("[");
 
     /* Act */
     cutil_ConstIterator_append_sequence_to_stringbuilder(
-      it, sb, &lens, ",", &_int_to_string_test_cb, NULL
+      it, sb, &lens, ",", &sf_int_to_string_test_cb, NULL
     );
     cutil_StringBuilder_append(sb, "]");
 
@@ -162,14 +162,14 @@ test_should_appendSingleElement_when_iteratorHasOneElement(void)
 {
     /* Arrange */
     const int vals[] = {42};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 1);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 1);
     cutil_SequenceLengths lens = {0, 0, 0};
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("");
 
     /* Act */
     cutil_ConstIterator_append_sequence_to_stringbuilder(
-      it, sb, &lens, ",", &_int_to_string_test_cb, NULL
+      it, sb, &lens, ",", &sf_int_to_string_test_cb, NULL
     );
 
     /* Assert */
@@ -187,14 +187,14 @@ test_should_separateElementsWithDelimiter_when_iteratorHasMultipleElements(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 3);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 3);
     cutil_SequenceLengths lens = {0, 0, 0};
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("");
 
     /* Act */
     cutil_ConstIterator_append_sequence_to_stringbuilder(
-      it, sb, &lens, ",", &_int_to_string_test_cb, NULL
+      it, sb, &lens, ",", &sf_int_to_string_test_cb, NULL
     );
 
     /* Assert */
@@ -212,14 +212,14 @@ test_should_useNullCtx_when_callbackIgnoresCtx(void)
 {
     /* Arrange */
     const int vals[] = {7, 8};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 2);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 2);
     cutil_SequenceLengths lens = {0, 0, 0};
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("");
 
     /* Act */
     cutil_ConstIterator_append_sequence_to_stringbuilder(
-      it, sb, &lens, ",", &_int_to_string_test_cb, NULL
+      it, sb, &lens, ",", &sf_int_to_string_test_cb, NULL
     );
 
     /* Assert */
@@ -237,17 +237,17 @@ test_should_useNonNullCtx_when_callbackUsesCtx(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 3);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 3);
     const char *const prefix = "X";
     cutil_SequenceLengths lens = {0, 0, 0};
     cutil_ConstIterator_get_lengths(
-      it, &_int_prefixed_to_string_cb, prefix, &lens
+      it, &sf_int_prefixed_to_string_cb, prefix, &lens
     );
     cutil_StringBuilder *const sb = cutil_StringBuilder_from_string("");
 
     /* Act */
     cutil_ConstIterator_append_sequence_to_stringbuilder(
-      it, sb, &lens, ",", &_int_prefixed_to_string_cb, prefix
+      it, sb, &lens, ",", &sf_int_prefixed_to_string_cb, prefix
     );
 
     /* Assert */
@@ -265,15 +265,17 @@ test_should_useNonNullCtx_when_callbackUsesCtx(void)
  * ---------------------------------------------------------------------- */
 
 static void
-test_should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements(void)
+test_should_computeCountMaxAndSum_when_getLengthsCalledWithMultipleElements(
+  void
+)
 {
     /* Arrange */
     const int vals[] = {1, 22, 333};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 3);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 3);
     cutil_SequenceLengths lens = {0, 0, 0};
 
     /* Act */
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
 
     /* Assert */
     TEST_ASSERT_EQUAL_size_t(3, lens.count);
@@ -288,11 +290,11 @@ static void
 test_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator(void)
 {
     /* Arrange */
-    cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
+    cutil_ConstIterator *const it = sf_make_int_iter(NULL, 0);
     cutil_SequenceLengths lens = {99, 99, 99};
 
     /* Act */
-    cutil_ConstIterator_get_lengths(it, &_int_to_string_test_cb, NULL, &lens);
+    cutil_ConstIterator_get_lengths(it, &sf_int_to_string_test_cb, NULL, &lens);
 
     /* Assert */
     TEST_ASSERT_EQUAL_size_t(0, lens.count);
@@ -315,7 +317,8 @@ test_should_returnNullString_when_toStringCalledWithNullIterator(void)
 
     /* Act */
     const size_t ret = cutil_ConstIterator_to_string(
-      NULL, &DEFAULT_SEQ_DELIMS, &_int_to_string_test_cb, NULL, buf, sizeof buf
+      NULL, &DEFAULT_SEQ_DELIMS, &sf_int_to_string_test_cb, NULL, buf,
+      sizeof buf
     );
 
     /* Assert */
@@ -327,12 +330,12 @@ static void
 test_should_renderWithBrackets_when_toStringCalledOnEmptyCollection(void)
 {
     /* Arrange */
-    cutil_ConstIterator *const it = _make_int_iter(NULL, 0);
+    cutil_ConstIterator *const it = sf_make_int_iter(NULL, 0);
     char buf[8];
 
     /* Act */
     const size_t ret = cutil_ConstIterator_to_string(
-      it, &DEFAULT_SEQ_DELIMS, &_int_to_string_test_cb, NULL, buf, sizeof buf
+      it, &DEFAULT_SEQ_DELIMS, &sf_int_to_string_test_cb, NULL, buf, sizeof buf
     );
 
     /* Assert */
@@ -348,12 +351,12 @@ test_should_renderAllElements_when_toStringCalledOnNonEmptyCollection(void)
 {
     /* Arrange */
     const int vals[] = {1, 2, 3};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 3);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 3);
     char buf[16];
 
     /* Act */
     cutil_ConstIterator_to_string(
-      it, &DEFAULT_SEQ_DELIMS, &_int_to_string_test_cb, NULL, buf, sizeof buf
+      it, &DEFAULT_SEQ_DELIMS, &sf_int_to_string_test_cb, NULL, buf, sizeof buf
     );
 
     /* Assert */
@@ -368,11 +371,11 @@ test_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 {
     /* Arrange */
     const int vals[] = {42};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 1);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 1);
 
     /* Act */
     const size_t ret = cutil_ConstIterator_to_string(
-      it, &DEFAULT_SEQ_DELIMS, &_int_to_string_test_cb, NULL, NULL, 0
+      it, &DEFAULT_SEQ_DELIMS, &sf_int_to_string_test_cb, NULL, NULL, 0
     );
 
     /* Assert */
@@ -387,12 +390,12 @@ test_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     const int vals[] = {42};
-    cutil_ConstIterator *const it = _make_int_iter(vals, 1);
+    cutil_ConstIterator *const it = sf_make_int_iter(vals, 1);
     char buf[2];
 
     /* Act */
     const size_t ret = cutil_ConstIterator_to_string(
-      it, &DEFAULT_SEQ_DELIMS, &_int_to_string_test_cb, NULL, buf, sizeof buf
+      it, &DEFAULT_SEQ_DELIMS, &sf_int_to_string_test_cb, NULL, buf, sizeof buf
     );
 
     /* Assert */
@@ -431,8 +434,12 @@ main(void)
     );
     RUN_TEST(test_should_setZeroOutputs_when_getLengthsCalledOnEmptyIterator);
     RUN_TEST(test_should_returnNullString_when_toStringCalledWithNullIterator);
-    RUN_TEST(test_should_renderWithBrackets_when_toStringCalledOnEmptyCollection);
-    RUN_TEST(test_should_renderAllElements_when_toStringCalledOnNonEmptyCollection);
+    RUN_TEST(
+      test_should_renderWithBrackets_when_toStringCalledOnEmptyCollection
+    );
+    RUN_TEST(
+      test_should_renderAllElements_when_toStringCalledOnNonEmptyCollection
+    );
     RUN_TEST(test_should_returnRequiredLength_when_toStringCalledWithNullBuf);
     RUN_TEST(test_should_returnZero_when_toStringCalledWithTooSmallBuffer);
 

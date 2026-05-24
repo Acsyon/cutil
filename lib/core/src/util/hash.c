@@ -6,13 +6,13 @@
  * Stolen from libstdc++
  */
 static inline cutil_hash_t
-_shift_mix(cutil_hash_t v)
+sf_shift_mix(cutil_hash_t v)
 {
     return v ^ (v >> 47);
 }
 
 static inline cutil_hash_t
-_unaligned_load(const char *p)
+sf_unaligned_load(const char *p)
 {
     cutil_hash_t result;
     memcpy(&result, p, sizeof result);
@@ -20,7 +20,7 @@ _unaligned_load(const char *p)
 }
 
 static inline cutil_hash_t
-_load_bytes(const char *p, int n)
+sf_load_bytes(const char *p, int n)
 {
     cutil_hash_t result = 0;
     --n;
@@ -41,17 +41,18 @@ cutil_hash_bytes(const void *ptr, size_t len, cutil_hash_t seed)
     const char *const end = buf + len_aligned;
     cutil_hash_t hash = seed ^ (len * mul);
     for (const char *p = buf; p != end; p += 8) {
-        const cutil_hash_t data = _shift_mix(_unaligned_load(p) * mul) * mul;
+        const cutil_hash_t data
+          = sf_shift_mix(sf_unaligned_load(p) * mul) * mul;
         hash ^= data;
         hash *= mul;
     }
     if ((len & 0x7) != 0) {
-        const cutil_hash_t data = _load_bytes(end, len & 0x7);
+        const cutil_hash_t data = sf_load_bytes(end, len & 0x7);
         hash ^= data;
         hash *= mul;
     }
-    hash = _shift_mix(hash) * mul;
-    hash = _shift_mix(hash);
+    hash = sf_shift_mix(hash) * mul;
+    hash = sf_shift_mix(hash);
     return hash;
 }
 

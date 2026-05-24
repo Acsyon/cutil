@@ -20,7 +20,7 @@ const unsigned int CUTIL_PATH_DEFAULT_MODE = 0755;
 
 /* 'mkdir' with errno checking */
 static inline cutil_Status
-_cutil_smkdir(const char *path, unsigned int mode, struct stat *pst)
+sf_cutil_smkdir(const char *path, unsigned int mode, struct stat *pst)
 {
     if (stat(path, pst) == -1) {
         if (mkdir(path, mode) && errno != EEXIST) {
@@ -54,7 +54,7 @@ cutil_mkdir(const char *path, unsigned int mode, cutil_Bool recursive)
         for (char *p = cpy + 1; *p != '\0'; ++p) {
             if (*p == CUTIL_PATH_DELIMITER) {
                 *p = '\0';
-                if (_cutil_smkdir(cpy, mode, &st) == CUTIL_STATUS_FAILURE) {
+                if (sf_cutil_smkdir(cpy, mode, &st) == CUTIL_STATUS_FAILURE) {
                     free(cpy);
                     return CUTIL_STATUS_FAILURE;
                 }
@@ -65,14 +65,14 @@ cutil_mkdir(const char *path, unsigned int mode, cutil_Bool recursive)
     }
 
     /* Finally, try if full path can be created */
-    return _cutil_smkdir(path, mode, &st);
+    return sf_cutil_smkdir(path, mode, &st);
 }
 
 extern inline cutil_Status
 cutil_mkdirp(const char *path, unsigned int mode);
 
 static cutil_Bool
-_cutil_keep_dir(const struct dirent *entry)
+sf_cutil_keep_dir(const struct dirent *entry)
 {
     return strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0;
 }
@@ -108,7 +108,7 @@ cutil_rm(const char *path, cutil_Bool recursive)
     struct dirent *entry;
     cutil_Status result = CUTIL_STATUS_SUCCESS;
     while ((entry = readdir(dir)) != NULL) {
-        if (_cutil_keep_dir(entry)) {
+        if (sf_cutil_keep_dir(entry)) {
             continue;
         }
         char child[PATH_BUFFER_SIZE] = {0};
@@ -137,7 +137,7 @@ extern inline cutil_Status
 cutil_rmr(const char *path);
 
 static struct stat
-_cutil_stat(const char *path)
+sf_cutil_stat(const char *path)
 {
     struct stat st;
     if (stat(path, &st) == -1) {
@@ -150,7 +150,7 @@ _cutil_stat(const char *path)
 cutil_Bool
 cutil_isdir(const char *path)
 {
-    struct stat st = _cutil_stat(path);
+    struct stat st = sf_cutil_stat(path);
     if (st.st_mode == ERROR_STAT_MODE) {
         return CUTIL_FALSE;
     }
@@ -160,7 +160,7 @@ cutil_isdir(const char *path)
 cutil_Bool
 cutil_isfile(const char *path)
 {
-    struct stat st = _cutil_stat(path);
+    struct stat st = sf_cutil_stat(path);
     if (st.st_mode == ERROR_STAT_MODE) {
         return CUTIL_FALSE;
     }

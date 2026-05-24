@@ -502,7 +502,9 @@ main(void)
     RUN_TEST(test_should_zeroFields_when_genericInit);
     RUN_TEST(test_should_releaseData_when_genericClear);
     RUN_TEST(test_should_deepCopy_when_genericCopy);
-    RUN_TEST(test_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData);
+    RUN_TEST(
+      test_should_returnTrue_when_genericDeepEqualsWithSameTypeAndEqualData
+    );
     RUN_TEST(test_should_returnFalse_when_genericDeepEqualsWithDifferentTypes);
     RUN_TEST(test_should_returnFalse_when_genericDeepEqualsWithDifferentData);
     RUN_TEST(test_should_orderByTypeNameThenValue_when_genericCompare);
