@@ -136,6 +136,74 @@ test_should_returnNull_when_strndupReceivesNull(void)
     TEST_ASSERT_NULL(res);
 }
 
+static void
+test_should_returnNull_when_memdupReceivesNull(void)
+{
+    /* Act */
+    void *const res = cutil_memdup(NULL, sizeof(int), 4);
+
+    /* Assert */
+    TEST_ASSERT_NULL(res);
+}
+
+static void
+test_should_duplicateIntArray_when_useMemdup(void)
+{
+    /* Arrange */
+    const int src[] = {1, 2, 3, 4, 5};
+    const size_t num = CUTIL_GET_NATIVE_ARRAY_SIZE(src);
+
+    /* Act */
+    int *const res = cutil_memdup(src, sizeof *src, num);
+
+    /* Assert */
+    TEST_ASSERT_NOT_NULL(res);
+    TEST_ASSERT_EQUAL_INT_ARRAY(src, res, num);
+
+    /* Cleanup */
+    free(res);
+}
+
+static void
+test_should_duplicateByteArray_when_useMemdup(void)
+{
+    /* Arrange */
+    const unsigned char src[] = {0x00, 0xFF, 0xAB, 0x42};
+    const size_t num = CUTIL_GET_NATIVE_ARRAY_SIZE(src);
+
+    /* Act */
+    unsigned char *const res = cutil_memdup(src, sizeof *src, num);
+
+    /* Assert */
+    TEST_ASSERT_NOT_NULL(res);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(src, res, num);
+
+    /* Cleanup */
+    free(res);
+}
+
+static void
+test_should_produceSeparateCopy_when_useMemdup(void)
+{
+    /* Arrange */
+    int src[] = {10, 20, 30};
+    const size_t num = CUTIL_GET_NATIVE_ARRAY_SIZE(src);
+
+    /* Act */
+    int *const res = cutil_memdup(src, sizeof *src, num);
+
+    /* Assert */
+    TEST_ASSERT_NOT_NULL(res);
+    TEST_ASSERT_NOT_EQUAL(src, res); /* different pointers */
+
+    /* Mutating src must not affect the copy */
+    src[0] = 99;
+    TEST_ASSERT_EQUAL_INT(10, res[0]);
+
+    /* Cleanup */
+    free(res);
+}
+
 void
 setUp(void)
 {}
@@ -156,6 +224,10 @@ main(void)
     RUN_TEST(test_should_duplicateFullString_when_stringIsLongerThanMaxlen);
     RUN_TEST(test_should_returnNull_when_strdupReceivesNull);
     RUN_TEST(test_should_returnNull_when_strndupReceivesNull);
+    RUN_TEST(test_should_returnNull_when_memdupReceivesNull);
+    RUN_TEST(test_should_duplicateIntArray_when_useMemdup);
+    RUN_TEST(test_should_duplicateByteArray_when_useMemdup);
+    RUN_TEST(test_should_produceSeparateCopy_when_useMemdup);
 
     return UNITY_END();
 }

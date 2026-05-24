@@ -47,3 +47,17 @@ cutil_strndup(const char *str, size_t maxlen)
 
     return cpy;
 }
+
+void *
+cutil_memdup(const void *ptr, size_t size, size_t num)
+{
+    CUTIL_RETURN_VAL_IF_VAL(ptr, NULL, NULL);
+
+    char *cpy = malloc(size * num);
+    if (cpy == NULL) {
+        cutil_log_error("memdup: malloc(%zu) failed", size * num);
+        return NULL;
+    }
+    cpy = memcpy(cpy, ptr, size * num);
+    return cpy;
+}
