@@ -1,25 +1,28 @@
-project("CUTIL_TESTS" LANGUAGES C CXX)
+# CXX is only needed for test_cpp.cpp targets; enable it narrowly here rather than in the
+# root project (which is C-only by design).
+enable_language(CXX)
 
 # Derive test name: test_<dir_underscored>_<stem> e.g. data/generic/test_array.c ->
 # test_data_generic_array
-function (DERIVE_TEST_NAME test_name test_source)
-    get_filename_component(TEST_DIR "${test_source}" DIRECTORY)
-    get_filename_component(TEST_BASENAME "${test_source}" NAME_WE)
+function (DERIVE_TEST_NAME TEST_NAME TEST_SOURCE)
+    get_filename_component(TEST_DIR "${TEST_SOURCE}" DIRECTORY)
+    get_filename_component(TEST_BASENAME "${TEST_SOURCE}" NAME_WE)
     string(REPLACE "/" "_" TEST_DIR_UNDERSCORED "${TEST_DIR}")
     string(REGEX REPLACE "^test_" "" TEST_STEM "${TEST_BASENAME}")
-    set(${test_name} "test_${TEST_DIR_UNDERSCORED}_${TEST_STEM}" PARENT_SCOPE)
+    set(${TEST_NAME} "test_${TEST_DIR_UNDERSCORED}_${TEST_STEM}" PARENT_SCOPE)
 endfunction ()
 
-# Create C test executables
-function (CREATE_C_TESTS source_files cutil_modules)
+# Create C test executables; appends created target names to the variable named by OUT_TARGETS.
+function (CREATE_C_TESTS OUT_TARGETS SOURCE_FILES CUTIL_MODULES)
+    set(_local_targets "${${OUT_TARGETS}}")
     # Loop over all C tests
-    foreach (TEST_SOURCE IN LISTS ${source_files})
+    foreach (TEST_SOURCE IN LISTS ${SOURCE_FILES})
         derive_test_name(TEST_NAME ${TEST_SOURCE})
 
         # Add tests and executables
         add_executable("${TEST_NAME}" "${TEST_SOURCE}")
         add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
-        list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
+        list(APPEND _local_targets "${TEST_NAME}")
 
         # Add resources directory as a macro
         target_compile_definitions(
@@ -30,31 +33,34 @@ function (CREATE_C_TESTS source_files cutil_modules)
         target_link_libraries("${TEST_NAME}" PRIVATE unity)
 
         # Link and include cutil modules
-        foreach (CUTIL_MODULE IN LISTS ${cutil_modules})
+        foreach (CUTIL_MODULE IN LISTS ${CUTIL_MODULES})
             target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_MODULE}")
         endforeach ()
 
         # Enable Unity double-comparison macros
         target_compile_definitions("${TEST_NAME}" PRIVATE UNITY_INCLUDE_DOUBLE)
     endforeach ()
+    set(${OUT_TARGETS} ${_local_targets} PARENT_SCOPE)
 endfunction ()
 
-# Create C++ test executables
-function (CREATE_CXX_TESTS source_files cutil_modules)
+# Create C++ test executables; appends created target names to the variable named by OUT_TARGETS.
+function (CREATE_CXX_TESTS OUT_TARGETS SOURCE_FILES CUTIL_MODULES)
+    set(_local_targets "${${OUT_TARGETS}}")
     # Loop over all C++ tests
-    foreach (TEST_SOURCE IN LISTS ${source_files})
+    foreach (TEST_SOURCE IN LISTS ${SOURCE_FILES})
         derive_test_name(TEST_NAME ${TEST_SOURCE})
 
         # Add tests and executables
         add_executable("${TEST_NAME}" "${TEST_SOURCE}")
         add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
-        list(APPEND CUTIL_TEST_TARGETS "${TEST_NAME}")
+        list(APPEND _local_targets "${TEST_NAME}")
 
         # Link and include cutil modules
-        foreach (CUTIL_MODULE IN LISTS ${cutil_modules})
+        foreach (CUTIL_MODULE IN LISTS ${CUTIL_MODULES})
             target_link_libraries("${TEST_NAME}" PRIVATE "${CUTIL_MODULE}")
         endforeach ()
     endforeach ()
+    set(${OUT_TARGETS} ${_local_targets} PARENT_SCOPE)
 endfunction ()
 
 # Set additional compiler flags (UNIX)
@@ -119,8 +125,8 @@ set(C_TEST_SOURCES_DATA
 set(MODULE_DEPENDENCIES_CORE ${CUTIL_LIB_CORE})
 set(MODULE_DEPENDENCIES_DATA ${CUTIL_LIB_CORE} ${CUTIL_LIB_DATA})
 
-create_c_tests(C_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
-create_c_tests(C_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
+create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
+create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -131,8 +137,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CXX_TEST_SOURCES_CORE core/test_cpp.cpp)
 set(CXX_TEST_SOURCES_DATA data/test_cpp.cpp)
 
-create_cxx_tests(CXX_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
-create_cxx_tests(CXX_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
+create_cxx_tests(CUTIL_TEST_TARGETS CXX_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
+create_cxx_tests(CUTIL_TEST_TARGETS CXX_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
 
 # Expose targets to set output directory
 set(CUTIL_TEST_TARGETS "${CUTIL_TEST_TARGETS}" CACHE INTERNAL "List of cutil test targets" FORCE)
@@ -143,7 +149,7 @@ if (NOT TARGET cutil-check)
         cutil-check
         COMMAND "${CMAKE_CTEST_COMMAND}" "--output-on-failure"
         DEPENDS "${CUTIL_TEST_TARGETS}"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
         COMMENT "Running cutil tests"
     )
 endif ()

@@ -23,8 +23,7 @@ set(SOURCE_FILES_CORE
 if (CUTIL_BUILD_SHARED_LIB)
     add_library("${CUTIL_LIBRARY_CORE}" SHARED "${SOURCE_FILES_CORE}")
     set_target_properties(
-        "${CUTIL_LIBRARY_CORE}" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}${CUTIL_LIBRARY_CORE}"
-                                           PREFIX "lib"
+        "${CUTIL_LIBRARY_CORE}" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY_CORE}" PREFIX "lib"
     )
 
     if (NOT WIN32)
@@ -32,19 +31,21 @@ if (CUTIL_BUILD_SHARED_LIB)
     endif ()
 
     target_include_directories(
-        "${CUTIL_LIBRARY_CORE}" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
-                                       "$<INSTALL_INTERFACE:include>"
+        "${CUTIL_LIBRARY_CORE}"
+        # The relative path is intentional: using ${CMAKE_SOURCE_DIR} would break when cutil is
+        # consumed as a CMake subdirectory in another project.
+        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include>"
+               "$<INSTALL_INTERFACE:include>"
     )
 
     install(
         TARGETS "${CUTIL_LIBRARY_CORE}"
-        EXPORT "${CUTIL_LIBRARY}-targets"
+        EXPORT "${CUTIL_EXPORT_SET}"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         INCLUDES
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-        NAMESPACE "${CUTIL_LIBRARY}::"
         COMPONENT "${CUTIL_COMPONENT_CORE}"
     )
 endif ()
@@ -53,8 +54,7 @@ endif ()
 if (CUTIL_BUILD_STATIC_LIB)
     add_library("${CUTIL_LIBRARY_CORE}-static" STATIC "${SOURCE_FILES_CORE}")
     set_target_properties(
-        "${CUTIL_LIBRARY_CORE}-static"
-        PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}${CUTIL_LIBRARY_CORE}" PREFIX "lib"
+        "${CUTIL_LIBRARY_CORE}-static" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY_CORE}" PREFIX "lib"
     )
 
     if (NOT WIN32)
@@ -62,24 +62,26 @@ if (CUTIL_BUILD_STATIC_LIB)
     endif ()
 
     target_include_directories(
-        "${CUTIL_LIBRARY_CORE}-static" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
-                                              "$<INSTALL_INTERFACE:include>"
+        "${CUTIL_LIBRARY_CORE}-static"
+        # The relative path is intentional: using ${CMAKE_SOURCE_DIR} would break when cutil is
+        # consumed as a CMake subdirectory in another project.
+        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include>"
+               "$<INSTALL_INTERFACE:include>"
     )
 
     install(
         TARGETS "${CUTIL_LIBRARY_CORE}-static"
-        EXPORT "${CUTIL_LIBRARY}-targets"
+        EXPORT "${CUTIL_EXPORT_SET}"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         INCLUDES
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-        NAMESPACE "${CUTIL_LIBRARY}::"
         COMPONENT "${CUTIL_COMPONENT_CORE}"
     )
 endif ()
 
 # Install headers
 install(
-    DIRECTORY "${CMAKE_SOURCE_DIR}/lib/include/cutil/${CUTIL_COMPONENT_CORE}"
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include/cutil/${CUTIL_COMPONENT_CORE}"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     FILES_MATCHING
     PATTERN "*.h"
