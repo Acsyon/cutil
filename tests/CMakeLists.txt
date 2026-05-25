@@ -128,11 +128,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set C++ test source files
-set(C_TEST_SOURCES_CORE core/test_cpp.cpp)
-set(C_TEST_SOURCES_DATA data/test_cpp.cpp)
+set(CXX_TEST_SOURCES_CORE core/test_cpp.cpp)
+set(CXX_TEST_SOURCES_DATA data/test_cpp.cpp)
 
-create_cxx_tests(C_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
-create_cxx_tests(C_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
+create_cxx_tests(CXX_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
+create_cxx_tests(CXX_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
 
 # Expose targets to set output directory
 set(CUTIL_TEST_TARGETS "${CUTIL_TEST_TARGETS}" CACHE INTERNAL "List of cutil test targets" FORCE)

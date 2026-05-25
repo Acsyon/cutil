@@ -33,6 +33,8 @@ if (CUTIL_BUILD_SHARED_LIB)
         target_link_libraries("${CUTIL_LIBRARY_DATA}" PRIVATE m)
     endif ()
 
+    target_link_libraries("${CUTIL_LIBRARY_DATA}" PUBLIC "${CUTIL_LIBRARY_CORE}")
+
     target_include_directories(
         "${CUTIL_LIBRARY_DATA}" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
                                        "$<INSTALL_INTERFACE:include>"
@@ -62,6 +64,8 @@ if (CUTIL_BUILD_STATIC_LIB)
     if (NOT WIN32)
         target_link_libraries("${CUTIL_LIBRARY_DATA}-static" PRIVATE m)
     endif ()
+
+    target_link_libraries("${CUTIL_LIBRARY_DATA}-static" PUBLIC "${CUTIL_LIBRARY_CORE}")
 
     target_include_directories(
         "${CUTIL_LIBRARY_DATA}-static" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
