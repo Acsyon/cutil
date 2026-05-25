@@ -1,12 +1,12 @@
 #include "unity.h"
 #include <cutil/data/generic/array.h>
 
-#include <cutil/std/stdio.h>
-#include <cutil/util/hash.h>
-#include <cutil/util/macro.h>
+#include <cutil/core/std/stdio.h>
+#include <cutil/core/util/hash.h>
+#include <cutil/core/util/macro.h>
 
 static void
-_should_constructArray_when_provideSizeAndCapacity(void)
+test_should_constructArray_when_provideSizeAndCapacity(void)
 {
     /* Arrange */
     const size_t SIZES[] = {1, 5, 10, 50, 100};
@@ -36,7 +36,7 @@ _should_constructArray_when_provideSizeAndCapacity(void)
 }
 
 static void
-_should_clearArray_when_callClearArray(void)
+test_should_clearArray_when_callClearArray(void)
 {
     /* Arrange */
     const size_t SIZES[] = {1, 5, 10, 50, 100};
@@ -67,7 +67,7 @@ _should_clearArray_when_callClearArray(void)
 }
 
 static void
-_should_setMultCorrectly(void)
+test_should_setMultCorrectly(void)
 {
     /* Arrange */
     const size_t SIZES[] = {sizeof(int), sizeof(double), 16};
@@ -114,7 +114,7 @@ _should_setMultCorrectly(void)
 }
 
 static void
-_should_setAndGetIndividualElements(void)
+test_should_setAndGetIndividualElements(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -138,7 +138,7 @@ _should_setAndGetIndividualElements(void)
 }
 
 static void
-_should_copyArrayCorrectly(void)
+test_should_copyArrayCorrectly(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(double)};
@@ -175,7 +175,7 @@ _should_copyArrayCorrectly(void)
 }
 
 static void
-_should_duplicateArrayCorrectly(void)
+test_should_duplicateArrayCorrectly(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(char)};
@@ -213,7 +213,7 @@ _should_duplicateArrayCorrectly(void)
 }
 
 static void
-_should_resizeArrayCorrectly(void)
+test_should_resizeArrayCorrectly(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(float)};
@@ -252,7 +252,7 @@ _should_resizeArrayCorrectly(void)
 }
 
 static void
-_should_handleEdgeCases(void)
+test_should_handleEdgeCases(void)
 {
     /* Test with NULL type */
     {
@@ -296,7 +296,7 @@ _should_handleEdgeCases(void)
 }
 
 static void
-_should_getPointerCorrectly(void)
+test_should_getPointerCorrectly(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(long)};
@@ -329,13 +329,13 @@ _should_getPointerCorrectly(void)
 }
 
 static inline size_t
-_int_to_string(const void *data, char *buf, size_t buflen)
+sf_int_to_string(const void *data, char *buf, size_t buflen)
 {
     return CUTIL_GENERIC_TYPE_INT->to_string(data, buf, buflen);
 }
 
 static void
-_should_returnTrue_when_bothArraysNull(void)
+test_should_returnTrue_when_bothArraysNull(void)
 {
     /* Act */
     /* Assert */
@@ -343,7 +343,7 @@ _should_returnTrue_when_bothArraysNull(void)
 }
 
 static void
-_should_returnFalse_when_oneArrayIsNull(void)
+test_should_returnFalse_when_oneArrayIsNull(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -359,7 +359,7 @@ _should_returnFalse_when_oneArrayIsNull(void)
 }
 
 static void
-_should_returnTrue_when_samePointer(void)
+test_should_returnTrue_when_samePointer(void)
 {
     /* Arrange*/
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -374,7 +374,7 @@ _should_returnTrue_when_samePointer(void)
 }
 
 static void
-_should_returnTrue_when_arraysHaveSameContent(void)
+test_should_returnTrue_when_arraysHaveSameContent(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -398,7 +398,7 @@ _should_returnTrue_when_arraysHaveSameContent(void)
 }
 
 static void
-_should_returnFalse_when_arraysHaveDifferentData(void)
+test_should_returnFalse_when_arraysHaveDifferentData(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -423,7 +423,7 @@ _should_returnFalse_when_arraysHaveDifferentData(void)
 }
 
 static void
-_should_returnFalse_when_arraysHaveDifferentCapacity(void)
+test_should_returnFalse_when_arraysHaveDifferentCapacity(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -440,7 +440,7 @@ _should_returnFalse_when_arraysHaveDifferentCapacity(void)
 }
 
 static void
-_should_returnFalse_when_arraysHaveDifferentTypes(void)
+test_should_returnFalse_when_arraysHaveDifferentTypes(void)
 {
     /* Arrange */
     const cutil_GenericType type_int = {.name = "int", .size = sizeof(int)};
@@ -458,7 +458,7 @@ _should_returnFalse_when_arraysHaveDifferentTypes(void)
 }
 
 static void
-_should_compareReturnZero_when_samePointer(void)
+test_should_compareReturnZero_when_samePointer(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -473,7 +473,7 @@ _should_compareReturnZero_when_samePointer(void)
 }
 
 static void
-_should_compareReturnZero_when_bothNull(void)
+test_should_compareReturnZero_when_bothNull(void)
 {
     /* Act */
     /* Assert */
@@ -481,7 +481,7 @@ _should_compareReturnZero_when_bothNull(void)
 }
 
 static void
-_should_compareReturnNegative_when_lhsIsNull(void)
+test_should_compareReturnNegative_when_lhsIsNull(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -496,7 +496,7 @@ _should_compareReturnNegative_when_lhsIsNull(void)
 }
 
 static void
-_should_compareReturnPositive_when_rhsIsNull(void)
+test_should_compareReturnPositive_when_rhsIsNull(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -511,7 +511,7 @@ _should_compareReturnPositive_when_rhsIsNull(void)
 }
 
 static void
-_should_compareReturnZero_when_arraysHaveSameContent(void)
+test_should_compareReturnZero_when_arraysHaveSameContent(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -535,7 +535,7 @@ _should_compareReturnZero_when_arraysHaveSameContent(void)
 }
 
 static void
-_should_compareReturnNonZero_when_arraysHaveDifferentData(void)
+test_should_compareReturnNonZero_when_arraysHaveDifferentData(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -565,7 +565,7 @@ _should_compareReturnNonZero_when_arraysHaveDifferentData(void)
 }
 
 static void
-_should_hashReturnZero_when_arrayIsNull(void)
+test_should_hashReturnZero_when_arrayIsNull(void)
 {
     /* Act */
     /* Assert */
@@ -573,7 +573,7 @@ _should_hashReturnZero_when_arrayIsNull(void)
 }
 
 static void
-_should_hashReturnZero_when_arrayIsEmpty(void)
+test_should_hashReturnZero_when_arrayIsEmpty(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -588,7 +588,7 @@ _should_hashReturnZero_when_arrayIsEmpty(void)
 }
 
 static void
-_should_hashConsistently(void)
+test_should_hashConsistently(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -612,7 +612,7 @@ _should_hashConsistently(void)
 }
 
 static void
-_should_hashDifferently_when_contentsChanges(void)
+test_should_hashDifferently_when_contentsChanges(void)
 {
     /* Arrange */
     const cutil_GenericType type = {.name = "name", .size = sizeof(int)};
@@ -639,7 +639,7 @@ _should_hashDifferently_when_contentsChanges(void)
 }
 
 static void
-_should_toStringSerializeNull(void)
+test_should_toStringSerializeNull(void)
 {
     /* Arrange */
     char buf[16];
@@ -653,11 +653,11 @@ _should_toStringSerializeNull(void)
 }
 
 static void
-_should_toStringSerializeEmptyArray(void)
+test_should_toStringSerializeEmptyArray(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     cutil_Array *const arr = cutil_Array_alloc(&type, 0);
 
     char buf[8];
@@ -674,11 +674,11 @@ _should_toStringSerializeEmptyArray(void)
 }
 
 static void
-_should_toStringSerializeElements(void)
+test_should_toStringSerializeElements(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 3;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -701,11 +701,11 @@ _should_toStringSerializeElements(void)
 }
 
 static void
-_should_toStringReturnRequiredSize_when_bufIsNull(void)
+test_should_toStringReturnRequiredSize_when_bufIsNull(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 3;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -735,11 +735,11 @@ _should_toStringReturnRequiredSize_when_bufIsNull(void)
 }
 
 static void
-_should_toStringReturnZero_when_bufferTooSmall(void)
+test_should_toStringReturnZero_when_bufferTooSmall(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 2;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -761,11 +761,11 @@ _should_toStringReturnZero_when_bufferTooSmall(void)
 }
 
 static void
-_should_toStringWriteNulTerminator(void)
+test_should_toStringWriteNulTerminator(void)
 {
     /* Arrange */
     const cutil_GenericType type
-      = {.name = "name", .size = sizeof(int), .to_string = &_int_to_string};
+      = {.name = "name", .size = sizeof(int), .to_string = &sf_int_to_string};
     const size_t capacity = 2;
     cutil_Array *const arr = cutil_Array_alloc(&type, capacity);
 
@@ -792,7 +792,7 @@ _should_toStringWriteNulTerminator(void)
 /* Tests for Array iterator */
 
 static void
-_should_returnNonNull_when_getConstIteratorCalledOnArray(void)
+test_should_returnNonNull_when_getConstIteratorCalledOnArray(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 3);
@@ -809,7 +809,7 @@ _should_returnNonNull_when_getConstIteratorCalledOnArray(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalledOnArray(void)
+test_should_returnNonNull_when_getIteratorCalledOnArray(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 3);
@@ -826,7 +826,7 @@ _should_returnNonNull_when_getIteratorCalledOnArray(void)
 }
 
 static void
-_should_traverseAllElements_when_iteratingArray(void)
+test_should_traverseAllElements_when_iteratingArray(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 4);
@@ -856,7 +856,7 @@ _should_traverseAllElements_when_iteratingArray(void)
 }
 
 static void
-_should_copyElementIntoBuffer_when_getCalledOnArrayIterator(void)
+test_should_copyElementIntoBuffer_when_getCalledOnArrayIterator(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 4);
@@ -885,7 +885,7 @@ _should_copyElementIntoBuffer_when_getCalledOnArrayIterator(void)
 }
 
 static void
-_should_overwriteElement_when_setCalledOnArrayIterator(void)
+test_should_overwriteElement_when_setCalledOnArrayIterator(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 2);
@@ -914,7 +914,7 @@ _should_overwriteElement_when_setCalledOnArrayIterator(void)
 }
 
 static void
-_should_returnFailure_when_removeCalledOnArrayIterator(void)
+test_should_returnFailure_when_removeCalledOnArrayIterator(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 2);
@@ -937,7 +937,7 @@ _should_returnFailure_when_removeCalledOnArrayIterator(void)
 }
 
 static void
-_should_traverseSingleElement_when_arrayHasCapacityOne(void)
+test_should_traverseSingleElement_when_arrayHasCapacityOne(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 1);
@@ -960,7 +960,7 @@ _should_traverseSingleElement_when_arrayHasCapacityOne(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledOnCapacityZeroArray(void)
+test_should_returnFalse_when_nextCalledOnCapacityZeroArray(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 0);
@@ -978,7 +978,7 @@ _should_returnFalse_when_nextCalledOnCapacityZeroArray(void)
 }
 
 static void
-_should_traverseAllElements_when_constIteratorRewound(void)
+test_should_traverseAllElements_when_constIteratorRewound(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 4);
@@ -1022,7 +1022,7 @@ _should_traverseAllElements_when_constIteratorRewound(void)
 }
 
 static void
-_should_traverseAllElements_when_iteratorRewound(void)
+test_should_traverseAllElements_when_iteratorRewound(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 4);
@@ -1066,7 +1066,7 @@ _should_traverseAllElements_when_iteratorRewound(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 3);
@@ -1092,7 +1092,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
 {
     /* Arrange */
     cutil_Array *const arr = cutil_Array_alloc(CUTIL_GENERIC_TYPE_INT, 3);
@@ -1129,60 +1129,62 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_constructArray_when_provideSizeAndCapacity);
-    RUN_TEST(_should_clearArray_when_callClearArray);
-    RUN_TEST(_should_setMultCorrectly);
-    RUN_TEST(_should_setAndGetIndividualElements);
-    RUN_TEST(_should_copyArrayCorrectly);
-    RUN_TEST(_should_duplicateArrayCorrectly);
-    RUN_TEST(_should_resizeArrayCorrectly);
-    RUN_TEST(_should_handleEdgeCases);
-    RUN_TEST(_should_getPointerCorrectly);
+    RUN_TEST(test_should_constructArray_when_provideSizeAndCapacity);
+    RUN_TEST(test_should_clearArray_when_callClearArray);
+    RUN_TEST(test_should_setMultCorrectly);
+    RUN_TEST(test_should_setAndGetIndividualElements);
+    RUN_TEST(test_should_copyArrayCorrectly);
+    RUN_TEST(test_should_duplicateArrayCorrectly);
+    RUN_TEST(test_should_resizeArrayCorrectly);
+    RUN_TEST(test_should_handleEdgeCases);
+    RUN_TEST(test_should_getPointerCorrectly);
 
     /* deep_equals */
-    RUN_TEST(_should_returnTrue_when_bothArraysNull);
-    RUN_TEST(_should_returnFalse_when_oneArrayIsNull);
-    RUN_TEST(_should_returnTrue_when_samePointer);
-    RUN_TEST(_should_returnTrue_when_arraysHaveSameContent);
-    RUN_TEST(_should_returnFalse_when_arraysHaveDifferentData);
-    RUN_TEST(_should_returnFalse_when_arraysHaveDifferentCapacity);
-    RUN_TEST(_should_returnFalse_when_arraysHaveDifferentTypes);
+    RUN_TEST(test_should_returnTrue_when_bothArraysNull);
+    RUN_TEST(test_should_returnFalse_when_oneArrayIsNull);
+    RUN_TEST(test_should_returnTrue_when_samePointer);
+    RUN_TEST(test_should_returnTrue_when_arraysHaveSameContent);
+    RUN_TEST(test_should_returnFalse_when_arraysHaveDifferentData);
+    RUN_TEST(test_should_returnFalse_when_arraysHaveDifferentCapacity);
+    RUN_TEST(test_should_returnFalse_when_arraysHaveDifferentTypes);
 
     /* compare */
-    RUN_TEST(_should_compareReturnZero_when_samePointer);
-    RUN_TEST(_should_compareReturnZero_when_bothNull);
-    RUN_TEST(_should_compareReturnNegative_when_lhsIsNull);
-    RUN_TEST(_should_compareReturnPositive_when_rhsIsNull);
-    RUN_TEST(_should_compareReturnZero_when_arraysHaveSameContent);
-    RUN_TEST(_should_compareReturnNonZero_when_arraysHaveDifferentData);
+    RUN_TEST(test_should_compareReturnZero_when_samePointer);
+    RUN_TEST(test_should_compareReturnZero_when_bothNull);
+    RUN_TEST(test_should_compareReturnNegative_when_lhsIsNull);
+    RUN_TEST(test_should_compareReturnPositive_when_rhsIsNull);
+    RUN_TEST(test_should_compareReturnZero_when_arraysHaveSameContent);
+    RUN_TEST(test_should_compareReturnNonZero_when_arraysHaveDifferentData);
 
     /* hash */
-    RUN_TEST(_should_hashReturnZero_when_arrayIsNull);
-    RUN_TEST(_should_hashReturnZero_when_arrayIsEmpty);
-    RUN_TEST(_should_hashConsistently);
-    RUN_TEST(_should_hashDifferently_when_contentsChanges);
+    RUN_TEST(test_should_hashReturnZero_when_arrayIsNull);
+    RUN_TEST(test_should_hashReturnZero_when_arrayIsEmpty);
+    RUN_TEST(test_should_hashConsistently);
+    RUN_TEST(test_should_hashDifferently_when_contentsChanges);
 
     /* to_string */
-    RUN_TEST(_should_toStringSerializeNull);
-    RUN_TEST(_should_toStringSerializeEmptyArray);
-    RUN_TEST(_should_toStringSerializeElements);
-    RUN_TEST(_should_toStringReturnRequiredSize_when_bufIsNull);
-    RUN_TEST(_should_toStringReturnZero_when_bufferTooSmall);
-    RUN_TEST(_should_toStringWriteNulTerminator);
+    RUN_TEST(test_should_toStringSerializeNull);
+    RUN_TEST(test_should_toStringSerializeEmptyArray);
+    RUN_TEST(test_should_toStringSerializeElements);
+    RUN_TEST(test_should_toStringReturnRequiredSize_when_bufIsNull);
+    RUN_TEST(test_should_toStringReturnZero_when_bufferTooSmall);
+    RUN_TEST(test_should_toStringWriteNulTerminator);
 
     /* iterator */
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalledOnArray);
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalledOnArray);
-    RUN_TEST(_should_traverseAllElements_when_iteratingArray);
-    RUN_TEST(_should_copyElementIntoBuffer_when_getCalledOnArrayIterator);
-    RUN_TEST(_should_overwriteElement_when_setCalledOnArrayIterator);
-    RUN_TEST(_should_returnFailure_when_removeCalledOnArrayIterator);
-    RUN_TEST(_should_traverseSingleElement_when_arrayHasCapacityOne);
-    RUN_TEST(_should_returnFalse_when_nextCalledOnCapacityZeroArray);
-    RUN_TEST(_should_traverseAllElements_when_constIteratorRewound);
-    RUN_TEST(_should_traverseAllElements_when_iteratorRewound);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalledOnArray);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalledOnArray);
+    RUN_TEST(test_should_traverseAllElements_when_iteratingArray);
+    RUN_TEST(test_should_copyElementIntoBuffer_when_getCalledOnArrayIterator);
+    RUN_TEST(test_should_overwriteElement_when_setCalledOnArrayIterator);
+    RUN_TEST(test_should_returnFailure_when_removeCalledOnArrayIterator);
+    RUN_TEST(test_should_traverseSingleElement_when_arrayHasCapacityOne);
+    RUN_TEST(test_should_returnFalse_when_nextCalledOnCapacityZeroArray);
+    RUN_TEST(test_should_traverseAllElements_when_constIteratorRewound);
+    RUN_TEST(test_should_traverseAllElements_when_iteratorRewound);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator
+    );
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     return UNITY_END();
 }

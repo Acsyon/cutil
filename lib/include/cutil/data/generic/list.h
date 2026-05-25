@@ -3,17 +3,17 @@
  * Header for arbitrarily typed ordered lists.
  */
 
-#ifndef CUTIL_GENERIC_LIST_H_INCLUDED
-#define CUTIL_GENERIC_LIST_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_LIST_H_INCLUDED
+#define CUTIL_DATA_GENERIC_LIST_H_INCLUDED
 
+#include <cutil/core/debug/null.h>
+#include <cutil/core/io/log.h>
+#include <cutil/core/status.h>
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/iterator.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/debug/null.h>
-#include <cutil/io/log.h>
-#include <cutil/status.h>
-#include <cutil/std/stdbool.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -619,4 +619,4 @@ cutil_List_to_string_generic(const void *list, char *buf, size_t buflen);
 }
 #endif
 
-#endif /* CUTIL_GENERIC_LIST_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_LIST_H_INCLUDED */

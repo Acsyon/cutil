@@ -1,7 +1,7 @@
 # CMake version and project name
-cmake_minimum_required(VERSION 3.5...3.31)
+cmake_minimum_required(VERSION 3.24...4.3.2)
 set(CUTIL_LIBRARY "cutil")
-project("{CUTIL_LIBRARY}" LANGUAGES C)
+project("${CUTIL_LIBRARY}" LANGUAGES C)
 
 # Set C standard
 set(CMAKE_C_STANDARD 99)
@@ -53,8 +53,21 @@ if (CUTIL_BUILD_SHARED_AND_STATIC_LIBS OR NOT BUILD_SHARED_LIBS)
     set(CUTIL_BUILD_STATIC_LIB TRUE)
 endif ()
 
-# Add the lib directory
-add_subdirectory(lib)
+# Include GNUInstallDirs BEFORE setting CMAKE_INSTALL_INCLUDEDIR
+include(GNUInstallDirs)
+
+# Set correct include directory (append to system include dir)
+set(CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${CUTIL_LIBRARY}")
+
+# Add core library
+set(CUTIL_COMPONENT_CORE "core")
+set(CUTIL_LIBRARY_CORE "${CUTIL_COMPONENT_CORE}")
+add_subdirectory(lib/core)
+
+# Add data library
+set(CUTIL_COMPONENT_DATA data)
+set(CUTIL_LIBRARY_DATA "${CUTIL_COMPONENT_DATA}")
+add_subdirectory(lib/data)
 
 # Add the tests directory
 include(CTest)
@@ -71,17 +84,17 @@ add_custom_target(
 # Include GNUInstallDirs for proper install destinations
 include(GNUInstallDirs)
 
-# Generate and install export configuration
-install(
-    EXPORT "${CUTIL_LIBRARY}-targets"
-    FILE "${CUTIL_LIBRARY}Config.cmake"
-    NAMESPACE "${CUTIL_LIBRARY}::"
-    DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
-)
-
 # Generate config file for find_package()
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     cmake/${CUTIL_LIBRARY}Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${CUTIL_LIBRARY}Config.cmake"
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
+)
+
+# Generate and install export configuration
+install(
+    EXPORT "${CUTIL_LIBRARY}-targets"
+    FILE "${CUTIL_LIBRARY}Config.cmake"
+    NAMESPACE "${CUTIL_LIBRARY}::"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CUTIL_LIBRARY}"
 )

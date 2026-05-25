@@ -1,8 +1,8 @@
 #include "unity.h"
 #include <cutil/data/generic/iterator.h>
 
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 
 /* --- Mock state and vtable infrastructure --------------------------------- */
 
@@ -22,14 +22,14 @@ typedef struct {
 } MockIterState;
 
 static void
-_mock_free(void *data)
+sf_mock_free(void *data)
 {
     MockIterState *const s = data;
     s->free_called = 1;
 }
 
 static cutil_Bool
-_mock_next(void *data)
+sf_mock_next(void *data)
 {
     MockIterState *const s = data;
     s->next_called = 1;
@@ -37,7 +37,7 @@ _mock_next(void *data)
 }
 
 static int
-_mock_get(const void *data, void *out)
+sf_mock_get(const void *data, void *out)
 {
     CUTIL_UNUSED(out);
     MockIterState *const s = CUTIL_CONST_CAST(data);
@@ -46,7 +46,7 @@ _mock_get(const void *data, void *out)
 }
 
 static const void *
-_mock_get_ptr(const void *data)
+sf_mock_get_ptr(const void *data)
 {
     MockIterState *const s = CUTIL_CONST_CAST(data);
     s->get_ptr_called = 1;
@@ -54,7 +54,7 @@ _mock_get_ptr(const void *data)
 }
 
 static int
-_mock_set(void *data, const void *val)
+sf_mock_set(void *data, const void *val)
 {
     CUTIL_UNUSED(val);
     MockIterState *const s = data;
@@ -63,7 +63,7 @@ _mock_set(void *data, const void *val)
 }
 
 static int
-_mock_remove(void *data)
+sf_mock_remove(void *data)
 {
     MockIterState *const s = data;
     s->remove_called = 1;
@@ -71,47 +71,47 @@ _mock_remove(void *data)
 }
 
 static void
-_mock_rewind(void *data)
+sf_mock_rewind(void *data)
 {
     MockIterState *const s = data;
     s->rewind_called = 1;
 }
 
 static const cutil_ConstIteratorType MOCK_CONST_ITER_TYPE = {
-  .free = &_mock_free,
-  .rewind = &_mock_rewind,
-  .next = &_mock_next,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
+  .free = &sf_mock_free,
+  .rewind = &sf_mock_rewind,
+  .next = &sf_mock_next,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
 };
 
 static const cutil_IteratorType MOCK_ITER_TYPE = {
-  .free = &_mock_free,
-  .rewind = &_mock_rewind,
-  .next = &_mock_next,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
-  .set = &_mock_set,
-  .remove = &_mock_remove,
+  .free = &sf_mock_free,
+  .rewind = &sf_mock_rewind,
+  .next = &sf_mock_next,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
+  .set = &sf_mock_set,
+  .remove = &sf_mock_remove,
 };
 
 /* Vtable with set=NULL and remove=NULL to test NULL-slot guards */
 static const cutil_IteratorType MOCK_ITER_TYPE_NO_SET_REMOVE = {
-  .free = &_mock_free,
-  .next = &_mock_next,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
+  .free = &sf_mock_free,
+  .next = &sf_mock_next,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
   .set = NULL,
   .remove = NULL,
 };
 
 /* Vtable with rewind=NULL to test null-slot guard for rewind */
 static const cutil_ConstIteratorType MOCK_CONST_ITER_TYPE_NO_REWIND = {
-  .free = &_mock_free,
+  .free = &sf_mock_free,
   .rewind = NULL,
-  .next = &_mock_next,
-  .get = &_mock_get,
-  .get_ptr = &_mock_get_ptr,
+  .next = &sf_mock_next,
+  .get = &sf_mock_get,
+  .get_ptr = &sf_mock_get_ptr,
 };
 
 /* Heap-allocates the iterator shell; the MockIterState lives on the stack.
@@ -119,7 +119,7 @@ static const cutil_ConstIteratorType MOCK_CONST_ITER_TYPE_NO_REWIND = {
    - use free(it) in tests that do not exercise cutil_ConstIterator_free
    - use cutil_ConstIterator_free(it) only in the free-shim test */
 static cutil_ConstIterator *
-_make_const_iter(MockIterState *state, const cutil_ConstIteratorType *type)
+sf_make_const_iter(MockIterState *state, const cutil_ConstIteratorType *type)
 {
     cutil_ConstIterator *const it = CUTIL_MALLOC_OBJECT(it);
     it->vtable = type;
@@ -128,7 +128,7 @@ _make_const_iter(MockIterState *state, const cutil_ConstIteratorType *type)
 }
 
 static cutil_Iterator *
-_make_iter(MockIterState *state, const cutil_IteratorType *type)
+sf_make_iter(MockIterState *state, const cutil_IteratorType *type)
 {
     cutil_Iterator *const it = CUTIL_MALLOC_OBJECT(it);
     it->vtable = type;
@@ -139,13 +139,13 @@ _make_iter(MockIterState *state, const cutil_IteratorType *type)
 /* --- ConstIterator dispatch shim tests ------------------------------------ */
 
 static void
-_should_callNext_when_nextCalledOnConstIter(void)
+test_should_callNext_when_nextCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     state.next_return = 1;
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
 
     /* Act */
     const cutil_Bool result = cutil_ConstIterator_next(it);
@@ -159,13 +159,13 @@ _should_callNext_when_nextCalledOnConstIter(void)
 }
 
 static void
-_should_returnFalse_when_nextReturnsItExhausted(void)
+test_should_returnFalse_when_nextReturnsItExhausted(void)
 {
     /* Arrange */
     MockIterState state = {0};
     state.next_return = 0;
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
 
     /* Act */
     const cutil_Bool result = cutil_ConstIterator_next(it);
@@ -178,13 +178,13 @@ _should_returnFalse_when_nextReturnsItExhausted(void)
 }
 
 static void
-_should_callGet_when_getCalledOnConstIter(void)
+test_should_callGet_when_getCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     state.get_return = CUTIL_STATUS_SUCCESS;
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
     int buf = 0;
 
     /* Act */
@@ -199,14 +199,14 @@ _should_callGet_when_getCalledOnConstIter(void)
 }
 
 static void
-_should_callGetPtr_when_getPtrCalledOnConstIter(void)
+test_should_callGetPtr_when_getPtrCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     int sentinel = 0;
     state.get_ptr_return = &sentinel;
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
 
     /* Act */
     const void *result = cutil_ConstIterator_get_ptr(it);
@@ -220,12 +220,12 @@ _should_callGetPtr_when_getPtrCalledOnConstIter(void)
 }
 
 static void
-_should_callFree_when_freeCalledOnConstIter(void)
+test_should_callFree_when_freeCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
 
     /* Act */
     cutil_ConstIterator_free(it);
@@ -237,12 +237,12 @@ _should_callFree_when_freeCalledOnConstIter(void)
 /* --- Iterator dispatch shim tests ----------------------------------------- */
 
 static void
-_should_callSet_when_setCalledOnIter(void)
+test_should_callSet_when_setCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     state.set_return = CUTIL_STATUS_SUCCESS;
-    cutil_Iterator *const it = _make_iter(&state, &MOCK_ITER_TYPE);
+    cutil_Iterator *const it = sf_make_iter(&state, &MOCK_ITER_TYPE);
     int val = 99;
 
     /* Act */
@@ -257,12 +257,12 @@ _should_callSet_when_setCalledOnIter(void)
 }
 
 static void
-_should_callRemove_when_removeCalledOnIter(void)
+test_should_callRemove_when_removeCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     state.remove_return = CUTIL_STATUS_SUCCESS;
-    cutil_Iterator *const it = _make_iter(&state, &MOCK_ITER_TYPE);
+    cutil_Iterator *const it = sf_make_iter(&state, &MOCK_ITER_TYPE);
 
     /* Act */
     const int result = cutil_Iterator_remove(it);
@@ -276,12 +276,12 @@ _should_callRemove_when_removeCalledOnIter(void)
 }
 
 static void
-_should_returnFailure_when_setIsNull(void)
+test_should_returnFailure_when_setIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
     cutil_Iterator *const it
-      = _make_iter(&state, &MOCK_ITER_TYPE_NO_SET_REMOVE);
+      = sf_make_iter(&state, &MOCK_ITER_TYPE_NO_SET_REMOVE);
     int val = 0;
 
     /* Act */
@@ -296,11 +296,11 @@ _should_returnFailure_when_setIsNull(void)
 }
 
 static void
-_should_returnFailure_when_removeIsNull(void)
+test_should_returnFailure_when_removeIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
-    cutil_Iterator *it = _make_iter(&state, &MOCK_ITER_TYPE_NO_SET_REMOVE);
+    cutil_Iterator *it = sf_make_iter(&state, &MOCK_ITER_TYPE_NO_SET_REMOVE);
 
     /* Act */
     const int result = cutil_Iterator_remove(it);
@@ -316,13 +316,13 @@ _should_returnFailure_when_removeIsNull(void)
 /* --- Null-pointer guard tests --------------------------------------------- */
 
 static void
-_should_returnFalse_when_iterIsNull(void)
+test_should_returnFalse_when_iterIsNull(void)
 {
     TEST_ASSERT_FALSE(cutil_ConstIterator_next(NULL));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_get(void)
+test_should_returnFailure_when_iterIsNull_get(void)
 {
     int buf = 0;
     TEST_ASSERT_EQUAL_INT(
@@ -331,20 +331,20 @@ _should_returnFailure_when_iterIsNull_get(void)
 }
 
 static void
-_should_returnNull_when_iterIsNull(void)
+test_should_returnNull_when_iterIsNull(void)
 {
     TEST_ASSERT_NULL(cutil_ConstIterator_get_ptr(NULL));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_set(void)
+test_should_returnFailure_when_iterIsNull_set(void)
 {
     int val = 0;
     TEST_ASSERT_EQUAL_INT(CUTIL_STATUS_FAILURE, cutil_Iterator_set(NULL, &val));
 }
 
 static void
-_should_returnFailure_when_iterIsNull_remove(void)
+test_should_returnFailure_when_iterIsNull_remove(void)
 {
     TEST_ASSERT_EQUAL_INT(CUTIL_STATUS_FAILURE, cutil_Iterator_remove(NULL));
 }
@@ -352,12 +352,12 @@ _should_returnFailure_when_iterIsNull_remove(void)
 /* --- Rewind dispatch shim tests ------------------------------------------- */
 
 static void
-_should_callRewind_when_rewindCalledOnConstIter(void)
+test_should_callRewind_when_rewindCalledOnConstIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE);
 
     /* Act */
     cutil_ConstIterator_rewind(it);
@@ -370,11 +370,11 @@ _should_callRewind_when_rewindCalledOnConstIter(void)
 }
 
 static void
-_should_callRewind_when_rewindCalledOnIter(void)
+test_should_callRewind_when_rewindCalledOnIter(void)
 {
     /* Arrange */
     MockIterState state = {0};
-    cutil_Iterator *const it = _make_iter(&state, &MOCK_ITER_TYPE);
+    cutil_Iterator *const it = sf_make_iter(&state, &MOCK_ITER_TYPE);
 
     /* Act */
     cutil_Iterator_rewind(it);
@@ -387,12 +387,12 @@ _should_callRewind_when_rewindCalledOnIter(void)
 }
 
 static void
-_should_doNothing_when_constIterRewindSlotIsNull(void)
+test_should_doNothing_when_constIterRewindSlotIsNull(void)
 {
     /* Arrange */
     MockIterState state = {0};
     cutil_ConstIterator *const it
-      = _make_const_iter(&state, &MOCK_CONST_ITER_TYPE_NO_REWIND);
+      = sf_make_const_iter(&state, &MOCK_CONST_ITER_TYPE_NO_REWIND);
 
     /* Act */
     cutil_ConstIterator_rewind(it);
@@ -418,27 +418,27 @@ main(void)
     UNITY_BEGIN();
 
     /* ConstIterator dispatch shim tests */
-    RUN_TEST(_should_callNext_when_nextCalledOnConstIter);
-    RUN_TEST(_should_returnFalse_when_nextReturnsItExhausted);
-    RUN_TEST(_should_callGet_when_getCalledOnConstIter);
-    RUN_TEST(_should_callGetPtr_when_getPtrCalledOnConstIter);
-    RUN_TEST(_should_callFree_when_freeCalledOnConstIter);
-    RUN_TEST(_should_callRewind_when_rewindCalledOnConstIter);
+    RUN_TEST(test_should_callNext_when_nextCalledOnConstIter);
+    RUN_TEST(test_should_returnFalse_when_nextReturnsItExhausted);
+    RUN_TEST(test_should_callGet_when_getCalledOnConstIter);
+    RUN_TEST(test_should_callGetPtr_when_getPtrCalledOnConstIter);
+    RUN_TEST(test_should_callFree_when_freeCalledOnConstIter);
+    RUN_TEST(test_should_callRewind_when_rewindCalledOnConstIter);
 
     /* Iterator dispatch shim tests */
-    RUN_TEST(_should_callSet_when_setCalledOnIter);
-    RUN_TEST(_should_callRemove_when_removeCalledOnIter);
-    RUN_TEST(_should_returnFailure_when_setIsNull);
-    RUN_TEST(_should_returnFailure_when_removeIsNull);
-    RUN_TEST(_should_callRewind_when_rewindCalledOnIter);
+    RUN_TEST(test_should_callSet_when_setCalledOnIter);
+    RUN_TEST(test_should_callRemove_when_removeCalledOnIter);
+    RUN_TEST(test_should_returnFailure_when_setIsNull);
+    RUN_TEST(test_should_returnFailure_when_removeIsNull);
+    RUN_TEST(test_should_callRewind_when_rewindCalledOnIter);
 
     /* Null-pointer guard tests */
-    RUN_TEST(_should_returnFalse_when_iterIsNull);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_get);
-    RUN_TEST(_should_returnNull_when_iterIsNull);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_set);
-    RUN_TEST(_should_returnFailure_when_iterIsNull_remove);
-    RUN_TEST(_should_doNothing_when_constIterRewindSlotIsNull);
+    RUN_TEST(test_should_returnFalse_when_iterIsNull);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_get);
+    RUN_TEST(test_should_returnNull_when_iterIsNull);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_set);
+    RUN_TEST(test_should_returnFailure_when_iterIsNull_remove);
+    RUN_TEST(test_should_doNothing_when_constIterRewindSlotIsNull);
 
     return UNITY_END();
 }

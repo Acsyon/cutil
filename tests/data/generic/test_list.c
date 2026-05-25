@@ -3,9 +3,9 @@
 
 #include <cutil/data/generic/list/arraylist.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 /* ==========================================================================
  * Mock infrastructure
@@ -30,12 +30,12 @@ typedef struct {
     int get_elem_type_count;
     int get_const_iterator_count;
     int get_iterator_count;
-} MockListData;
+} s_MockListData;
 
 static void
-_mock_list_free(void *data)
+sf_mock_list_free(void *data)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     if (mock) {
         ++mock->free_count;
         free(mock);
@@ -43,41 +43,41 @@ _mock_list_free(void *data)
 }
 
 static void
-_mock_list_reset(void *data)
+sf_mock_list_reset(void *data)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     if (mock) {
         ++mock->reset_count;
     }
 }
 
 static void
-_mock_list_copy(void *dst, const void *src)
+sf_mock_list_copy(void *dst, const void *src)
 {
-    MockListData *const dst_mock = dst;
-    const MockListData *const src_mock = src;
+    s_MockListData *const dst_mock = dst;
+    const s_MockListData *const src_mock = src;
     if (dst_mock && src_mock) {
         ++dst_mock->copy_count;
     }
 }
 
 static void *
-_mock_list_duplicate(const void *data)
+sf_mock_list_duplicate(const void *data)
 {
-    MockListData *const src = CUTIL_CONST_CAST(data);
+    s_MockListData *const src = CUTIL_CONST_CAST(data);
     if (!src) {
         return NULL;
     }
-    MockListData *const dup = CUTIL_MALLOC_OBJECT(dup);
+    s_MockListData *const dup = CUTIL_MALLOC_OBJECT(dup);
     *dup = *src;
     ++src->duplicate_count;
     return dup;
 }
 
 static size_t
-_mock_list_get_count(const void *data)
+sf_mock_list_get_count(const void *data)
 {
-    MockListData *const mock = CUTIL_CONST_CAST(data);
+    s_MockListData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_count_count;
         return (size_t) mock->get_count_val;
@@ -86,7 +86,7 @@ _mock_list_get_count(const void *data)
 }
 
 static int
-_mock_list_get(const void *data, size_t idx, void *out)
+sf_mock_list_get(const void *data, size_t idx, void *out)
 {
     CUTIL_UNUSED(data);
     CUTIL_UNUSED(idx);
@@ -95,9 +95,9 @@ _mock_list_get(const void *data, size_t idx, void *out)
 }
 
 static const void *
-_mock_list_get_ptr(const void *data, size_t idx)
+sf_mock_list_get_ptr(const void *data, size_t idx)
 {
-    MockListData *const mock = CUTIL_CONST_CAST(data);
+    s_MockListData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(idx);
     if (mock) {
         ++mock->get_ptr_count;
@@ -106,9 +106,9 @@ _mock_list_get_ptr(const void *data, size_t idx)
 }
 
 static size_t
-_mock_list_locate(const void *data, const void *elem)
+sf_mock_list_locate(const void *data, const void *elem)
 {
-    MockListData *const mock = CUTIL_CONST_CAST(data);
+    s_MockListData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(elem);
     if (mock) {
         ++mock->locate_count;
@@ -118,9 +118,9 @@ _mock_list_locate(const void *data, const void *elem)
 }
 
 static int
-_mock_list_set(void *data, size_t idx, const void *elem)
+sf_mock_list_set(void *data, size_t idx, const void *elem)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     CUTIL_UNUSED(idx);
     CUTIL_UNUSED(elem);
     if (mock) {
@@ -130,9 +130,9 @@ _mock_list_set(void *data, size_t idx, const void *elem)
 }
 
 static int
-_mock_list_append(void *data, const void *elem)
+sf_mock_list_append(void *data, const void *elem)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     CUTIL_UNUSED(elem);
     if (mock) {
         ++mock->append_count;
@@ -141,9 +141,9 @@ _mock_list_append(void *data, const void *elem)
 }
 
 static int
-_mock_list_insert_mult(void *data, size_t pos, size_t num, const void *elems)
+sf_mock_list_insert_mult(void *data, size_t pos, size_t num, const void *elems)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     CUTIL_UNUSED(pos);
     CUTIL_UNUSED(num);
     CUTIL_UNUSED(elems);
@@ -154,9 +154,9 @@ _mock_list_insert_mult(void *data, size_t pos, size_t num, const void *elems)
 }
 
 static int
-_mock_list_remove_mult(void *data, size_t pos, size_t num)
+sf_mock_list_remove_mult(void *data, size_t pos, size_t num)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     CUTIL_UNUSED(pos);
     CUTIL_UNUSED(num);
     if (mock) {
@@ -166,9 +166,9 @@ _mock_list_remove_mult(void *data, size_t pos, size_t num)
 }
 
 static void
-_mock_list_sort_custom(void *data, cutil_CompFunc *comp)
+sf_mock_list_sort_custom(void *data, cutil_CompFunc *comp)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     CUTIL_UNUSED(comp);
     if (mock) {
         ++mock->sort_custom_count;
@@ -176,9 +176,9 @@ _mock_list_sort_custom(void *data, cutil_CompFunc *comp)
 }
 
 static const cutil_GenericType *
-_mock_list_get_elem_type(const void *data)
+sf_mock_list_get_elem_type(const void *data)
 {
-    MockListData *const mock = CUTIL_CONST_CAST(data);
+    s_MockListData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_elem_type_count;
     }
@@ -188,13 +188,13 @@ _mock_list_get_elem_type(const void *data)
 /* --- Stub iterator infrastructure ---------------------------------------- */
 
 static void
-_mock_list_iter_free(void *data)
+sf_mock_list_iter_free(void *data)
 {
     free(data);
 }
 
 static cutil_Bool
-_mock_list_iter_next(void *data)
+sf_mock_list_iter_next(void *data)
 {
     CUTIL_UNUSED(data);
     return CUTIL_FALSE;
@@ -202,18 +202,18 @@ _mock_list_iter_next(void *data)
 
 static const cutil_ConstIteratorType MOCK_LIST_ITER_CONST_TYPE = {
   .name = "MockListConstIter",
-  .free = &_mock_list_iter_free,
+  .free = &sf_mock_list_iter_free,
   .rewind = NULL,
-  .next = &_mock_list_iter_next,
+  .next = &sf_mock_list_iter_next,
   .get = NULL,
   .get_ptr = NULL,
 };
 
 static const cutil_IteratorType MOCK_LIST_ITER_TYPE = {
   .name = "MockListIter",
-  .free = &_mock_list_iter_free,
+  .free = &sf_mock_list_iter_free,
   .rewind = NULL,
-  .next = &_mock_list_iter_next,
+  .next = &sf_mock_list_iter_next,
   .get = NULL,
   .get_ptr = NULL,
   .set = NULL,
@@ -221,9 +221,9 @@ static const cutil_IteratorType MOCK_LIST_ITER_TYPE = {
 };
 
 static cutil_ConstIterator *
-_mock_get_const_iterator(const void *data)
+sf_mock_get_const_iterator(const void *data)
 {
-    MockListData *const mock = CUTIL_CONST_CAST(data);
+    s_MockListData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_const_iterator_count;
     }
@@ -234,9 +234,9 @@ _mock_get_const_iterator(const void *data)
 }
 
 static cutil_Iterator *
-_mock_get_iterator(void *data)
+sf_mock_get_iterator(void *data)
 {
-    MockListData *const mock = data;
+    s_MockListData *const mock = data;
     if (mock) {
         ++mock->get_iterator_count;
     }
@@ -248,29 +248,29 @@ _mock_get_iterator(void *data)
 
 static const cutil_ListType MOCK_LIST_TYPE = {
   .name = "MockList",
-  .free = &_mock_list_free,
-  .reset = &_mock_list_reset,
-  .copy = &_mock_list_copy,
-  .duplicate = &_mock_list_duplicate,
-  .get_count = &_mock_list_get_count,
-  .get = &_mock_list_get,
-  .get_ptr = &_mock_list_get_ptr,
-  .locate = &_mock_list_locate,
-  .set = &_mock_list_set,
-  .append = &_mock_list_append,
-  .insert_mult = &_mock_list_insert_mult,
-  .remove_mult = &_mock_list_remove_mult,
-  .sort_custom = &_mock_list_sort_custom,
-  .get_elem_type = &_mock_list_get_elem_type,
-  .get_const_iterator = &_mock_get_const_iterator,
-  .get_iterator = &_mock_get_iterator,
+  .free = &sf_mock_list_free,
+  .reset = &sf_mock_list_reset,
+  .copy = &sf_mock_list_copy,
+  .duplicate = &sf_mock_list_duplicate,
+  .get_count = &sf_mock_list_get_count,
+  .get = &sf_mock_list_get,
+  .get_ptr = &sf_mock_list_get_ptr,
+  .locate = &sf_mock_list_locate,
+  .set = &sf_mock_list_set,
+  .append = &sf_mock_list_append,
+  .insert_mult = &sf_mock_list_insert_mult,
+  .remove_mult = &sf_mock_list_remove_mult,
+  .sort_custom = &sf_mock_list_sort_custom,
+  .get_elem_type = &sf_mock_list_get_elem_type,
+  .get_const_iterator = &sf_mock_get_const_iterator,
+  .get_iterator = &sf_mock_get_iterator,
 };
 
 static cutil_List *
-_create_mock_list(void)
+sf_create_mock_list(void)
 {
-    MockListData *const data = CUTIL_MALLOC_OBJECT(data);
-    *data = (MockListData) {0};
+    s_MockListData *const data = CUTIL_MALLOC_OBJECT(data);
+    *data = (s_MockListData) {0};
     cutil_List *const list = CUTIL_MALLOC_OBJECT(list);
     list->vtable = &MOCK_LIST_TYPE;
     list->data = data;
@@ -282,7 +282,7 @@ _create_mock_list(void)
  * ========================================================================== */
 
 static void
-_should_returnTrue_when_twoListTypesAreEqual(void)
+test_should_returnTrue_when_twoListTypesAreEqual(void)
 {
     /* Act */
     const cutil_Bool result = cutil_ListType_equals(
@@ -294,7 +294,7 @@ _should_returnTrue_when_twoListTypesAreEqual(void)
 }
 
 static void
-_should_returnFalse_when_listTypesMismatch(void)
+test_should_returnFalse_when_listTypesMismatch(void)
 {
     /* Act */
     const cutil_Bool result
@@ -305,10 +305,10 @@ _should_returnFalse_when_listTypesMismatch(void)
 }
 
 static void
-_should_dispatchFree_when_listClearCalled(void)
+test_should_dispatchFree_when_listClearCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
+    cutil_List *const list = sf_create_mock_list();
 
     /* Act */
     cutil_List_clear(list);
@@ -321,11 +321,11 @@ _should_dispatchFree_when_listClearCalled(void)
 }
 
 static void
-_should_dispatchReset_when_listResetCalled(void)
+test_should_dispatchReset_when_listResetCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
-    MockListData *const mock = list->data;
+    cutil_List *const list = sf_create_mock_list();
+    s_MockListData *const mock = list->data;
 
     /* Act */
     cutil_List_reset(list);
@@ -338,12 +338,12 @@ _should_dispatchReset_when_listResetCalled(void)
 }
 
 static void
-_should_dispatchCopy_when_listCopyCalled(void)
+test_should_dispatchCopy_when_listCopyCalled(void)
 {
     /* Arrange */
-    cutil_List *const dst = _create_mock_list();
-    cutil_List *const src = _create_mock_list();
-    MockListData *const dst_mock = dst->data;
+    cutil_List *const dst = sf_create_mock_list();
+    cutil_List *const src = sf_create_mock_list();
+    s_MockListData *const dst_mock = dst->data;
 
     /* Act */
     cutil_List_copy(dst, src);
@@ -357,11 +357,11 @@ _should_dispatchCopy_when_listCopyCalled(void)
 }
 
 static void
-_should_dispatchDuplicate_when_listDuplicateCalled(void)
+test_should_dispatchDuplicate_when_listDuplicateCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
-    MockListData *const mock = list->data;
+    cutil_List *const list = sf_create_mock_list();
+    s_MockListData *const mock = list->data;
 
     /* Act */
     cutil_List *const dup = cutil_List_duplicate(list);
@@ -376,11 +376,11 @@ _should_dispatchDuplicate_when_listDuplicateCalled(void)
 }
 
 static void
-_should_dispatch_when_setCalled(void)
+test_should_dispatch_when_setCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
-    MockListData *const mock = list->data;
+    cutil_List *const list = sf_create_mock_list();
+    s_MockListData *const mock = list->data;
     const int val = 42;
 
     /* Act */
@@ -394,11 +394,11 @@ _should_dispatch_when_setCalled(void)
 }
 
 static void
-_should_dispatchGetConstIterator_when_getConstIteratorCalled(void)
+test_should_dispatchGetConstIterator_when_getConstIteratorCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
-    MockListData *const mock = list->data;
+    cutil_List *const list = sf_create_mock_list();
+    s_MockListData *const mock = list->data;
 
     /* Act */
     cutil_ConstIterator *const it = cutil_List_get_const_iterator(list);
@@ -413,11 +413,11 @@ _should_dispatchGetConstIterator_when_getConstIteratorCalled(void)
 }
 
 static void
-_should_dispatchGetIterator_when_getIteratorCalled(void)
+test_should_dispatchGetIterator_when_getIteratorCalled(void)
 {
     /* Arrange */
-    cutil_List *const list = _create_mock_list();
-    MockListData *const mock = list->data;
+    cutil_List *const list = sf_create_mock_list();
+    s_MockListData *const mock = list->data;
 
     /* Act */
     cutil_Iterator *const it = cutil_List_get_iterator(list);
@@ -432,13 +432,13 @@ _should_dispatchGetIterator_when_getIteratorCalled(void)
 }
 
 static void
-_should_returnNull_when_getConstIteratorCalledOnNullList(void)
+test_should_returnNull_when_getConstIteratorCalledOnNullList(void)
 {
     TEST_ASSERT_NULL(cutil_List_get_const_iterator(NULL));
 }
 
 static void
-_should_returnNull_when_getIteratorCalledOnNullList(void)
+test_should_returnNull_when_getIteratorCalledOnNullList(void)
 {
     TEST_ASSERT_NULL(cutil_List_get_iterator(NULL));
 }
@@ -456,13 +456,13 @@ typedef cutil_List *(*ListFactory)(void);
 static ListFactory g_current_factory = NULL;
 
 static cutil_List *
-_arraylist_factory_int(void)
+sf_arraylist_factory_int(void)
 {
     return cutil_ArrayList_alloc(CUTIL_GENERIC_TYPE_INT);
 }
 
 static void
-_should_notCrash_when_listIsFreed(void)
+test_should_notCrash_when_listIsFreed(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -473,7 +473,7 @@ _should_notCrash_when_listIsFreed(void)
 }
 
 static void
-_should_clearAllElements_when_listIsReset(void)
+test_should_clearAllElements_when_listIsReset(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -494,7 +494,7 @@ _should_clearAllElements_when_listIsReset(void)
 }
 
 static void
-_should_preserveElements_when_listIsCopied(void)
+test_should_preserveElements_when_listIsCopied(void)
 {
     /* Arrange */
     cutil_List *const src = g_current_factory();
@@ -522,7 +522,7 @@ _should_preserveElements_when_listIsCopied(void)
 }
 
 static void
-_should_returnIndependentCopy_when_listIsDuplicated(void)
+test_should_returnIndependentCopy_when_listIsDuplicated(void)
 {
     /* Arrange */
     cutil_List *const src = g_current_factory();
@@ -552,7 +552,7 @@ _should_returnIndependentCopy_when_listIsDuplicated(void)
 }
 
 static void
-_should_returnZeroCount_when_listIsEmpty(void)
+test_should_returnZeroCount_when_listIsEmpty(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -568,7 +568,7 @@ _should_returnZeroCount_when_listIsEmpty(void)
 }
 
 static void
-_should_returnCorrectCount_when_elementsAppended(void)
+test_should_returnCorrectCount_when_elementsAppended(void)
 {
     /* Arrange */
     const int num_elems = 5;
@@ -587,7 +587,7 @@ _should_returnCorrectCount_when_elementsAppended(void)
 }
 
 static void
-_should_returnElement_when_getCalledWithValidIndex(void)
+test_should_returnElement_when_getCalledWithValidIndex(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -610,7 +610,7 @@ _should_returnElement_when_getCalledWithValidIndex(void)
 }
 
 static void
-_should_returnFailure_when_getIndexOutOfBounds(void)
+test_should_returnFailure_when_getIndexOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -627,7 +627,7 @@ _should_returnFailure_when_getIndexOutOfBounds(void)
 }
 
 static void
-_should_returnNonNull_when_getPtrCalledWithValidIndex(void)
+test_should_returnNonNull_when_getPtrCalledWithValidIndex(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -645,7 +645,7 @@ _should_returnNonNull_when_getPtrCalledWithValidIndex(void)
 }
 
 static void
-_should_returnMatchingValue_when_getPtrCalledWithValidIndex(void)
+test_should_returnMatchingValue_when_getPtrCalledWithValidIndex(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -667,7 +667,7 @@ _should_returnMatchingValue_when_getPtrCalledWithValidIndex(void)
 }
 
 static void
-_should_returnNull_when_getPtrIndexOutOfBounds(void)
+test_should_returnNull_when_getPtrIndexOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -683,7 +683,7 @@ _should_returnNull_when_getPtrIndexOutOfBounds(void)
 }
 
 static void
-_should_locateElement_when_present(void)
+test_should_locateElement_when_present(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -705,7 +705,7 @@ _should_locateElement_when_present(void)
 }
 
 static void
-_should_returnNotFound_when_elementAbsent(void)
+test_should_returnNotFound_when_elementAbsent(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -727,7 +727,7 @@ _should_returnNotFound_when_elementAbsent(void)
 }
 
 static void
-_should_returnFirstOccurrence_when_duplicateElementPresent(void)
+test_should_returnFirstOccurrence_when_duplicateElementPresent(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -747,7 +747,7 @@ _should_returnFirstOccurrence_when_duplicateElementPresent(void)
 }
 
 static void
-_should_returnTrue_when_containsExistingElement(void)
+test_should_returnTrue_when_containsExistingElement(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -769,7 +769,7 @@ _should_returnTrue_when_containsExistingElement(void)
 }
 
 static void
-_should_returnFalse_when_containsAbsentElement(void)
+test_should_returnFalse_when_containsAbsentElement(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -791,7 +791,7 @@ _should_returnFalse_when_containsAbsentElement(void)
 }
 
 static void
-_should_returnSuccess_when_setValidIndex(void)
+test_should_returnSuccess_when_setValidIndex(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -810,7 +810,7 @@ _should_returnSuccess_when_setValidIndex(void)
 }
 
 static void
-_should_returnFailure_when_setOutOfBounds(void)
+test_should_returnFailure_when_setOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -827,7 +827,7 @@ _should_returnFailure_when_setOutOfBounds(void)
 }
 
 static void
-_should_overwriteValue_when_setCalled(void)
+test_should_overwriteValue_when_setCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -849,7 +849,7 @@ _should_overwriteValue_when_setCalled(void)
 }
 
 static void
-_should_swapElements_when_memswapElemCalled(void)
+test_should_swapElements_when_memswapElemCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -869,7 +869,7 @@ _should_swapElements_when_memswapElemCalled(void)
 }
 
 static void
-_should_returnFailure_when_memswapElemOutOfBounds(void)
+test_should_returnFailure_when_memswapElemOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -886,7 +886,7 @@ _should_returnFailure_when_memswapElemOutOfBounds(void)
 }
 
 static void
-_should_preserveOrder_when_elementsAppended(void)
+test_should_preserveOrder_when_elementsAppended(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -908,7 +908,7 @@ _should_preserveOrder_when_elementsAppended(void)
 }
 
 static void
-_should_shiftElements_when_insertedAtFront(void)
+test_should_shiftElements_when_insertedAtFront(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -930,7 +930,7 @@ _should_shiftElements_when_insertedAtFront(void)
 }
 
 static void
-_should_shiftElements_when_insertedAtMiddle(void)
+test_should_shiftElements_when_insertedAtMiddle(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -952,7 +952,7 @@ _should_shiftElements_when_insertedAtMiddle(void)
 }
 
 static void
-_should_appendElement_when_insertedAtEnd(void)
+test_should_appendElement_when_insertedAtEnd(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -974,7 +974,7 @@ _should_appendElement_when_insertedAtEnd(void)
 }
 
 static void
-_should_insertAllElements_when_insertMultCalled(void)
+test_should_insertAllElements_when_insertMultCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -999,7 +999,7 @@ _should_insertAllElements_when_insertMultCalled(void)
 }
 
 static void
-_should_incrementCount_when_insertMultCalled(void)
+test_should_incrementCount_when_insertMultCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1020,7 +1020,7 @@ _should_incrementCount_when_insertMultCalled(void)
 }
 
 static void
-_should_returnFailure_when_insertPosOutOfBounds(void)
+test_should_returnFailure_when_insertPosOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1037,7 +1037,7 @@ _should_returnFailure_when_insertPosOutOfBounds(void)
 }
 
 static void
-_should_removeElement_when_removeCalledWithIndex(void)
+test_should_removeElement_when_removeCalledWithIndex(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1060,7 +1060,7 @@ _should_removeElement_when_removeCalledWithIndex(void)
 }
 
 static void
-_should_removeFirstElement_when_removeCalledAtZero(void)
+test_should_removeFirstElement_when_removeCalledAtZero(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1083,7 +1083,7 @@ _should_removeFirstElement_when_removeCalledAtZero(void)
 }
 
 static void
-_should_removeLastElement_when_removeCalledAtEnd(void)
+test_should_removeLastElement_when_removeCalledAtEnd(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1106,7 +1106,7 @@ _should_removeLastElement_when_removeCalledAtEnd(void)
 }
 
 static void
-_should_removeRange_when_removeMultCalled(void)
+test_should_removeRange_when_removeMultCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1129,7 +1129,7 @@ _should_removeRange_when_removeMultCalled(void)
 }
 
 static void
-_should_removeRange_when_removeFromToCalled(void)
+test_should_removeRange_when_removeFromToCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1152,7 +1152,7 @@ _should_removeRange_when_removeFromToCalled(void)
 }
 
 static void
-_should_returnFailure_when_removeOutOfBounds(void)
+test_should_returnFailure_when_removeOutOfBounds(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1168,7 +1168,7 @@ _should_returnFailure_when_removeOutOfBounds(void)
 }
 
 static void
-_should_returnFailure_when_removeMultExceedsLength(void)
+test_should_returnFailure_when_removeMultExceedsLength(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1189,7 +1189,7 @@ _should_returnFailure_when_removeMultExceedsLength(void)
 }
 
 static void
-_should_returnFailure_when_removeFromToBeginGtEnd(void)
+test_should_returnFailure_when_removeFromToBeginGtEnd(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1210,13 +1210,13 @@ _should_returnFailure_when_removeFromToBeginGtEnd(void)
 }
 
 static int
-_cmp_int_desc(const void *a, const void *b)
+sf_cmp_int_desc(const void *a, const void *b)
 {
     return -(*(const int *) a - *(const int *) b);
 }
 
 static void
-_should_sortAscending_when_defaultComparatorUsed(void)
+test_should_sortAscending_when_defaultComparatorUsed(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1239,7 +1239,7 @@ _should_sortAscending_when_defaultComparatorUsed(void)
 }
 
 static void
-_should_sortDescending_when_customComparatorUsed(void)
+test_should_sortDescending_when_customComparatorUsed(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1250,7 +1250,7 @@ _should_sortDescending_when_customComparatorUsed(void)
     }
 
     /* Act */
-    cutil_List_sort_custom(list, &_cmp_int_desc);
+    cutil_List_sort_custom(list, &sf_cmp_int_desc);
 
     /* Assert */
     TEST_ASSERT_EQUAL_INT(3, *(const int *) cutil_List_get_ptr(list, 0UL));
@@ -1262,7 +1262,7 @@ _should_sortDescending_when_customComparatorUsed(void)
 }
 
 static void
-_should_notCrash_when_emptyListSorted(void)
+test_should_notCrash_when_emptyListSorted(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1276,7 +1276,7 @@ _should_notCrash_when_emptyListSorted(void)
 }
 
 static void
-_should_notCrash_when_singleElementSorted(void)
+test_should_notCrash_when_singleElementSorted(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1294,7 +1294,7 @@ _should_notCrash_when_singleElementSorted(void)
 }
 
 static void
-_should_returnCorrectElemType_when_variousTypesUsed(void)
+test_should_returnCorrectElemType_when_variousTypesUsed(void)
 {
     /* Arrange */
     const cutil_GenericType *const native_types[] = {
@@ -1320,7 +1320,7 @@ _should_returnCorrectElemType_when_variousTypesUsed(void)
 }
 
 static void
-_should_returnNonNull_when_getConstIteratorCalled(void)
+test_should_returnNonNull_when_getConstIteratorCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1337,7 +1337,7 @@ _should_returnNonNull_when_getConstIteratorCalled(void)
 }
 
 static void
-_should_notAdvance_when_nextCalledOnEmptyList(void)
+test_should_notAdvance_when_nextCalledOnEmptyList(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1355,7 +1355,7 @@ _should_notAdvance_when_nextCalledOnEmptyList(void)
 }
 
 static void
-_should_traverseAllElements_when_constIteratorUsed(void)
+test_should_traverseAllElements_when_constIteratorUsed(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1382,7 +1382,7 @@ _should_traverseAllElements_when_constIteratorUsed(void)
 }
 
 static void
-_should_traverseAllElements_when_constIteratorRewound(void)
+test_should_traverseAllElements_when_constIteratorRewound(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1415,7 +1415,7 @@ _should_traverseAllElements_when_constIteratorRewound(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalled(void)
+test_should_returnNonNull_when_getIteratorCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1432,7 +1432,7 @@ _should_returnNonNull_when_getIteratorCalled(void)
 }
 
 static void
-_should_setCurrentElement_when_iteratorSetCalled(void)
+test_should_setCurrentElement_when_iteratorSetCalled(void)
 {
     /* Arrange */
     cutil_List *const list = g_current_factory();
@@ -1475,79 +1475,79 @@ main(void)
     UNITY_BEGIN();
 
     /* --- Mock-based vtable dispatch tests --- */
-    RUN_TEST(_should_returnTrue_when_twoListTypesAreEqual);
-    RUN_TEST(_should_returnFalse_when_listTypesMismatch);
-    RUN_TEST(_should_dispatchFree_when_listClearCalled);
-    RUN_TEST(_should_dispatchReset_when_listResetCalled);
-    RUN_TEST(_should_dispatchCopy_when_listCopyCalled);
-    RUN_TEST(_should_dispatchDuplicate_when_listDuplicateCalled);
-    RUN_TEST(_should_dispatch_when_setCalled);
+    RUN_TEST(test_should_returnTrue_when_twoListTypesAreEqual);
+    RUN_TEST(test_should_returnFalse_when_listTypesMismatch);
+    RUN_TEST(test_should_dispatchFree_when_listClearCalled);
+    RUN_TEST(test_should_dispatchReset_when_listResetCalled);
+    RUN_TEST(test_should_dispatchCopy_when_listCopyCalled);
+    RUN_TEST(test_should_dispatchDuplicate_when_listDuplicateCalled);
+    RUN_TEST(test_should_dispatch_when_setCalled);
 
     /* Iterator shim tests */
-    RUN_TEST(_should_dispatchGetConstIterator_when_getConstIteratorCalled);
-    RUN_TEST(_should_dispatchGetIterator_when_getIteratorCalled);
-    RUN_TEST(_should_returnNull_when_getConstIteratorCalledOnNullList);
-    RUN_TEST(_should_returnNull_when_getIteratorCalledOnNullList);
+    RUN_TEST(test_should_dispatchGetConstIterator_when_getConstIteratorCalled);
+    RUN_TEST(test_should_dispatchGetIterator_when_getIteratorCalled);
+    RUN_TEST(test_should_returnNull_when_getConstIteratorCalledOnNullList);
+    RUN_TEST(test_should_returnNull_when_getIteratorCalledOnNullList);
 
     /* --- ArrayList (INT) — full interface coverage --- */
-    g_current_factory = &_arraylist_factory_int;
+    g_current_factory = &sf_arraylist_factory_int;
 
-    RUN_TEST(_should_notCrash_when_listIsFreed);
-    RUN_TEST(_should_clearAllElements_when_listIsReset);
-    RUN_TEST(_should_preserveElements_when_listIsCopied);
-    RUN_TEST(_should_returnIndependentCopy_when_listIsDuplicated);
+    RUN_TEST(test_should_notCrash_when_listIsFreed);
+    RUN_TEST(test_should_clearAllElements_when_listIsReset);
+    RUN_TEST(test_should_preserveElements_when_listIsCopied);
+    RUN_TEST(test_should_returnIndependentCopy_when_listIsDuplicated);
 
-    RUN_TEST(_should_returnZeroCount_when_listIsEmpty);
-    RUN_TEST(_should_returnCorrectCount_when_elementsAppended);
-    RUN_TEST(_should_returnElement_when_getCalledWithValidIndex);
-    RUN_TEST(_should_returnFailure_when_getIndexOutOfBounds);
-    RUN_TEST(_should_returnNonNull_when_getPtrCalledWithValidIndex);
-    RUN_TEST(_should_returnMatchingValue_when_getPtrCalledWithValidIndex);
-    RUN_TEST(_should_returnNull_when_getPtrIndexOutOfBounds);
+    RUN_TEST(test_should_returnZeroCount_when_listIsEmpty);
+    RUN_TEST(test_should_returnCorrectCount_when_elementsAppended);
+    RUN_TEST(test_should_returnElement_when_getCalledWithValidIndex);
+    RUN_TEST(test_should_returnFailure_when_getIndexOutOfBounds);
+    RUN_TEST(test_should_returnNonNull_when_getPtrCalledWithValidIndex);
+    RUN_TEST(test_should_returnMatchingValue_when_getPtrCalledWithValidIndex);
+    RUN_TEST(test_should_returnNull_when_getPtrIndexOutOfBounds);
 
-    RUN_TEST(_should_locateElement_when_present);
-    RUN_TEST(_should_returnNotFound_when_elementAbsent);
-    RUN_TEST(_should_returnFirstOccurrence_when_duplicateElementPresent);
-    RUN_TEST(_should_returnTrue_when_containsExistingElement);
-    RUN_TEST(_should_returnFalse_when_containsAbsentElement);
+    RUN_TEST(test_should_locateElement_when_present);
+    RUN_TEST(test_should_returnNotFound_when_elementAbsent);
+    RUN_TEST(test_should_returnFirstOccurrence_when_duplicateElementPresent);
+    RUN_TEST(test_should_returnTrue_when_containsExistingElement);
+    RUN_TEST(test_should_returnFalse_when_containsAbsentElement);
 
-    RUN_TEST(_should_returnSuccess_when_setValidIndex);
-    RUN_TEST(_should_returnFailure_when_setOutOfBounds);
-    RUN_TEST(_should_overwriteValue_when_setCalled);
-    RUN_TEST(_should_swapElements_when_memswapElemCalled);
-    RUN_TEST(_should_returnFailure_when_memswapElemOutOfBounds);
+    RUN_TEST(test_should_returnSuccess_when_setValidIndex);
+    RUN_TEST(test_should_returnFailure_when_setOutOfBounds);
+    RUN_TEST(test_should_overwriteValue_when_setCalled);
+    RUN_TEST(test_should_swapElements_when_memswapElemCalled);
+    RUN_TEST(test_should_returnFailure_when_memswapElemOutOfBounds);
 
-    RUN_TEST(_should_preserveOrder_when_elementsAppended);
-    RUN_TEST(_should_shiftElements_when_insertedAtFront);
-    RUN_TEST(_should_shiftElements_when_insertedAtMiddle);
-    RUN_TEST(_should_appendElement_when_insertedAtEnd);
-    RUN_TEST(_should_insertAllElements_when_insertMultCalled);
-    RUN_TEST(_should_incrementCount_when_insertMultCalled);
-    RUN_TEST(_should_returnFailure_when_insertPosOutOfBounds);
+    RUN_TEST(test_should_preserveOrder_when_elementsAppended);
+    RUN_TEST(test_should_shiftElements_when_insertedAtFront);
+    RUN_TEST(test_should_shiftElements_when_insertedAtMiddle);
+    RUN_TEST(test_should_appendElement_when_insertedAtEnd);
+    RUN_TEST(test_should_insertAllElements_when_insertMultCalled);
+    RUN_TEST(test_should_incrementCount_when_insertMultCalled);
+    RUN_TEST(test_should_returnFailure_when_insertPosOutOfBounds);
 
-    RUN_TEST(_should_removeElement_when_removeCalledWithIndex);
-    RUN_TEST(_should_removeFirstElement_when_removeCalledAtZero);
-    RUN_TEST(_should_removeLastElement_when_removeCalledAtEnd);
-    RUN_TEST(_should_removeRange_when_removeMultCalled);
-    RUN_TEST(_should_removeRange_when_removeFromToCalled);
-    RUN_TEST(_should_returnFailure_when_removeOutOfBounds);
-    RUN_TEST(_should_returnFailure_when_removeMultExceedsLength);
-    RUN_TEST(_should_returnFailure_when_removeFromToBeginGtEnd);
+    RUN_TEST(test_should_removeElement_when_removeCalledWithIndex);
+    RUN_TEST(test_should_removeFirstElement_when_removeCalledAtZero);
+    RUN_TEST(test_should_removeLastElement_when_removeCalledAtEnd);
+    RUN_TEST(test_should_removeRange_when_removeMultCalled);
+    RUN_TEST(test_should_removeRange_when_removeFromToCalled);
+    RUN_TEST(test_should_returnFailure_when_removeOutOfBounds);
+    RUN_TEST(test_should_returnFailure_when_removeMultExceedsLength);
+    RUN_TEST(test_should_returnFailure_when_removeFromToBeginGtEnd);
 
-    RUN_TEST(_should_sortAscending_when_defaultComparatorUsed);
-    RUN_TEST(_should_sortDescending_when_customComparatorUsed);
-    RUN_TEST(_should_notCrash_when_emptyListSorted);
-    RUN_TEST(_should_notCrash_when_singleElementSorted);
+    RUN_TEST(test_should_sortAscending_when_defaultComparatorUsed);
+    RUN_TEST(test_should_sortDescending_when_customComparatorUsed);
+    RUN_TEST(test_should_notCrash_when_emptyListSorted);
+    RUN_TEST(test_should_notCrash_when_singleElementSorted);
 
-    RUN_TEST(_should_returnCorrectElemType_when_variousTypesUsed);
+    RUN_TEST(test_should_returnCorrectElemType_when_variousTypesUsed);
 
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalled);
-    RUN_TEST(_should_notAdvance_when_nextCalledOnEmptyList);
-    RUN_TEST(_should_traverseAllElements_when_constIteratorUsed);
-    RUN_TEST(_should_traverseAllElements_when_constIteratorRewound);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalled);
+    RUN_TEST(test_should_notAdvance_when_nextCalledOnEmptyList);
+    RUN_TEST(test_should_traverseAllElements_when_constIteratorUsed);
+    RUN_TEST(test_should_traverseAllElements_when_constIteratorRewound);
 
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalled);
-    RUN_TEST(_should_setCurrentElement_when_iteratorSetCalled);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalled);
+    RUN_TEST(test_should_setCurrentElement_when_iteratorSetCalled);
 
     return UNITY_END();
 }

@@ -3,10 +3,10 @@
 
 #include <cutil/data/generic/set/hashset.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/std/string.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/std/string.h>
-#include <cutil/util/macro.h>
 
 /* ==========================================================================
  * Mock infrastructure
@@ -25,12 +25,12 @@ typedef struct {
     int get_count_val;
     int get_const_iterator_count;
     int get_iterator_count;
-} MockSetData;
+} s_MockSetData;
 
 static void
-_mock_free(void *data)
+sf_mock_free(void *data)
 {
-    MockSetData *const mock = data;
+    s_MockSetData *const mock = data;
     if (mock) {
         ++mock->free_count;
         free(mock);
@@ -38,41 +38,41 @@ _mock_free(void *data)
 }
 
 static void
-_mock_reset(void *data)
+sf_mock_reset(void *data)
 {
-    MockSetData *const mock = data;
+    s_MockSetData *const mock = data;
     if (mock) {
         ++mock->reset_count;
     }
 }
 
 static void
-_mock_copy(void *dst, const void *src)
+sf_mock_copy(void *dst, const void *src)
 {
-    MockSetData *const dst_mock = dst;
-    const MockSetData *const src_mock = src;
+    s_MockSetData *const dst_mock = dst;
+    const s_MockSetData *const src_mock = src;
     if (dst_mock && src_mock) {
         ++dst_mock->copy_count;
     }
 }
 
 static void *
-_mock_duplicate(const void *data)
+sf_mock_duplicate(const void *data)
 {
-    MockSetData *const src = CUTIL_CONST_CAST(data);
+    s_MockSetData *const src = CUTIL_CONST_CAST(data);
     if (!src) {
         return NULL;
     }
-    MockSetData *const dup = CUTIL_MALLOC_OBJECT(dup);
+    s_MockSetData *const dup = CUTIL_MALLOC_OBJECT(dup);
     *dup = *src;
     ++src->duplicate_count;
     return dup;
 }
 
 static size_t
-_mock_get_count(const void *data)
+sf_mock_get_count(const void *data)
 {
-    MockSetData *const mock = CUTIL_CONST_CAST(data);
+    s_MockSetData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_count_count;
         return (size_t) mock->get_count_val;
@@ -81,9 +81,9 @@ _mock_get_count(const void *data)
 }
 
 static cutil_Bool
-_mock_contains(const void *data, const void *elem)
+sf_mock_contains(const void *data, const void *elem)
 {
-    MockSetData *const mock = CUTIL_CONST_CAST(data);
+    s_MockSetData *const mock = CUTIL_CONST_CAST(data);
     CUTIL_UNUSED(elem);
     if (mock) {
         ++mock->contains_count;
@@ -93,9 +93,9 @@ _mock_contains(const void *data, const void *elem)
 }
 
 static int
-_mock_add(void *data, const void *elem)
+sf_mock_add(void *data, const void *elem)
 {
-    MockSetData *const mock = data;
+    s_MockSetData *const mock = data;
     CUTIL_UNUSED(elem);
     if (mock) {
         ++mock->add_count;
@@ -104,9 +104,9 @@ _mock_add(void *data, const void *elem)
 }
 
 static int
-_mock_remove(void *data, const void *elem)
+sf_mock_remove(void *data, const void *elem)
 {
-    MockSetData *const mock = data;
+    s_MockSetData *const mock = data;
     CUTIL_UNUSED(elem);
     if (mock) {
         ++mock->remove_count;
@@ -115,9 +115,9 @@ _mock_remove(void *data, const void *elem)
 }
 
 static const cutil_GenericType *
-_mock_get_elem_type(const void *data)
+sf_mock_get_elem_type(const void *data)
 {
-    MockSetData *const mock = CUTIL_CONST_CAST(data);
+    s_MockSetData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_elem_type_count;
     }
@@ -127,13 +127,13 @@ _mock_get_elem_type(const void *data)
 /* --- Stub iterator infrastructure for set iterator dispatch tests --------- */
 
 static void
-_mock_set_iter_free(void *data)
+sf_mock_set_iter_free(void *data)
 {
     free(data);
 }
 
 static cutil_Bool
-_mock_set_iter_next(void *data)
+sf_mock_set_iter_next(void *data)
 {
     CUTIL_UNUSED(data);
     return CUTIL_FALSE;
@@ -141,18 +141,18 @@ _mock_set_iter_next(void *data)
 
 static const cutil_ConstIteratorType MOCK_SET_ITER_CONST_TYPE = {
   .name = "MockSetConstIter",
-  .free = &_mock_set_iter_free,
+  .free = &sf_mock_set_iter_free,
   .rewind = NULL,
-  .next = &_mock_set_iter_next,
+  .next = &sf_mock_set_iter_next,
   .get = NULL,
   .get_ptr = NULL,
 };
 
 static const cutil_IteratorType MOCK_SET_ITER_TYPE = {
   .name = "MockSetIter",
-  .free = &_mock_set_iter_free,
+  .free = &sf_mock_set_iter_free,
   .rewind = NULL,
-  .next = &_mock_set_iter_next,
+  .next = &sf_mock_set_iter_next,
   .get = NULL,
   .get_ptr = NULL,
   .set = NULL,
@@ -160,9 +160,9 @@ static const cutil_IteratorType MOCK_SET_ITER_TYPE = {
 };
 
 static cutil_ConstIterator *
-_mock_get_const_iterator(const void *data)
+sf_mock_get_const_iterator(const void *data)
 {
-    MockSetData *const mock = CUTIL_CONST_CAST(data);
+    s_MockSetData *const mock = CUTIL_CONST_CAST(data);
     if (mock) {
         ++mock->get_const_iterator_count;
     }
@@ -173,9 +173,9 @@ _mock_get_const_iterator(const void *data)
 }
 
 static cutil_Iterator *
-_mock_get_iterator(void *data)
+sf_mock_get_iterator(void *data)
 {
-    MockSetData *const mock = data;
+    s_MockSetData *const mock = data;
     if (mock) {
         ++mock->get_iterator_count;
     }
@@ -187,24 +187,24 @@ _mock_get_iterator(void *data)
 
 static const cutil_SetType MOCK_SET_TYPE = {
   .name = "MockSet",
-  .free = &_mock_free,
-  .reset = &_mock_reset,
-  .copy = &_mock_copy,
-  .duplicate = &_mock_duplicate,
-  .get_count = &_mock_get_count,
-  .contains = &_mock_contains,
-  .add = &_mock_add,
-  .remove = &_mock_remove,
-  .get_elem_type = &_mock_get_elem_type,
-  .get_const_iterator = &_mock_get_const_iterator,
-  .get_iterator = &_mock_get_iterator,
+  .free = &sf_mock_free,
+  .reset = &sf_mock_reset,
+  .copy = &sf_mock_copy,
+  .duplicate = &sf_mock_duplicate,
+  .get_count = &sf_mock_get_count,
+  .contains = &sf_mock_contains,
+  .add = &sf_mock_add,
+  .remove = &sf_mock_remove,
+  .get_elem_type = &sf_mock_get_elem_type,
+  .get_const_iterator = &sf_mock_get_const_iterator,
+  .get_iterator = &sf_mock_get_iterator,
 };
 
 static cutil_Set *
-_create_mock_set(void)
+sf_create_mock_set(void)
 {
-    MockSetData *const data = CUTIL_MALLOC_OBJECT(data);
-    *data = (MockSetData) {0};
+    s_MockSetData *const data = CUTIL_MALLOC_OBJECT(data);
+    *data = (s_MockSetData) {0};
     cutil_Set *const set = CUTIL_MALLOC_OBJECT(set);
     set->vtable = &MOCK_SET_TYPE;
     set->data = data;
@@ -216,18 +216,18 @@ _create_mock_set(void)
  * ========================================================================== */
 
 static void
-_should_returnTrue_when_setTypesAreIdentical(void)
+test_should_returnTrue_when_setTypesAreIdentical(void)
 {
     /* Arrange */
     const cutil_SetType type1 = {
       .name = "Test",
-      .free = &_mock_free,
-      .reset = &_mock_reset,
+      .free = &sf_mock_free,
+      .reset = &sf_mock_reset,
     };
     const cutil_SetType type2 = {
       .name = "Test",
-      .free = &_mock_free,
-      .reset = &_mock_reset,
+      .free = &sf_mock_free,
+      .reset = &sf_mock_reset,
     };
 
     /* Act */
@@ -238,7 +238,7 @@ _should_returnTrue_when_setTypesAreIdentical(void)
 }
 
 static void
-_should_returnFalse_when_setTypesAreDifferent(void)
+test_should_returnFalse_when_setTypesAreDifferent(void)
 {
     /* Arrange */
     const cutil_SetType type1 = {.name = "Type1"};
@@ -252,10 +252,10 @@ _should_returnFalse_when_setTypesAreDifferent(void)
 }
 
 static void
-_should_callFreeFunction_when_setIsFreed(void)
+test_should_callFreeFunction_when_setIsFreed(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
+    cutil_Set *const set = sf_create_mock_set();
 
     /* Act */
     cutil_Set_free(set);
@@ -265,7 +265,7 @@ _should_callFreeFunction_when_setIsFreed(void)
 }
 
 static void
-_should_doNothing_when_setIsNull(void)
+test_should_doNothing_when_setIsNull(void)
 {
     /* Act & Assert */
     cutil_Set_free(NULL);
@@ -273,11 +273,11 @@ _should_doNothing_when_setIsNull(void)
 }
 
 static void
-_should_callClearFunction_when_setIsCleared(void)
+test_should_callClearFunction_when_setIsCleared(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     const int initial = mock->reset_count;
 
     /* Act */
@@ -291,12 +291,12 @@ _should_callClearFunction_when_setIsCleared(void)
 }
 
 static void
-_should_callCopyFunction_when_setIsCopied(void)
+test_should_callCopyFunction_when_setIsCopied(void)
 {
     /* Arrange */
-    cutil_Set *const dst = _create_mock_set();
-    cutil_Set *const src = _create_mock_set();
-    MockSetData *const dst_mock = dst->data;
+    cutil_Set *const dst = sf_create_mock_set();
+    cutil_Set *const src = sf_create_mock_set();
+    s_MockSetData *const dst_mock = dst->data;
     const int initial = dst_mock->copy_count;
 
     /* Act */
@@ -311,15 +311,15 @@ _should_callCopyFunction_when_setIsCopied(void)
 }
 
 static void
-_should_notCopy_when_setTypesIncompatible(void)
+test_should_notCopy_when_setTypesIncompatible(void)
 {
     /* Arrange */
-    cutil_SetType type1 = {.name = "Type1", .copy = &_mock_copy};
-    cutil_SetType type2 = {.name = "Type2", .copy = &_mock_copy};
-    MockSetData *const dst_data = CUTIL_MALLOC_OBJECT(dst_data);
-    *dst_data = (MockSetData) {0};
-    MockSetData *const src_data = CUTIL_MALLOC_OBJECT(src_data);
-    *src_data = (MockSetData) {0};
+    cutil_SetType type1 = {.name = "Type1", .copy = &sf_mock_copy};
+    cutil_SetType type2 = {.name = "Type2", .copy = &sf_mock_copy};
+    s_MockSetData *const dst_data = CUTIL_MALLOC_OBJECT(dst_data);
+    *dst_data = (s_MockSetData) {0};
+    s_MockSetData *const src_data = CUTIL_MALLOC_OBJECT(src_data);
+    *src_data = (s_MockSetData) {0};
     cutil_Set dst_set = {.vtable = &type1, .data = dst_data};
     cutil_Set src_set = {.vtable = &type2, .data = src_data};
     const int initial = dst_data->copy_count;
@@ -336,11 +336,11 @@ _should_notCopy_when_setTypesIncompatible(void)
 }
 
 static void
-_should_returnDuplicateSet_when_setIsDuplicated(void)
+test_should_returnDuplicateSet_when_setIsDuplicated(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     mock->get_count_val = 7;
     const int initial = mock->duplicate_count;
 
@@ -359,11 +359,11 @@ _should_returnDuplicateSet_when_setIsDuplicated(void)
 }
 
 static void
-_should_returnCount_when_setCountIsRequested(void)
+test_should_returnCount_when_setCountIsRequested(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     mock->get_count_val = 100;
 
     /* Act */
@@ -377,11 +377,11 @@ _should_returnCount_when_setCountIsRequested(void)
 }
 
 static void
-_should_returnZero_when_setIsEmpty(void)
+test_should_returnZero_when_setIsEmpty(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     mock->get_count_val = 0;
 
     /* Act */
@@ -395,11 +395,11 @@ _should_returnZero_when_setIsEmpty(void)
 }
 
 static void
-_should_callContainsFunction_when_elemIsQueried(void)
+test_should_callContainsFunction_when_elemIsQueried(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     const int initial = mock->contains_count;
     const int elem = 42;
 
@@ -415,11 +415,11 @@ _should_callContainsFunction_when_elemIsQueried(void)
 }
 
 static void
-_should_callAddFunction_when_elemIsAdded(void)
+test_should_callAddFunction_when_elemIsAdded(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     const int initial = mock->add_count;
     const int elem = 1;
 
@@ -434,11 +434,11 @@ _should_callAddFunction_when_elemIsAdded(void)
 }
 
 static void
-_should_callRemoveFunction_when_elemIsRemoved(void)
+test_should_callRemoveFunction_when_elemIsRemoved(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     const int initial = mock->remove_count;
     const int elem = 1;
 
@@ -453,11 +453,11 @@ _should_callRemoveFunction_when_elemIsRemoved(void)
 }
 
 static void
-_should_callGetElemTypeFunction_when_elemTypeIsQueried(void)
+test_should_callGetElemTypeFunction_when_elemTypeIsQueried(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
     const int initial = mock->get_elem_type_count;
 
     /* Act */
@@ -474,11 +474,11 @@ _should_callGetElemTypeFunction_when_elemTypeIsQueried(void)
 /* Tests for cutil_Set iterator shims */
 
 static void
-_should_callGetConstIterator_when_getConstIteratorCalledOnSet(void)
+test_should_callGetConstIterator_when_getConstIteratorCalledOnSet(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
 
     /* Act */
     cutil_ConstIterator *const it = cutil_Set_get_const_iterator(set);
@@ -493,11 +493,11 @@ _should_callGetConstIterator_when_getConstIteratorCalledOnSet(void)
 }
 
 static void
-_should_callGetIterator_when_getIteratorCalledOnSet(void)
+test_should_callGetIterator_when_getIteratorCalledOnSet(void)
 {
     /* Arrange */
-    cutil_Set *const set = _create_mock_set();
-    MockSetData *const mock = set->data;
+    cutil_Set *const set = sf_create_mock_set();
+    s_MockSetData *const mock = set->data;
 
     /* Act */
     cutil_Iterator *const it = cutil_Set_get_iterator(set);
@@ -512,13 +512,13 @@ _should_callGetIterator_when_getIteratorCalledOnSet(void)
 }
 
 static void
-_should_returnNull_when_getConstIteratorCalledOnNullSet(void)
+test_should_returnNull_when_getConstIteratorCalledOnNullSet(void)
 {
     TEST_ASSERT_NULL(cutil_Set_get_const_iterator(NULL));
 }
 
 static void
-_should_returnNull_when_getIteratorCalledOnNullSet(void)
+test_should_returnNull_when_getIteratorCalledOnNullSet(void)
 {
     TEST_ASSERT_NULL(cutil_Set_get_iterator(NULL));
 }
@@ -536,7 +536,7 @@ typedef cutil_Set *(*SetFactory)(void);
 static SetFactory g_current_factory = NULL;
 
 static cutil_Set *
-_hashset_factory_int(void)
+sf_hashset_factory_int(void)
 {
     return cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
 }
@@ -546,7 +546,7 @@ _hashset_factory_int(void)
  * ========================================================================== */
 
 static void
-_should_returnSuccess_when_singleElemAdded(void)
+test_should_returnSuccess_when_singleElemAdded(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -564,7 +564,7 @@ _should_returnSuccess_when_singleElemAdded(void)
 }
 
 static void
-_should_returnZeroCount_when_setIsNewlyAllocated(void)
+test_should_returnZeroCount_when_setIsNewlyAllocated(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -580,7 +580,7 @@ _should_returnZeroCount_when_setIsNewlyAllocated(void)
 }
 
 static void
-_should_incrementCountWithEachUniqueElem(void)
+test_should_incrementCountWithEachUniqueElem(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -600,7 +600,7 @@ _should_incrementCountWithEachUniqueElem(void)
 }
 
 static void
-_should_returnTrue_when_containsExistingElem(void)
+test_should_returnTrue_when_containsExistingElem(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -618,7 +618,7 @@ _should_returnTrue_when_containsExistingElem(void)
 }
 
 static void
-_should_returnFalse_when_containsMissingElem(void)
+test_should_returnFalse_when_containsMissingElem(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -635,7 +635,7 @@ _should_returnFalse_when_containsMissingElem(void)
 }
 
 static void
-_should_returnSuccess_when_removingExistingElem(void)
+test_should_returnSuccess_when_removingExistingElem(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -655,7 +655,7 @@ _should_returnSuccess_when_removingExistingElem(void)
 }
 
 static void
-_should_returnFailure_when_removingMissingElem(void)
+test_should_returnFailure_when_removingMissingElem(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -672,7 +672,7 @@ _should_returnFailure_when_removingMissingElem(void)
 }
 
 static void
-_should_decrementCount_when_existingElemRemoved(void)
+test_should_decrementCount_when_existingElemRemoved(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -693,7 +693,7 @@ _should_decrementCount_when_existingElemRemoved(void)
 }
 
 static void
-_should_returnZeroCount_when_resetAfterFill(void)
+test_should_returnZeroCount_when_resetAfterFill(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -716,7 +716,7 @@ _should_returnZeroCount_when_resetAfterFill(void)
 }
 
 static void
-_should_notDuplicateCount_when_sameElemAddedTwice(void)
+test_should_notDuplicateCount_when_sameElemAddedTwice(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -734,7 +734,7 @@ _should_notDuplicateCount_when_sameElemAddedTwice(void)
 }
 
 static void
-_should_matchAllElems_when_copied(void)
+test_should_matchAllElems_when_copied(void)
 {
     /* Arrange */
     cutil_Set *const src = g_current_factory();
@@ -760,7 +760,7 @@ _should_matchAllElems_when_copied(void)
 }
 
 static void
-_should_beIndependent_when_dstModifiedAfterCopy(void)
+test_should_beIndependent_when_dstModifiedAfterCopy(void)
 {
     /* Arrange */
     cutil_Set *const src = g_current_factory();
@@ -784,7 +784,7 @@ _should_beIndependent_when_dstModifiedAfterCopy(void)
 }
 
 static void
-_should_matchAllElems_when_duplicated(void)
+test_should_matchAllElems_when_duplicated(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -810,7 +810,7 @@ _should_matchAllElems_when_duplicated(void)
 }
 
 static void
-_should_beIndependent_when_dupModifiedAfterDuplicate(void)
+test_should_beIndependent_when_dupModifiedAfterDuplicate(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -833,7 +833,7 @@ _should_beIndependent_when_dupModifiedAfterDuplicate(void)
 }
 
 static void
-_should_returnElemType_when_elemTypeQueried(void)
+test_should_returnElemType_when_elemTypeQueried(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -853,7 +853,7 @@ _should_returnElemType_when_elemTypeQueried(void)
 }
 
 static void
-_should_returnNonNull_when_getConstIteratorCalled(void)
+test_should_returnNonNull_when_getConstIteratorCalled(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -870,7 +870,7 @@ _should_returnNonNull_when_getConstIteratorCalled(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalled(void)
+test_should_returnNonNull_when_getIteratorCalled(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -887,7 +887,7 @@ _should_returnNonNull_when_getIteratorCalled(void)
 }
 
 static void
-_should_traverseAllElements_when_constIteratorRewoundOnSet(void)
+test_should_traverseAllElements_when_constIteratorRewoundOnSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -942,7 +942,7 @@ _should_traverseAllElements_when_constIteratorRewoundOnSet(void)
 }
 
 static void
-_should_traverseAllElements_when_iteratorRewoundOnSet(void)
+test_should_traverseAllElements_when_iteratorRewoundOnSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -997,7 +997,7 @@ _should_traverseAllElements_when_iteratorRewoundOnSet(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnConstSet(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnConstSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1022,7 +1022,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnConstSet(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnMutableSet(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1047,7 +1047,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnMutableSet(void)
 }
 
 static void
-_should_returnTrue_when_deepEqualsCalledOnSetsWithSameElements(void)
+test_should_returnTrue_when_deepEqualsCalledOnSetsWithSameElements(void)
 {
     /* Arrange */
     cutil_Set *const a = g_current_factory();
@@ -1068,7 +1068,7 @@ _should_returnTrue_when_deepEqualsCalledOnSetsWithSameElements(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentCount(void)
+test_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentCount(void)
 {
     /* Arrange */
     cutil_Set *const a = g_current_factory();
@@ -1091,7 +1091,7 @@ _should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentCount(void)
 }
 
 static void
-_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentElements(void)
+test_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentElements(void)
 {
     /* Arrange */
     cutil_Set *const a = g_current_factory();
@@ -1112,7 +1112,7 @@ _should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentElements(void)
 }
 
 static void
-_should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
+test_should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
 {
     /* Arrange */
     cutil_Set *const a = g_current_factory();
@@ -1127,7 +1127,7 @@ _should_handleNullInputs_when_deepEqualsCalledWithNulls(void)
 }
 
 static void
-_should_returnZero_when_compareCalledWithSamePointer(void)
+test_should_returnZero_when_compareCalledWithSamePointer(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1144,7 +1144,9 @@ _should_returnZero_when_compareCalledWithSamePointer(void)
 }
 
 static void
-_should_returnConsistentSign_when_compareCalledOnSetsWithDifferentCount(void)
+test_should_returnConsistentSign_when_compareCalledOnSetsWithDifferentCount(
+  void
+)
 {
     /* Arrange */
     cutil_Set *const small = g_current_factory();
@@ -1168,7 +1170,7 @@ _should_returnConsistentSign_when_compareCalledOnSetsWithDifferentCount(void)
 }
 
 static void
-_should_returnSameHash_when_hashCalledTwiceOnSameSet(void)
+test_should_returnSameHash_when_hashCalledTwiceOnSameSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1189,7 +1191,9 @@ _should_returnSameHash_when_hashCalledTwiceOnSameSet(void)
 }
 
 static void
-_should_returnSameHash_when_setsHaveSameElementsInDifferentInsertionOrder(void)
+test_should_returnSameHash_when_setsHaveSameElementsInDifferentInsertionOrder(
+  void
+)
 {
     /* Arrange */
     cutil_Set *const a = g_current_factory();
@@ -1210,7 +1214,7 @@ _should_returnSameHash_when_setsHaveSameElementsInDifferentInsertionOrder(void)
 }
 
 static void
-_should_returnZero_when_hashCalledOnNullOrEmptySet(void)
+test_should_returnZero_when_hashCalledOnNullOrEmptySet(void)
 {
     /* Arrange */
     cutil_Set *const empty_set = g_current_factory();
@@ -1224,7 +1228,7 @@ _should_returnZero_when_hashCalledOnNullOrEmptySet(void)
 }
 
 static void
-_should_renderEmptyBraces_when_toStringCalledOnEmptySet(void)
+test_should_renderEmptyBraces_when_toStringCalledOnEmptySet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1241,7 +1245,7 @@ _should_renderEmptyBraces_when_toStringCalledOnEmptySet(void)
 }
 
 static void
-_should_renderSingleElement_when_toStringCalledOnSingletonSet(void)
+test_should_renderSingleElement_when_toStringCalledOnSingletonSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1261,7 +1265,7 @@ _should_renderSingleElement_when_toStringCalledOnSingletonSet(void)
 }
 
 static void
-_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
+test_should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1284,7 +1288,7 @@ _should_returnRequiredLength_when_toStringCalledWithNullBuf(void)
 }
 
 static void
-_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
+test_should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1303,7 +1307,7 @@ _should_returnZero_when_toStringCalledWithTooSmallBuffer(void)
 }
 
 static void
-_should_renderAllElements_when_toStringCalledOnMultiElementSet(void)
+test_should_renderAllElements_when_toStringCalledOnMultiElementSet(void)
 {
     /* Arrange */
     cutil_Set *const set = g_current_factory();
@@ -1344,72 +1348,80 @@ main(void)
     UNITY_BEGIN();
 
     /* --- Mock-based vtable dispatch tests --- */
-    RUN_TEST(_should_returnTrue_when_setTypesAreIdentical);
-    RUN_TEST(_should_returnFalse_when_setTypesAreDifferent);
-    RUN_TEST(_should_callFreeFunction_when_setIsFreed);
-    RUN_TEST(_should_doNothing_when_setIsNull);
-    RUN_TEST(_should_callClearFunction_when_setIsCleared);
-    RUN_TEST(_should_callCopyFunction_when_setIsCopied);
-    RUN_TEST(_should_notCopy_when_setTypesIncompatible);
-    RUN_TEST(_should_returnDuplicateSet_when_setIsDuplicated);
-    RUN_TEST(_should_returnCount_when_setCountIsRequested);
-    RUN_TEST(_should_returnZero_when_setIsEmpty);
-    RUN_TEST(_should_callContainsFunction_when_elemIsQueried);
-    RUN_TEST(_should_callAddFunction_when_elemIsAdded);
-    RUN_TEST(_should_callRemoveFunction_when_elemIsRemoved);
-    RUN_TEST(_should_callGetElemTypeFunction_when_elemTypeIsQueried);
+    RUN_TEST(test_should_returnTrue_when_setTypesAreIdentical);
+    RUN_TEST(test_should_returnFalse_when_setTypesAreDifferent);
+    RUN_TEST(test_should_callFreeFunction_when_setIsFreed);
+    RUN_TEST(test_should_doNothing_when_setIsNull);
+    RUN_TEST(test_should_callClearFunction_when_setIsCleared);
+    RUN_TEST(test_should_callCopyFunction_when_setIsCopied);
+    RUN_TEST(test_should_notCopy_when_setTypesIncompatible);
+    RUN_TEST(test_should_returnDuplicateSet_when_setIsDuplicated);
+    RUN_TEST(test_should_returnCount_when_setCountIsRequested);
+    RUN_TEST(test_should_returnZero_when_setIsEmpty);
+    RUN_TEST(test_should_callContainsFunction_when_elemIsQueried);
+    RUN_TEST(test_should_callAddFunction_when_elemIsAdded);
+    RUN_TEST(test_should_callRemoveFunction_when_elemIsRemoved);
+    RUN_TEST(test_should_callGetElemTypeFunction_when_elemTypeIsQueried);
 
     /* Iterator shim tests */
-    RUN_TEST(_should_callGetConstIterator_when_getConstIteratorCalledOnSet);
-    RUN_TEST(_should_callGetIterator_when_getIteratorCalledOnSet);
-    RUN_TEST(_should_returnNull_when_getConstIteratorCalledOnNullSet);
-    RUN_TEST(_should_returnNull_when_getIteratorCalledOnNullSet);
+    RUN_TEST(test_should_callGetConstIterator_when_getConstIteratorCalledOnSet);
+    RUN_TEST(test_should_callGetIterator_when_getIteratorCalledOnSet);
+    RUN_TEST(test_should_returnNull_when_getConstIteratorCalledOnNullSet);
+    RUN_TEST(test_should_returnNull_when_getIteratorCalledOnNullSet);
 
     /* --- HashSet (INT) — full interface coverage --- */
-    g_current_factory = _hashset_factory_int;
-    RUN_TEST(_should_returnSuccess_when_singleElemAdded);
-    RUN_TEST(_should_returnZeroCount_when_setIsNewlyAllocated);
-    RUN_TEST(_should_incrementCountWithEachUniqueElem);
-    RUN_TEST(_should_returnTrue_when_containsExistingElem);
-    RUN_TEST(_should_returnFalse_when_containsMissingElem);
-    RUN_TEST(_should_returnSuccess_when_removingExistingElem);
-    RUN_TEST(_should_returnFailure_when_removingMissingElem);
-    RUN_TEST(_should_decrementCount_when_existingElemRemoved);
-    RUN_TEST(_should_returnZeroCount_when_resetAfterFill);
-    RUN_TEST(_should_notDuplicateCount_when_sameElemAddedTwice);
-    RUN_TEST(_should_matchAllElems_when_copied);
-    RUN_TEST(_should_beIndependent_when_dstModifiedAfterCopy);
-    RUN_TEST(_should_matchAllElems_when_duplicated);
-    RUN_TEST(_should_beIndependent_when_dupModifiedAfterDuplicate);
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalled);
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalled);
-    RUN_TEST(_should_traverseAllElements_when_constIteratorRewoundOnSet);
-    RUN_TEST(_should_traverseAllElements_when_iteratorRewoundOnSet);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnConstSet);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnMutableSet);
-    RUN_TEST(_should_returnTrue_when_deepEqualsCalledOnSetsWithSameElements);
-    RUN_TEST(_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentCount);
+    g_current_factory = sf_hashset_factory_int;
+    RUN_TEST(test_should_returnSuccess_when_singleElemAdded);
+    RUN_TEST(test_should_returnZeroCount_when_setIsNewlyAllocated);
+    RUN_TEST(test_should_incrementCountWithEachUniqueElem);
+    RUN_TEST(test_should_returnTrue_when_containsExistingElem);
+    RUN_TEST(test_should_returnFalse_when_containsMissingElem);
+    RUN_TEST(test_should_returnSuccess_when_removingExistingElem);
+    RUN_TEST(test_should_returnFailure_when_removingMissingElem);
+    RUN_TEST(test_should_decrementCount_when_existingElemRemoved);
+    RUN_TEST(test_should_returnZeroCount_when_resetAfterFill);
+    RUN_TEST(test_should_notDuplicateCount_when_sameElemAddedTwice);
+    RUN_TEST(test_should_matchAllElems_when_copied);
+    RUN_TEST(test_should_beIndependent_when_dstModifiedAfterCopy);
+    RUN_TEST(test_should_matchAllElems_when_duplicated);
+    RUN_TEST(test_should_beIndependent_when_dupModifiedAfterDuplicate);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalled);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalled);
+    RUN_TEST(test_should_traverseAllElements_when_constIteratorRewoundOnSet);
+    RUN_TEST(test_should_traverseAllElements_when_iteratorRewoundOnSet);
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnConstSet);
     RUN_TEST(
-      _should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentElements
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnMutableSet
     );
-    RUN_TEST(_should_handleNullInputs_when_deepEqualsCalledWithNulls);
-    RUN_TEST(_should_returnZero_when_compareCalledWithSamePointer);
     RUN_TEST(
-      _should_returnConsistentSign_when_compareCalledOnSetsWithDifferentCount
+      test_should_returnTrue_when_deepEqualsCalledOnSetsWithSameElements
     );
-    RUN_TEST(_should_returnSameHash_when_hashCalledTwiceOnSameSet);
     RUN_TEST(
-      _should_returnSameHash_when_setsHaveSameElementsInDifferentInsertionOrder
+      test_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentCount
     );
-    RUN_TEST(_should_returnZero_when_hashCalledOnNullOrEmptySet);
-    RUN_TEST(_should_renderEmptyBraces_when_toStringCalledOnEmptySet);
-    RUN_TEST(_should_renderSingleElement_when_toStringCalledOnSingletonSet);
-    RUN_TEST(_should_returnRequiredLength_when_toStringCalledWithNullBuf);
-    RUN_TEST(_should_returnZero_when_toStringCalledWithTooSmallBuffer);
-    RUN_TEST(_should_renderAllElements_when_toStringCalledOnMultiElementSet);
+    RUN_TEST(
+      test_should_returnFalse_when_deepEqualsCalledOnSetsWithDifferentElements
+    );
+    RUN_TEST(test_should_handleNullInputs_when_deepEqualsCalledWithNulls);
+    RUN_TEST(test_should_returnZero_when_compareCalledWithSamePointer);
+    RUN_TEST(
+      test_should_returnConsistentSign_when_compareCalledOnSetsWithDifferentCount
+    );
+    RUN_TEST(test_should_returnSameHash_when_hashCalledTwiceOnSameSet);
+    RUN_TEST(
+      test_should_returnSameHash_when_setsHaveSameElementsInDifferentInsertionOrder
+    );
+    RUN_TEST(test_should_returnZero_when_hashCalledOnNullOrEmptySet);
+    RUN_TEST(test_should_renderEmptyBraces_when_toStringCalledOnEmptySet);
+    RUN_TEST(test_should_renderSingleElement_when_toStringCalledOnSingletonSet);
+    RUN_TEST(test_should_returnRequiredLength_when_toStringCalledWithNullBuf);
+    RUN_TEST(test_should_returnZero_when_toStringCalledWithTooSmallBuffer);
+    RUN_TEST(
+      test_should_renderAllElements_when_toStringCalledOnMultiElementSet
+    );
 
     /* --- Elem-type test (not factory-driven) --- */
-    RUN_TEST(_should_returnElemType_when_elemTypeQueried);
+    RUN_TEST(test_should_returnElemType_when_elemTypeQueried);
 
     return UNITY_END();
 }

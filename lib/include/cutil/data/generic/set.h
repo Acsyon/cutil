@@ -3,17 +3,17 @@
  * Header for arbitrarily typed sets.
  */
 
-#ifndef CUTIL_GENERIC_SET_H_INCLUDED
-#define CUTIL_GENERIC_SET_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_SET_H_INCLUDED
+#define CUTIL_DATA_GENERIC_SET_H_INCLUDED
 
+#include <cutil/core/debug/null.h>
+#include <cutil/core/io/log.h>
+#include <cutil/core/status.h>
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/iterator.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/debug/null.h>
-#include <cutil/io/log.h>
-#include <cutil/status.h>
-#include <cutil/std/stdbool.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,7 +83,7 @@ cutil_Set_get_vtable(const cutil_Set *set)
 
 /**
  * Frees contents of `set`.
- * 
+ *
  * @param[in] set cutil_Set object to be cleared
  */
 inline void
@@ -420,4 +420,4 @@ cutil_Set_to_string_generic(const void *set, char *buf, size_t buflen);
 }
 #endif
 
-#endif /* CUTIL_GENERIC_SET_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_SET_H_INCLUDED */

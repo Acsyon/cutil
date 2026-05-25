@@ -8,7 +8,7 @@
 
 #include <limits.h>
 
-#include <cutil/std/stdlib.h>
+#include <cutil/core/std/stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

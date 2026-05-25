@@ -1,13 +1,13 @@
 #include "unity.h"
 #include <cutil/data/generic/set/hashset.h>
 
+#include <cutil/core/std/stdlib.h>
+#include <cutil/core/util/macro.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdlib.h>
-#include <cutil/util/macro.h>
 
 /* Tests for cutil_HashSet_alloc */
 static void
-_should_allocateHashSet_when_createdWithValidElemType(void)
+test_should_allocateHashSet_when_createdWithValidElemType(void)
 {
     /* Arrange */
     const cutil_GenericType *const elem_type = CUTIL_GENERIC_TYPE_INT;
@@ -26,7 +26,7 @@ _should_allocateHashSet_when_createdWithValidElemType(void)
 }
 
 static void
-_should_allocateHashSet_withVariousElemTypes(void)
+test_should_allocateHashSet_withVariousElemTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const elem_types[] = {
@@ -52,7 +52,7 @@ _should_allocateHashSet_withVariousElemTypes(void)
 
 /* Tests for vtable pointer identity */
 static void
-_should_haveCorrectVtablePointer_when_created(void)
+test_should_haveCorrectVtablePointer_when_created(void)
 {
     /* Arrange / Act */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -67,7 +67,7 @@ _should_haveCorrectVtablePointer_when_created(void)
 
 /* Tests for cutil_Set_get_elem_type */
 static void
-_should_returnElemType_when_queried(void)
+test_should_returnElemType_when_queried(void)
 {
     /* Arrange */
     const cutil_GenericType *const expected = CUTIL_GENERIC_TYPE_INT;
@@ -90,7 +90,7 @@ _should_returnElemType_when_queried(void)
 }
 
 static void
-_should_returnElemType_forVariousTypes(void)
+test_should_returnElemType_forVariousTypes(void)
 {
     /* Arrange */
     const cutil_GenericType *const elem_types[] = {
@@ -120,7 +120,7 @@ _should_returnElemType_forVariousTypes(void)
 }
 
 static void
-_should_preserveElemType_whenCreatedWithDifferentTypes(void)
+test_should_preserveElemType_whenCreatedWithDifferentTypes(void)
 {
     /* Arrange */
     struct {
@@ -155,7 +155,7 @@ _should_preserveElemType_whenCreatedWithDifferentTypes(void)
 /* Tests for HashSet iterator */
 
 static void
-_should_returnNonNull_when_getConstIteratorCalledOnHashSet(void)
+test_should_returnNonNull_when_getConstIteratorCalledOnHashSet(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -172,7 +172,7 @@ _should_returnNonNull_when_getConstIteratorCalledOnHashSet(void)
 }
 
 static void
-_should_returnNonNull_when_getIteratorCalledOnHashSet(void)
+test_should_returnNonNull_when_getIteratorCalledOnHashSet(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -189,7 +189,7 @@ _should_returnNonNull_when_getIteratorCalledOnHashSet(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledOnEmptyHashSetIterator(void)
+test_should_returnFalse_when_nextCalledOnEmptyHashSetIterator(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -205,7 +205,7 @@ _should_returnFalse_when_nextCalledOnEmptyHashSetIterator(void)
 }
 
 static void
-_should_traverseAllElements_when_iteratingHashSet(void)
+test_should_traverseAllElements_when_iteratingHashSet(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -244,7 +244,7 @@ _should_traverseAllElements_when_iteratingHashSet(void)
 }
 
 static void
-_should_removeCurrentElement_when_removeCalledOnHashSetIterator(void)
+test_should_removeCurrentElement_when_removeCalledOnHashSetIterator(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -278,7 +278,7 @@ _should_removeCurrentElement_when_removeCalledOnHashSetIterator(void)
 }
 
 static void
-_should_returnFailure_when_setCalledOnHashSetIterator(void)
+test_should_returnFailure_when_setCalledOnHashSetIterator(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -302,7 +302,7 @@ _should_returnFailure_when_setCalledOnHashSetIterator(void)
 }
 
 static void
-_should_traverseAllElements_when_constIteratorRewound(void)
+test_should_traverseAllElements_when_constIteratorRewound(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -357,7 +357,7 @@ _should_traverseAllElements_when_constIteratorRewound(void)
 }
 
 static void
-_should_traverseAllElements_when_iteratorRewound(void)
+test_should_traverseAllElements_when_iteratorRewound(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -412,7 +412,7 @@ _should_traverseAllElements_when_iteratorRewound(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -437,7 +437,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator(void)
 }
 
 static void
-_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
+test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
 {
     /* Arrange */
     cutil_Set *const set = cutil_HashSet_alloc(CUTIL_GENERIC_TYPE_INT);
@@ -464,7 +464,7 @@ _should_returnFalse_when_nextCalledAfterExhaustionOnIterator(void)
 /* Generic-type descriptor tests */
 
 static void
-_should_haveCorrectMetadata_for_hashset_int_descriptor(void)
+test_should_haveCorrectMetadata_for_hashset_int_descriptor(void)
 {
     /* Assert */
     TEST_ASSERT_NOT_NULL(CUTIL_GENERIC_TYPE_HASHSET_INT);
@@ -489,7 +489,7 @@ _should_haveCorrectMetadata_for_hashset_int_descriptor(void)
 }
 
 static void
-_should_initHashSet_when_initCalledOnRawMemory(void)
+test_should_initHashSet_when_initCalledOnRawMemory(void)
 {
     /* Arrange */
     void *const raw_mem = calloc(1, sizeof(cutil_Set));
@@ -513,7 +513,7 @@ _should_initHashSet_when_initCalledOnRawMemory(void)
 }
 
 static void
-_should_clearHashSet_when_clearCalledThroughDescriptor(void)
+test_should_clearHashSet_when_clearCalledThroughDescriptor(void)
 {
     /* Arrange */
     void *const raw_mem = calloc(1, sizeof(cutil_Set));
@@ -538,7 +538,7 @@ _should_clearHashSet_when_clearCalledThroughDescriptor(void)
 }
 
 static void
-_should_copyHashSet_when_copyCalledThroughDescriptor(void)
+test_should_copyHashSet_when_copyCalledThroughDescriptor(void)
 {
     /* Arrange */
     cutil_Set *const src = CUTIL_CALLOC_OBJECT(src);
@@ -576,7 +576,7 @@ _should_copyHashSet_when_copyCalledThroughDescriptor(void)
 /* Multiple variants */
 
 static void
-_should_haveCorrectElemType_for_multipleDescriptorVariants(void)
+test_should_haveCorrectElemType_for_multipleDescriptorVariants(void)
 {
     struct {
         const cutil_GenericType *desc;
@@ -623,33 +623,37 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_allocateHashSet_when_createdWithValidElemType);
-    RUN_TEST(_should_allocateHashSet_withVariousElemTypes);
-    RUN_TEST(_should_haveCorrectVtablePointer_when_created);
-    RUN_TEST(_should_returnElemType_when_queried);
-    RUN_TEST(_should_returnElemType_forVariousTypes);
-    RUN_TEST(_should_preserveElemType_whenCreatedWithDifferentTypes);
+    RUN_TEST(test_should_allocateHashSet_when_createdWithValidElemType);
+    RUN_TEST(test_should_allocateHashSet_withVariousElemTypes);
+    RUN_TEST(test_should_haveCorrectVtablePointer_when_created);
+    RUN_TEST(test_should_returnElemType_when_queried);
+    RUN_TEST(test_should_returnElemType_forVariousTypes);
+    RUN_TEST(test_should_preserveElemType_whenCreatedWithDifferentTypes);
 
     /* Iterator tests */
-    RUN_TEST(_should_returnNonNull_when_getConstIteratorCalledOnHashSet);
-    RUN_TEST(_should_returnNonNull_when_getIteratorCalledOnHashSet);
-    RUN_TEST(_should_returnFalse_when_nextCalledOnEmptyHashSetIterator);
-    RUN_TEST(_should_traverseAllElements_when_iteratingHashSet);
-    RUN_TEST(_should_removeCurrentElement_when_removeCalledOnHashSetIterator);
-    RUN_TEST(_should_returnFailure_when_setCalledOnHashSetIterator);
-    RUN_TEST(_should_traverseAllElements_when_constIteratorRewound);
-    RUN_TEST(_should_traverseAllElements_when_iteratorRewound);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator);
-    RUN_TEST(_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
+    RUN_TEST(test_should_returnNonNull_when_getConstIteratorCalledOnHashSet);
+    RUN_TEST(test_should_returnNonNull_when_getIteratorCalledOnHashSet);
+    RUN_TEST(test_should_returnFalse_when_nextCalledOnEmptyHashSetIterator);
+    RUN_TEST(test_should_traverseAllElements_when_iteratingHashSet);
+    RUN_TEST(
+      test_should_removeCurrentElement_when_removeCalledOnHashSetIterator
+    );
+    RUN_TEST(test_should_returnFailure_when_setCalledOnHashSetIterator);
+    RUN_TEST(test_should_traverseAllElements_when_constIteratorRewound);
+    RUN_TEST(test_should_traverseAllElements_when_iteratorRewound);
+    RUN_TEST(
+      test_should_returnFalse_when_nextCalledAfterExhaustionOnConstIterator
+    );
+    RUN_TEST(test_should_returnFalse_when_nextCalledAfterExhaustionOnIterator);
 
     /* Generic-type descriptor tests */
-    RUN_TEST(_should_haveCorrectMetadata_for_hashset_int_descriptor);
-    RUN_TEST(_should_initHashSet_when_initCalledOnRawMemory);
-    RUN_TEST(_should_clearHashSet_when_clearCalledThroughDescriptor);
-    RUN_TEST(_should_copyHashSet_when_copyCalledThroughDescriptor);
+    RUN_TEST(test_should_haveCorrectMetadata_for_hashset_int_descriptor);
+    RUN_TEST(test_should_initHashSet_when_initCalledOnRawMemory);
+    RUN_TEST(test_should_clearHashSet_when_clearCalledThroughDescriptor);
+    RUN_TEST(test_should_copyHashSet_when_copyCalledThroughDescriptor);
 
     /* Multiple variants */
-    RUN_TEST(_should_haveCorrectElemType_for_multipleDescriptorVariants);
+    RUN_TEST(test_should_haveCorrectElemType_for_multipleDescriptorVariants);
 
     return UNITY_END();
 }

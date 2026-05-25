@@ -7,9 +7,9 @@
 #ifndef CUTIL_DATA_GENERIC_OBJECT_H_INCLUDED
 #define CUTIL_DATA_GENERIC_OBJECT_H_INCLUDED
 
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/util/hash.h>
 #include <cutil/data/generic/type.h>
-#include <cutil/std/stdbool.h>
-#include <cutil/util/hash.h>
 
 #ifdef __cplusplus
 extern "C" {

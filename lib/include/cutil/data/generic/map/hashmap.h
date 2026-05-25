@@ -1,10 +1,10 @@
-/** cutil/generic/map/hashmap.h
+/** cutil/data/generic/map/hashmap.h
  *
  * Header for arbitrarily typed hash map.
  */
 
-#ifndef CUTIL_GENERIC_MAP_HASHMAP_H_INCLUDED
-#define CUTIL_GENERIC_MAP_HASHMAP_H_INCLUDED
+#ifndef CUTIL_DATA_GENERIC_MAP_HASHMAP_H_INCLUDED
+#define CUTIL_DATA_GENERIC_MAP_HASHMAP_H_INCLUDED
 
 #include <cutil/data/generic/map.h>
 #include <cutil/data/generic/type.h>
@@ -46,4 +46,4 @@ cutil_HashMap_alloc(
 }
 #endif
 
-#endif /* CUTIL_GENERIC_MAP_HASHMAP_H_INCLUDED */
+#endif /* CUTIL_DATA_GENERIC_MAP_HASHMAP_H_INCLUDED */

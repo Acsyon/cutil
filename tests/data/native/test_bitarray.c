@@ -1,10 +1,10 @@
 #include "unity.h"
 #include <cutil/data/native/bitarray.h>
 
-#include <cutil/util/macro.h>
+#include <cutil/core/util/macro.h>
 
 static void
-_should_constructArray_when_provideSizeAndCapacity(void)
+test_should_constructArray_when_provideSizeAndCapacity(void)
 {
     /* Arrange */
     const size_t CAPACITY[] = {1, 5, 10, 50, 100};
@@ -29,7 +29,7 @@ _should_constructArray_when_provideSizeAndCapacity(void)
 }
 
 static void
-_should_clearArray_when_callClearArray(void)
+test_should_clearArray_when_callClearArray(void)
 {
     /* Arrange */
     const size_t CAPACITY[] = {1, 5, 10, 50, 100};
@@ -53,7 +53,7 @@ _should_clearArray_when_callClearArray(void)
 }
 
 static void
-_should_setAndGetIndividualElements(void)
+test_should_setAndGetIndividualElements(void)
 {
     /* Arrange */
     const size_t capacity = 128;
@@ -75,7 +75,7 @@ _should_setAndGetIndividualElements(void)
 }
 
 static void
-_should_copyArrayCorrectly(void)
+test_should_copyArrayCorrectly(void)
 {
     /* Arrange */
     const size_t capacity = 8;
@@ -102,7 +102,7 @@ _should_copyArrayCorrectly(void)
 }
 
 static void
-_should_duplicateArrayCorrectly(void)
+test_should_duplicateArrayCorrectly(void)
 {
     /* Arrange */
     const size_t capacity = 24;
@@ -134,7 +134,7 @@ _should_duplicateArrayCorrectly(void)
 }
 
 static void
-_should_resizeArrayCorrectly(void)
+test_should_resizeArrayCorrectly(void)
 {
     /* Arrange */
     const size_t initial_capacity = 25;
@@ -174,7 +174,7 @@ _should_resizeArrayCorrectly(void)
 }
 
 static void
-_should_handleEdgeCases(void)
+test_should_handleEdgeCases(void)
 {
     /* Test with zero capacity */
     {
@@ -208,13 +208,13 @@ main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(_should_constructArray_when_provideSizeAndCapacity);
-    RUN_TEST(_should_clearArray_when_callClearArray);
-    RUN_TEST(_should_setAndGetIndividualElements);
-    RUN_TEST(_should_copyArrayCorrectly);
-    RUN_TEST(_should_duplicateArrayCorrectly);
-    RUN_TEST(_should_resizeArrayCorrectly);
-    RUN_TEST(_should_handleEdgeCases);
+    RUN_TEST(test_should_constructArray_when_provideSizeAndCapacity);
+    RUN_TEST(test_should_clearArray_when_callClearArray);
+    RUN_TEST(test_should_setAndGetIndividualElements);
+    RUN_TEST(test_should_copyArrayCorrectly);
+    RUN_TEST(test_should_duplicateArrayCorrectly);
+    RUN_TEST(test_should_resizeArrayCorrectly);
+    RUN_TEST(test_should_handleEdgeCases);
 
     return UNITY_END();
 }
