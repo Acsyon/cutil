@@ -23,7 +23,7 @@ set(SOURCE_FILES_CORE
 if (CUTIL_BUILD_SHARED_LIB)
     add_library("${CUTIL_LIBRARY_CORE}" SHARED "${SOURCE_FILES_CORE}")
     set_target_properties(
-        "${CUTIL_LIBRARY_CORE}" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY}${CUTIL_LIBRARY_CORE}"
+        "${CUTIL_LIBRARY_CORE}" PROPERTIES OUTPUT_NAME "${CUTIL_LIBRARY_CORE}"
                                            PREFIX "lib"
     )
 
@@ -32,8 +32,9 @@ if (CUTIL_BUILD_SHARED_LIB)
     endif ()
 
     target_include_directories(
-        "${CUTIL_LIBRARY_CORE}" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
-                                       "$<INSTALL_INTERFACE:include>"
+        "${CUTIL_LIBRARY_CORE}"
+        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include>"
+               "$<INSTALL_INTERFACE:include>"
     )
 
     install(
@@ -62,8 +63,9 @@ if (CUTIL_BUILD_STATIC_LIB)
     endif ()
 
     target_include_directories(
-        "${CUTIL_LIBRARY_CORE}-static" PUBLIC "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>"
-                                              "$<INSTALL_INTERFACE:include>"
+        "${CUTIL_LIBRARY_CORE}-static"
+        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include>"
+               "$<INSTALL_INTERFACE:include>"
     )
 
     install(
@@ -79,7 +81,7 @@ endif ()
 
 # Install headers
 install(
-    DIRECTORY "${CMAKE_SOURCE_DIR}/lib/include/cutil/${CUTIL_COMPONENT_CORE}"
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include/cutil/${CUTIL_COMPONENT_CORE}"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     FILES_MATCHING
     PATTERN "*.h"

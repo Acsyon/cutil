@@ -61,12 +61,12 @@ set(CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${CUTIL_LIBRARY}")
 
 # Add core library
 set(CUTIL_COMPONENT_CORE "core")
-set(CUTIL_LIBRARY_CORE "${CUTIL_COMPONENT_CORE}")
+set(CUTIL_LIBRARY_CORE "${CUTIL_LIBRARY}${CUTIL_COMPONENT_CORE}")
 add_subdirectory(lib/core)
 
 # Add data library
 set(CUTIL_COMPONENT_DATA data)
-set(CUTIL_LIBRARY_DATA "${CUTIL_COMPONENT_DATA}")
+set(CUTIL_LIBRARY_DATA "${CUTIL_LIBRARY}${CUTIL_COMPONENT_DATA}")
 add_subdirectory(lib/data)
 
 # Add the tests directory
