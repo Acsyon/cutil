@@ -47,6 +47,7 @@ endif ()
 set(CUTIL_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CUTIL_OUTPUT_DIR}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CUTIL_OUTPUT_DIR}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # Options
 option(CUTIL_BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" ON)
@@ -79,6 +80,11 @@ add_subdirectory(lib/core)
 set(CUTIL_COMPONENT_DATA data)
 set(CUTIL_LIBRARY_DATA "${CUTIL_LIBRARY}${CUTIL_COMPONENT_DATA}")
 add_subdirectory(lib/data)
+
+# Add data library
+set(CUTIL_COMPONENT_SERIAL serial)
+set(CUTIL_LIBRARY_SERIAL "${CUTIL_LIBRARY}${CUTIL_COMPONENT_SERIAL}")
+add_subdirectory(lib/serial)
 
 # Include CTest support; also invokes enable_testing() internally.
 include(CTest)
