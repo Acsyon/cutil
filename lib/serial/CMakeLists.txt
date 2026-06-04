@@ -4,9 +4,10 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREA
 endif ()
 
 find_package(libyaml REQUIRED)
+find_package(cJSON REQUIRED)
 
 # Set source files
-set(SOURCE_FILES_SERIAL src/yaml.c)
+set(SOURCE_FILES_SERIAL src/json.c src/yaml.c)
 
 # Compile shared library
 if (CUTIL_BUILD_SHARED_LIB)
@@ -19,7 +20,9 @@ if (CUTIL_BUILD_SHARED_LIB)
         target_link_libraries("${CUTIL_LIBRARY_SERIAL}" PRIVATE m)
     endif ()
 
-    target_link_libraries("${CUTIL_LIBRARY_SERIAL}" PUBLIC "${CUTIL_LIBRARY_CORE}" libyaml::libyaml)
+    target_link_libraries(
+        "${CUTIL_LIBRARY_SERIAL}" PUBLIC "${CUTIL_LIBRARY_CORE}" cjson libyaml::libyaml
+    )
 
     target_include_directories(
         "${CUTIL_LIBRARY_SERIAL}"
