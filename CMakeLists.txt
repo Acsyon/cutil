@@ -52,6 +52,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 # Options
 option(CUTIL_BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" ON)
 option(ENABLE_TESTS "Build and enable unit tests" OFF)
+option(CUTIL_SERIAL_LINK_STATIC "Link cJSON and libyaml statically into libcutilserial" OFF)
 
 # Utility variables
 
@@ -97,11 +98,13 @@ endif ()
 # Configure the uninstaller
 configure_file(cmake/cmake_uninstall.cmake.in cmake_uninstall.cmake @ONLY)
 
-# Add the 'uninstall' target
-add_custom_target(
-    uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    COMMENT "Uninstalling..."
-)
+# Add the 'uninstall' target (only if not already created by a submodule)
+if (NOT TARGET uninstall)
+    add_custom_target(
+        uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        COMMENT "Uninstalling..."
+    )
+endif ()
 
 # Generate config file for find_package()
 include(CMakePackageConfigHelpers)

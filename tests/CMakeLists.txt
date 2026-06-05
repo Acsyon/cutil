@@ -31,6 +31,8 @@ function (CREATE_C_TESTS OUT_TARGETS SOURCE_FILES CUTIL_MODULES)
 
         # Link and include Unity
         target_link_libraries("${TEST_NAME}" PRIVATE unity)
+        # Explicitly add Unity include directories
+        target_include_directories("${TEST_NAME}" PRIVATE ${CMAKE_SOURCE_DIR}/submodules/Unity/src)
 
         # Link and include cutil modules
         foreach (CUTIL_MODULE IN LISTS ${CUTIL_MODULES})
@@ -123,15 +125,20 @@ set(C_TEST_SOURCES_DATA
     data/native/test_bitarray.c
 )
 
-find_package(libyaml REQUIRED)
-find_package(cJSON REQUIRED)
+if (NOT CUTIL_SERIAL_LINK_STATIC)
+    find_package(libyaml REQUIRED)
+    find_package(cJSON REQUIRED)
+    set(SERIAL_DEPS cjson libyaml::libyaml)
+else ()
+    set(SERIAL_DEPS cjson-static yaml)
+endif ()
 
 set(C_TEST_SOURCES_SERIAL serial/test_json.c serial/test_yaml.c)
 
 # Set module dependencies
 set(MODULE_DEPENDENCIES_CORE ${CUTIL_LIB_CORE})
 set(MODULE_DEPENDENCIES_DATA ${CUTIL_LIB_CORE} ${CUTIL_LIB_DATA})
-set(MODULE_DEPENDENCIES_SERIAL ${CUTIL_LIB_CORE} ${CUTIL_LIB_SERIAL} cjson libyaml::libyaml)
+set(MODULE_DEPENDENCIES_SERIAL ${CUTIL_LIB_CORE} ${CUTIL_LIB_SERIAL} ${SERIAL_DEPS})
 
 create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
 create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)

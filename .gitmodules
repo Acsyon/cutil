@@ -4,3 +4,9 @@
 [submodule "submodules/Unity"]
 	path = submodules/Unity
 	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "submodules/cJSON"]
+	path = submodules/cJSON
+	url = https://github.com/DaveGamble/cJSON.git
+[submodule "submodules/libyaml"]
+	path = submodules/libyaml
+	url = https://github.com/yaml/libyaml.git
