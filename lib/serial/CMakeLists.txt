@@ -62,7 +62,7 @@ else ()
 endif ()
 
 # Set source files
-set(SOURCE_FILES_SERIAL src/json.c src/yaml.c)
+set(SOURCE_FILES_SERIAL src/json.c src/serial.c src/yaml.c)
 
 # Compile shared library
 if (CUTIL_BUILD_SHARED_LIB)

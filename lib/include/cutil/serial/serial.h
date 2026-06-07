@@ -1,0 +1,430 @@
+/** cutil/serial/serial.h
+ *
+ * Header file for YAML parsing utilities.
+ */
+
+#ifndef CUTIL_SERIAL_SERIAL_H_INCLUDED
+#define CUTIL_SERIAL_SERIAL_H_INCLUDED
+
+#include <cutil/core/debug/null.h>
+#include <cutil/core/status.h>
+#include <cutil/core/std/stdbool.h>
+#include <cutil/core/std/stdio.h>
+#include <cutil/core/util/macro.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Type of a serial node (scalar, sequence or composite).
+ */
+typedef enum {
+    CUTIL_SERIAL_NODE_SCALAR,
+    CUTIL_SERIAL_NODE_SEQUENCE,
+    CUTIL_SERIAL_NODE_COMPOSITE,
+} cutil_SerialNodeType;
+
+/**
+ * Forward declaration of opaque serial node type.
+ */
+typedef struct cutil_SerialNode cutil_SerialNode;
+
+/**
+ * Callback type for structured deserialization callback function.
+ *
+ * @param[out] obj  target object to populate
+ * @param[in]  node parsed serial node to read from
+ *
+ * @return CUTIL_STATUS_SUCCESS on success, other status on error
+ */
+typedef cutil_Status
+cutil_SerialReadCallback(void *obj, const cutil_SerialNode *node);
+
+/**
+ * Typedef for structured serialization callback function.
+ *
+ * @param[in] obj object to read values from
+ *
+ * @return newly allocated cutil_SerialNode on success, NULL on error
+ */
+typedef cutil_SerialNode *
+cutil_SerialWriteCallback(const void *obj);
+
+/**
+ * Vtable for serial node operations. This allows for a common interface for
+ * different serialization formats (e.g., YAML, JSON) and enables code reuse in
+ * higher-level serialization utilities.
+ */
+typedef struct {
+    const char *const name;
+    cutil_SerialNode *(*const from_file)(FILE *file);
+    cutil_SerialNode *(*const from_nstring)(const char *str, size_t len);
+    cutil_SerialNode *(*const dup)(const cutil_SerialNode *node);
+    void (*const free)(cutil_SerialNode *node);
+    cutil_SerialNodeType (*const get_node_type)(const cutil_SerialNode *node);
+    const char *(*const get_scalar_value)(const cutil_SerialNode *node);
+    size_t (*const get_sequence_length)(const cutil_SerialNode *node);
+    cutil_Bool (*const get_sequence_item)(
+      const cutil_SerialNode *node, size_t idx, cutil_SerialNode *res
+    );
+    cutil_Bool (*const get_child)(
+      const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
+    );
+    const char *(*const get_scalar_value_by_key)(
+      const cutil_SerialNode *node, const char *key
+    );
+} cutil_SerialType;
+
+/**
+ * Opaque serial node type.
+ */
+struct cutil_SerialNode {
+    const cutil_SerialType *type;
+    void *node;
+};
+
+/**
+ * Convenience MACRO to check for NULLs in `SERIAL` in debug mode.
+ *
+ * @param[in] SERIAL cutil_SerialDocument or cutil_SerialNode to check for NULLs
+ */
+#define CUTIL_NULL_CHECKS_SERIAL(SERIAL)                                       \
+    do {                                                                       \
+        CUTIL_NULL_CHECK(SERIAL);                                              \
+        CUTIL_NULL_CHECK(SERIAL->type);                                        \
+    } while (0)
+
+/**
+ * Allocates and zero-initializes a new cutil_SerialNode object of type `type`.
+ *
+ * @param[in] type type of the serial node to allocate
+ *
+ * @return newly allocated cutil_SerialNode
+ */
+cutil_SerialNode *
+cutil_SerialNode_calloc(const cutil_SerialType *type);
+
+/**
+ * Initializes a cutil_SerialNode from a file.
+ *
+ * @param[in] file open FILE handle to read from
+ *
+ * @return newly allocated cutil_SerialNode on success, NULL on error
+ */
+cutil_SerialNode *
+cutil_SerialNode_from_file(const cutil_SerialType *type, FILE *file);
+
+/**
+ * Initializes a cutil_SerialNode from a string of known length.
+ *
+ * @param[in] str string to parse
+ * @param[in] len length of the string in bytes
+ *
+ * @return newly allocated cutil_SerialNode on success, NULL on error
+ */
+cutil_SerialNode *
+cutil_SerialNode_from_nstring(
+  const cutil_SerialType *type, const char *str, size_t len
+);
+
+/**
+ * Initializes a cutil_SerialNode from a NUL-terminated string.
+ *
+ * @param[in] str NUL-terminated string to parse
+ *
+ * @return newly allocated cutil_SerialNode on success, NULL on error
+ */
+cutil_SerialNode *
+cutil_SerialNode_from_string(const cutil_SerialType *type, const char *str);
+
+/**
+ * Duplicates a cutil_SerialNode object, including its content.
+ *
+ * @param[in] node cutil_SerialNode to duplicate
+ *
+ * @return newly allocated duplicate of node, or NULL on error
+ */
+inline cutil_SerialNode *
+cutil_SerialNode_dup(const cutil_SerialNode *node)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, dup);
+    return node->type->dup(node);
+}
+
+/**
+ * Frees an cutil_SerialNode object. No-op on NULL.
+ *
+ * @param[in] node object to be freed
+ */
+inline void
+cutil_SerialNode_free(cutil_SerialNode *node)
+{
+    CUTIL_RETURN_IF_NULL(node);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, free);
+    node->type->free(node);
+}
+
+/**
+ * Gets the cutil_SerialType of a cutil_SerialNode node.
+ *
+ * @param[in] node serial node to get type of
+ *
+ * @return cutil_SerialType of the node, or NULL if node is NULL
+ */
+inline const cutil_SerialType *
+cutil_SerialNode_get_serial_type(const cutil_SerialNode *node)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    return node->type;
+}
+
+/**
+ * Gets the type of a serial node.
+ *
+ * @param[in] node serial node to get type of
+ *
+ * @return type of the node, or CUTIL_SERIAL_NODE_SCALAR if node is NULL
+ *         (since NULL is often used to indicate missing nodes, treating it as
+ *         a scalar with default value is more convenient for callers)
+ */
+inline cutil_SerialNodeType
+cutil_SerialNode_get_node_type(const cutil_SerialNode *node)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_SCALAR);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_node_type);
+    return node->type->get_node_type(node);
+}
+
+/**
+ * Gets the scalar string value of a serial scalar node.
+ *
+ * Unlike `cutil_SerialNode_get_string` which looks up a value by key within a
+ * mapping node, this function returns the string value of the node itself.
+ * This is intended for use with scalar sequence items.
+ *
+ * @param[in] node        serial scalar node
+ *
+ * @return scalar string value or NULL if node is NULL or not a scalar
+ */
+inline const char *
+cutil_SerialNode_get_scalar_value(const cutil_SerialNode *node)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_scalar_value);
+    return node->type->get_scalar_value(node);
+}
+
+/**
+ * Returns the number of items in a serial sequence node.
+ *
+ * @param[in] node serial node to get sequence length from
+ *
+ * @return number of items in the sequence, or 0 if node is NULL or not a
+ *         sequence node
+ */
+inline size_t
+cutil_SerialNode_get_sequence_length(const cutil_SerialNode *node)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, 0UL);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_sequence_length);
+    return node->type->get_sequence_length(node);
+}
+
+/**
+ * Gets a sequence item by index from a serial sequence node.
+ *
+ * @param[in]  node serial sequence node to get item from
+ * @param[in]  idx  index of the item to get (0-based)
+ * @param[out] res  output buffer to store the item node, may be NULL
+ *
+ * @return CUTIL_TRUE if item is found, CUTIL_FALSE otherwise (NULL node,
+ *         non-sequence node, or out-of-bounds index)
+ */
+inline cutil_Bool
+cutil_SerialNode_get_sequence_item(
+  const cutil_SerialNode *node, size_t idx, cutil_SerialNode *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_sequence_item);
+    return node->type->get_sequence_item(node, idx, res);
+}
+
+/**
+ * Gets a child node by key from a serial node.
+ *
+ * @param[in] node parent node to get child node from
+ * @param[in] key key of the child node to get
+ * @param[out] res output buffer to store the child node, may be NULL
+ *
+ * @return CUTIL_TRUE if child node is found, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_get_child(
+  const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_child);
+    return node->type->get_child(node, key, res);
+}
+
+/**
+ * Checks if a serial node has a child node with the given key.
+ *
+ * @param[in] node parent node to check for child node
+ * @param[in] key key of the child node to check for
+ *
+ * @return CUTIL_TRUE if child node is found, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key)
+{
+    return cutil_SerialNode_get_child(node, key, NULL);
+}
+
+/**
+ * Reads a string value by key.
+ *
+ * @param[in] node serial node to get value from
+ * @param[in] key  key to look up
+ *
+ * @return value for key or NULL if key is not found or node is NULL
+ */
+inline const char *
+cutil_SerialNode_get_scalar_value_by_key(
+  const cutil_SerialNode *node, const char *key
+)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_scalar_value_by_key);
+    return node->type->get_scalar_value_by_key(node, key);
+}
+
+/**
+ * Reads a string value by key.
+ *
+ * @param[in] node        serial node to get value from
+ * @param[in] key         key to look up
+ * @param[in] default_val value returned when key is not found or node is NULL
+ *
+ * @return value for key or default_val
+ */
+const char *
+cutil_SerialNode_get_string(
+  const cutil_SerialNode *node, const char *key, const char *default_val
+);
+
+/**
+ * Reads a double value by key.
+ *
+ * @param[in] node        serial node to get value from
+ * @param[in] key         key to look up
+ * @param[in] default_val value returned when key is not found or node is NULL
+ *
+ * @return value for key or default_val
+ */
+double
+cutil_SerialNode_get_double(
+  const cutil_SerialNode *node, const char *key, double default_val
+);
+
+/**
+ * Reads an int value by key.
+ *
+ * @param[in] node        serial node to get value from
+ * @param[in] key         key to look up
+ * @param[in] default_val value returned when key is not found or node is NULL
+ *
+ * @return value for key or default_val
+ */
+int
+cutil_SerialNode_get_int(
+  const cutil_SerialNode *node, const char *key, int default_val
+);
+
+/**
+ * Reads a bool value by key.
+ *
+ * @param[in] node        serial node to get value from
+ * @param[in] key         key to look up
+ * @param[in] default_val value returned when key is not found or node is NULL
+ *
+ * @return value for key or default_val
+ */
+bool
+cutil_SerialNode_get_bool(
+  const cutil_SerialNode *node, const char *key, bool default_val
+);
+
+/**
+ * Reads a file and invokes the callback with the parsed content.
+ *
+ * @param[in]  type  type of the serial format to read
+ * @param[out] obj   target object to populate
+ * @param[in]  file  open FILE handle to read from
+ * @param[in]  cb    callback invoked with the parsed content
+ *
+ * @return the status returned by cb, other status on error
+ */
+cutil_Status
+cutil_serial_read_file(
+  const cutil_SerialType *type,
+  void *obj,
+  FILE *file,
+  cutil_SerialReadCallback *cb
+);
+
+/**
+ * Reads a NUL-terminated serial string and invokes the callback.
+ *
+ * @param[in]  type type of the serial format to read
+ * @param[out] obj  target object to populate
+ * @param[in]  str  NUL-terminated serial string
+ * @param[in]  cb   callback invoked with the parsed content
+ *
+ * @return the status returned by cb, other status on error
+ */
+cutil_Status
+cutil_serial_read_string(
+  const cutil_SerialType *type,
+  void *obj,
+  const char *str,
+  cutil_SerialReadCallback *cb
+);
+
+/**
+ * Reads a serial string of known length and invokes the callback.
+ *
+ * @param[in]  type type of the serial format to read
+ * @param[out] obj  target object to populate
+ * @param[in]  str  serial string
+ * @param[in]  len  length of the string in bytes
+ * @param[in]  cb   callback invoked with the parsed content
+ *
+ * @return the status returned by cb, other status on error
+ */
+cutil_Status
+cutil_serial_read_nstring(
+  const cutil_SerialType *type,
+  void *obj,
+  const char *str,
+  size_t len,
+  cutil_SerialReadCallback *cb
+);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* CUTIL_SERIAL_SERIAL_H_INCLUDED */
