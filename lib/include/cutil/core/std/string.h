@@ -86,6 +86,33 @@ cutil_memdup(const void *ptr, size_t size, size_t num);
 #define CUTIL_MEMDUP_MULT(PTR, NUM)                                            \
     cutil_memdup((PTR), sizeof *(PTR), (size_t) (NUM))
 
+/**
+ * Case-insensitive string comparison function.
+ *
+ * Note: This function assumes that the input strings are valid NUL-terminated
+ * strings. Behavior is undefined if the input strings are not properly
+ * NUL-terminated.
+ *
+ * @param[in] lhs first string to compare
+ * @param[in] rhs second string to compare
+ *
+ * @return case-insensitive comparison result
+ */
+int
+cutil_strcicmp(const char *lhs, const char *rhs);
+
+/**
+ * Case-insensitive string comparison function that compares at most `n` bytes.
+ *
+ * @param[in] lhs first string to compare
+ * @param[in] rhs second string to compare
+ * @param[in] n maximum number of bytes to compare
+ *
+ * @return case-insensitive comparison result
+ */
+int
+cutil_strncicmp(const char *lhs, const char *rhs, size_t n);
+
 #ifdef __cplusplus
 }
 #endif

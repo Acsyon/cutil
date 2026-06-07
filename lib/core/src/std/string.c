@@ -1,5 +1,7 @@
 #include <cutil/core/std/string.h>
 
+#include <ctype.h>
+
 #include <cutil/core/debug/null.h>
 #include <cutil/core/io/log.h>
 #include <cutil/core/util/macro.h>
@@ -60,4 +62,34 @@ cutil_memdup(const void *ptr, size_t size, size_t num)
     }
     cpy = memcpy(cpy, ptr, size * num);
     return cpy;
+}
+
+int
+cutil_strcicmp(const char *lhs, const char *rhs)
+{
+    CUTIL_NULL_CHECK(lhs);
+    CUTIL_NULL_CHECK(rhs);
+    int res = 0;
+    for (;; ++lhs, ++rhs) {
+        res = tolower((unsigned char) *lhs) - tolower((unsigned char) *rhs);
+        if (res != 0 || !*lhs || !*rhs) {
+            break;
+        }
+    }
+    return res;
+}
+
+int
+cutil_strncicmp(const char *lhs, const char *rhs, size_t n)
+{
+    CUTIL_NULL_CHECK(lhs);
+    CUTIL_NULL_CHECK(rhs);
+    int res = 0;
+    for (size_t i = 0; i < n; ++i, ++lhs, ++rhs) {
+        res = tolower((unsigned char) *lhs) - tolower((unsigned char) *rhs);
+        if (res != 0 || !*lhs || !*rhs) {
+            break;
+        }
+    }
+    return res;
 }

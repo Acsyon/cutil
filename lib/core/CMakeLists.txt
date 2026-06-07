@@ -8,6 +8,7 @@ set(SOURCE_FILES_CORE
     src/io/log.c
     src/os/path.c
     src/posix/getopt.c
+    src/std/stdbool.c
     src/std/stdio.c
     src/std/stdlib.c
     src/std/string.c

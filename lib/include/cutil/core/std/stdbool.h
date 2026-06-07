@@ -39,6 +39,18 @@ typedef uint32_t cutil_Bool;
  */
 #define CUTIL_FALSE CUTIL_BOOLIFY(false)
 
+/**
+ * Converts a string to a bool value. Returns CUTIL_TRUE if `str` is "true"
+ * (case-insensitive), CUTIL_FALSE otherwise.
+ *
+ * @param[in] str string to be converted to bool
+ *
+ * @return CUTIL_TRUE if `str` is "true" (case-insensitive), CUTIL_FALSE
+ * otherwise
+ */
+cutil_Bool
+cutil_atobool(const char *str);
+
 #ifdef __cplusplus
 }
 #endif
