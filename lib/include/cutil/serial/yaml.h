@@ -13,9 +13,7 @@ extern "C" {
 #endif
 
 /**
- * cutil_SerialType for YAML serial nodes. This allows YAML nodes to be used
- * with the generic cutil_SerialNode interface and enables code reuse in
- * higher-level serialization utilities.
+ * cutil_SerialType for YAML serial nodes.
  */
 extern const cutil_SerialType *const CUTIL_SERIAL_TYPE_YAML;
 

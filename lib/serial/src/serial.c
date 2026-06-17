@@ -72,8 +72,16 @@ cutil_SerialNode_get_serial_type(const cutil_SerialNode *node);
 extern inline cutil_SerialNodeType
 cutil_SerialNode_get_node_type(const cutil_SerialNode *node);
 
-extern inline const char *
-cutil_SerialNode_get_scalar_value(const cutil_SerialNode *node);
+extern inline cutil_Bool
+cutil_SerialNode_get_string_value(
+  const cutil_SerialNode *node, const char **res
+);
+
+extern inline cutil_Bool
+cutil_SerialNode_get_number_value(const cutil_SerialNode *node, double *res);
+
+extern inline cutil_Bool
+cutil_SerialNode_get_bool_value(const cutil_SerialNode *node, cutil_Bool *res);
 
 extern inline size_t
 cutil_SerialNode_get_sequence_length(const cutil_SerialNode *node);
@@ -90,11 +98,6 @@ cutil_SerialNode_get_child(
 
 extern inline cutil_Bool
 cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key);
-
-extern inline const char *
-cutil_SerialNode_get_scalar_value_by_key(
-  const cutil_SerialNode *node, const char *key
-);
 
 const char *
 cutil_SerialNode_get_string(

@@ -20,7 +20,12 @@ extern "C" {
  * Type of a serial node (scalar, sequence or composite).
  */
 typedef enum {
-    CUTIL_SERIAL_NODE_SCALAR,
+    CUTIL_SERIAL_NODE_UNINITIALIZED = -2,
+    CUTIL_SERIAL_NODE_UNDEFINED = -1,
+    CUTIL_SERIAL_NODE_EMPTY,
+    CUTIL_SERIAL_NODE_STRING,
+    CUTIL_SERIAL_NODE_NUMBER,
+    CUTIL_SERIAL_NODE_BOOL,
     CUTIL_SERIAL_NODE_SEQUENCE,
     CUTIL_SERIAL_NODE_COMPOSITE,
 } cutil_SerialNodeType;
@@ -62,8 +67,15 @@ typedef struct {
     cutil_SerialNode *(*const from_nstring)(const char *str, size_t len);
     cutil_SerialNode *(*const dup)(const cutil_SerialNode *node);
     void (*const free)(cutil_SerialNode *node);
-    cutil_SerialNodeType (*const get_node_type)(const cutil_SerialNode *node);
-    const char *(*const get_scalar_value)(const cutil_SerialNode *node);
+    cutil_Bool (*const get_string_value)(
+      const cutil_SerialNode *node, const char **res
+    );
+    cutil_Bool (*const get_number_value)(
+      const cutil_SerialNode *node, double *res
+    );
+    cutil_Bool (*const get_bool_value)(
+      const cutil_SerialNode *node, cutil_Bool *res
+    );
     size_t (*const get_sequence_length)(const cutil_SerialNode *node);
     cutil_Bool (*const get_sequence_item)(
       const cutil_SerialNode *node, size_t idx, cutil_SerialNode *res
@@ -71,8 +83,14 @@ typedef struct {
     cutil_Bool (*const get_child)(
       const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
     );
-    const char *(*const get_scalar_value_by_key)(
-      const cutil_SerialNode *node, const char *key
+    cutil_Bool (*const set_scalar_value)(
+      cutil_SerialNode *node, const char *val
+    );
+    cutil_Bool (*const add_sequence_item)(
+      cutil_SerialNode *node, const char *val
+    );
+    cutil_Bool (*const add_child)(
+      cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
     );
 } cutil_SerialType;
 
@@ -81,6 +99,7 @@ typedef struct {
  */
 struct cutil_SerialNode {
     const cutil_SerialType *type;
+    const cutil_SerialNodeType node_type;
     void *node;
 };
 
@@ -187,37 +206,70 @@ cutil_SerialNode_get_serial_type(const cutil_SerialNode *node)
  *
  * @param[in] node serial node to get type of
  *
- * @return type of the node, or CUTIL_SERIAL_NODE_SCALAR if node is NULL
- *         (since NULL is often used to indicate missing nodes, treating it as
- *         a scalar with default value is more convenient for callers)
+ * @return type of the node, or CUTIL_SERIAL_NODE_UNDEFINED if node is NULL
  */
 inline cutil_SerialNodeType
 cutil_SerialNode_get_node_type(const cutil_SerialNode *node)
 {
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_SCALAR);
-    CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, get_node_type);
-    return node->type->get_node_type(node);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_UNDEFINED);
+    return node->node_type;
 }
 
 /**
- * Gets the scalar string value of a serial scalar node.
+ * Gets the scalar string value of a serial node.
  *
- * Unlike `cutil_SerialNode_get_string` which looks up a value by key within a
- * mapping node, this function returns the string value of the node itself.
- * This is intended for use with scalar sequence items.
+ * @param[in]  node serial node to get string value of
+ * @param[out] res  output buffer to store the string value, may be NULL
  *
- * @param[in] node        serial scalar node
- *
- * @return scalar string value or NULL if node is NULL or not a scalar
+ * @return CUTIL_TRUE if node contains string value, CUTIL_FALSE otherwise
  */
-inline const char *
-cutil_SerialNode_get_scalar_value(const cutil_SerialNode *node)
+inline cutil_Bool
+cutil_SerialNode_get_string_value(
+  const cutil_SerialNode *node, const char **res
+)
 {
-    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, get_scalar_value);
-    return node->type->get_scalar_value(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_string_value);
+    return node->type->get_string_value(node, res);
+}
+
+/**
+ * Gets the scalar number value of a serial node as a double.
+ *
+ * @param[in]  node serial node to get number value of
+ * @param[out] res  output buffer to store the number value, may be NULL
+ *
+ * @return CUTIL_TRUE if node contains number value, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_get_number_value(
+  const cutil_SerialNode *node, double *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_number_value);
+    return node->type->get_number_value(node, res);
+}
+
+/**
+ * Gets the scalar bool value of a serial node.
+ *
+ * @param[in]  node serial node to get bool value of
+ * @param[out] res  output buffer to store the bool value, may be NULL
+ *
+ * @return CUTIL_TRUE if node contains bool value, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_get_bool_value(
+  const cutil_SerialNode *node, cutil_Bool *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, get_bool_value);
+    return node->type->get_bool_value(node, res);
 }
 
 /**
@@ -293,79 +345,58 @@ cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key)
 }
 
 /**
- * Reads a string value by key.
+ * Sets the scalar string value of a serial scalar node.
  *
- * @param[in] node serial node to get value from
- * @param[in] key  key to look up
+ * @param[in,out] node  serial scalar node
+ * @param[in]     value string value to set
  *
- * @return value for key or NULL if key is not found or node is NULL
+ * @return CUTIL_TRUE if the value was set successfully, CUTIL_FALSE otherwise
  */
-inline const char *
-cutil_SerialNode_get_scalar_value_by_key(
-  const cutil_SerialNode *node, const char *key
-)
+inline cutil_Bool
+cutil_SerialNode_set_scalar_value(cutil_SerialNode *node, const char *value)
 {
-    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, get_scalar_value_by_key);
-    return node->type->get_scalar_value_by_key(node, key);
+    CUTIL_NULL_CHECK_VTABLE(node->type, set_scalar_value);
+    return node->type->set_scalar_value(node, value);
 }
 
 /**
- * Reads a string value by key.
+ * Adds a sequence item to a serial sequence node.
  *
- * @param[in] node        serial node to get value from
- * @param[in] key         key to look up
- * @param[in] default_val value returned when key is not found or node is NULL
+ * @param[in,out] node serial sequence node to add item to
+ * @param[in]     val  item to add to the sequence
  *
- * @return value for key or default_val
+ * @return CUTIL_TRUE if item is added successfully, CUTIL_FALSE otherwise
  */
-const char *
-cutil_SerialNode_get_string(
-  const cutil_SerialNode *node, const char *key, const char *default_val
-);
+inline cutil_Bool
+cutil_SerialNode_add_sequence_item(cutil_SerialNode *node, const char *val)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, add_sequence_item);
+    return node->type->add_sequence_item(node, val);
+}
 
 /**
- * Reads a double value by key.
+ * Adds a child node by key to a serial node.
  *
- * @param[in] node        serial node to get value from
- * @param[in] key         key to look up
- * @param[in] default_val value returned when key is not found or node is NULL
+ * @param[in,out] node  parent node to add child node to
+ * @param[in]     key   key of the child node to add
+ * @param[in]     child child node to add
  *
- * @return value for key or default_val
+ * @return CUTIL_TRUE if child node is added successfully, CUTIL_FALSE otherwise
  */
-double
-cutil_SerialNode_get_double(
-  const cutil_SerialNode *node, const char *key, double default_val
-);
-
-/**
- * Reads an int value by key.
- *
- * @param[in] node        serial node to get value from
- * @param[in] key         key to look up
- * @param[in] default_val value returned when key is not found or node is NULL
- *
- * @return value for key or default_val
- */
-int
-cutil_SerialNode_get_int(
-  const cutil_SerialNode *node, const char *key, int default_val
-);
-
-/**
- * Reads a bool value by key.
- *
- * @param[in] node        serial node to get value from
- * @param[in] key         key to look up
- * @param[in] default_val value returned when key is not found or node is NULL
- *
- * @return value for key or default_val
- */
-bool
-cutil_SerialNode_get_bool(
-  const cutil_SerialNode *node, const char *key, bool default_val
-);
+inline cutil_Bool
+cutil_SerialNode_add_child(
+  cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, add_child);
+    return node->type->add_child(node, key, child);
+}
 
 /**
  * Reads a file and invokes the callback with the parsed content.

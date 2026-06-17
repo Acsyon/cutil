@@ -7,6 +7,24 @@
 #ifndef CUTIL_SERIAL_JSON_H_INCLUDED
 #define CUTIL_SERIAL_JSON_H_INCLUDED
 
+#include <cutil/serial/serial.h>
+
+/**
+ * cutil_SerialType for JSON serial nodes.
+ */
+extern const cutil_SerialType *const CUTIL_SERIAL_TYPE_JSON;
+
+/**
+ * Helper function to allocate a cutil_SerialNode with the JSON type.
+ *
+ * @return newly allocated cutil_SerialNode with JSON type, or NULL on error
+ */
+inline cutil_SerialNode *
+cutil_SerialNode_calloc_json(void)
+{
+    return cutil_SerialNode_calloc(CUTIL_SERIAL_TYPE_JSON);
+}
+
 #include <cjson/cJSON.h>
 
 #include <cutil/core/std/inttypes.h>

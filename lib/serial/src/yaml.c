@@ -1,5 +1,9 @@
+#include "cutil/core/debug/null.h"
+#include "cutil/core/std/stdbool.h"
+#include "cutil/serial/serial.h"
 #include <cutil/serial/yaml.h>
 
+#include <string.h>
 #include <yaml.h>
 
 #include <cutil/core/io/log.h>
@@ -129,20 +133,58 @@ sf_cutil_SerialNode_yaml_free(cutil_SerialNode *node)
     free(node);
 }
 
+#define YAML_STRODOB_CHECK(STR, ENDPTR, ENTRY, RETVAL)                         \
+    do {                                                                       \
+        if (strcmp((STR), (ENTRY))) {                                          \
+            *(ENDPTR) = (char *) (STR) + sizeof(ENTRY);                        \
+            return (RETVAL);                                                   \
+        }                                                                      \
+    } while (0)
+
+static inline cutil_Bool
+sf_yaml_strtob(const char *CUTIL_RESTRICT str, char **CUTIL_RESTRICT endptr)
+{
+    YAML_STRODOB_CHECK(str, endptr, "True", CUTIL_TRUE);
+    YAML_STRODOB_CHECK(str, endptr, "On", CUTIL_TRUE);
+    YAML_STRODOB_CHECK(str, endptr, "Yes", CUTIL_TRUE);
+    YAML_STRODOB_CHECK(str, endptr, "False", CUTIL_FALSE);
+    YAML_STRODOB_CHECK(str, endptr, "Off", CUTIL_FALSE);
+    YAML_STRODOB_CHECK(str, endptr, "No", CUTIL_FALSE);
+    *endptr = (char *) str;
+    return CUTIL_FALSE;
+}
+
+static cutil_SerialNodeType
+sf_cutil_SerialNode_yaml_get_scalar_node_type(const s_YamlNode *const ynode)
+{
+    const char *const str = (const char *) ynode->node.data.scalar.value;
+    char *endptr = NULL;
+    CUTIL_UNUSED(strtod(str, &endptr));
+    if (str != endptr) {
+        return CUTIL_SERIAL_NODE_NUMBER;
+    }
+    CUTIL_UNUSED(sf_yaml_strtob(str, &endptr));
+    if (str != endptr) {
+        return CUTIL_SERIAL_NODE_BOOL;
+    }
+    return CUTIL_SERIAL_NODE_STRING;
+}
+
 static cutil_SerialNodeType
 sf_cutil_SerialNode_yaml_get_node_type(const cutil_SerialNode *node)
 {
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_SCALAR);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_UNDEFINED);
     const s_YamlNode *const ynode = node->node;
+    CUTIL_RETURN_VAL_IF_NULL(ynode, CUTIL_SERIAL_NODE_UNDEFINED);
     switch (ynode->node.type) {
     case YAML_SCALAR_NODE:
-        return CUTIL_SERIAL_NODE_SCALAR;
+        return sf_cutil_SerialNode_yaml_get_scalar_node_type(ynode);
     case YAML_SEQUENCE_NODE:
         return CUTIL_SERIAL_NODE_SEQUENCE;
     case YAML_MAPPING_NODE:
         return CUTIL_SERIAL_NODE_COMPOSITE;
     default:
-        return CUTIL_SERIAL_NODE_SCALAR;
+        return CUTIL_SERIAL_NODE_UNDEFINED;
     }
 }
 
@@ -171,6 +213,24 @@ sf_cutil_SerialNode_yaml_get_sequence_length(const cutil_SerialNode *node)
 }
 
 static cutil_Bool
+sf_cutil_SerialNode_yaml_set_to_res(
+  cutil_SerialNode *res, yaml_document_t *yaml_doc, yaml_node_t *yaml_node
+)
+{
+    CUTIL_NULL_CHECK(yaml_doc);
+    CUTIL_RETURN_VAL_IF_NULL(yaml_node, CUTIL_FALSE);
+    CUTIL_RETURN_VAL_IF_NULL(res, CUTIL_TRUE);
+    if (res->node == NULL) {
+        res->node = sf_YamlNode_calloc();
+    }
+    s_YamlNode *const yres = res->node;
+    yres->doc = yaml_doc;
+    yres->node = *yaml_node;
+    yres->is_root = CUTIL_FALSE;
+    return CUTIL_TRUE;
+}
+
+static cutil_Bool
 sf_cutil_SerialNode_yaml_get_sequence_item(
   const cutil_SerialNode *node, size_t idx, cutil_SerialNode *res
 )
@@ -184,19 +244,7 @@ sf_cutil_SerialNode_yaml_get_sequence_item(
     yaml_document_t *const doc = ynode->doc;
     const yaml_node_item_t item = yaml_node->data.sequence.items.start[idx];
     yaml_node_t *const item_node = yaml_document_get_node(doc, item);
-    if (item_node == NULL) {
-        return CUTIL_FALSE;
-    }
-    if (res != NULL) {
-        if (res->node == NULL) {
-            res->node = sf_YamlNode_calloc();
-        }
-        s_YamlNode *const yres = res->node;
-        yres->doc = ynode->doc;
-        yres->node = *item_node;
-        yres->is_root = CUTIL_FALSE;
-    }
-    return CUTIL_TRUE;
+    return sf_cutil_SerialNode_yaml_set_to_res(res, ynode->doc, item_node);
 }
 
 static yaml_node_t *
@@ -229,19 +277,7 @@ sf_cutil_SerialNode_yaml_get_child(
 {
     const s_YamlNode *const ynode = node->node;
     yaml_node_t *const child = sf_YamlNode_get_child_by_key(ynode, key);
-    if (child == NULL) {
-        return CUTIL_FALSE;
-    }
-    if (res != NULL) {
-        if (res->node == NULL) {
-            res->node = sf_YamlNode_calloc();
-        }
-        s_YamlNode *const yres = res->node;
-        yres->doc = ynode->doc;
-        yres->node = *child;
-        yres->is_root = CUTIL_FALSE;
-    }
-    return CUTIL_TRUE;
+    return sf_cutil_SerialNode_yaml_set_to_res(res, ynode->doc, child);
 }
 
 static const char *
@@ -257,6 +293,23 @@ sf_cutil_SerialNode_yaml_get_scalar_value_by_key(
     return (const char *) child->data.scalar.value;
 }
 
+static cutil_Bool
+sf_cutil_SerialNode_yaml_set_scalar_value(
+  cutil_SerialNode *node, const char *val
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    s_YamlNode *const ynode = node->node;
+    if (ynode == NULL || ynode->node.type != YAML_SCALAR_NODE) {
+        return CUTIL_FALSE;
+    }
+    const int res = yaml_document_add_scalar(
+      ynode->doc, NULL, (const unsigned char *) val, (int) strlen(val),
+      YAML_ANY_SCALAR_STYLE
+    );
+    return (res != 0) ? CUTIL_TRUE : CUTIL_FALSE;
+}
+
 static const cutil_SerialType CUTIL_SERIAL_TYPE_YAML_OBJECT = {
   .name = "YAML",
   .from_file = &sf_cutil_SerialNode_yaml_from_file,
@@ -269,6 +322,7 @@ static const cutil_SerialType CUTIL_SERIAL_TYPE_YAML_OBJECT = {
   .get_sequence_item = &sf_cutil_SerialNode_yaml_get_sequence_item,
   .get_child = &sf_cutil_SerialNode_yaml_get_child,
   .get_scalar_value_by_key = &sf_cutil_SerialNode_yaml_get_scalar_value_by_key,
+  .set_scalar_value = &sf_cutil_SerialNode_yaml_set_scalar_value,
 };
 
 const cutil_SerialType *const CUTIL_SERIAL_TYPE_YAML
