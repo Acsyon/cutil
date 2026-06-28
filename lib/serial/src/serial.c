@@ -13,6 +13,9 @@ cutil_SerialNode_calloc(const cutil_SerialType *type)
     CUTIL_RETURN_NULL_IF_NULL(type);
     cutil_SerialNode *const node = CUTIL_CALLOC_OBJECT(node);
     node->type = type;
+    node->node_type = CUTIL_SERIAL_NODE_UNINITIALIZED;
+    node->key = NULL;
+    node->value.string_view = NULL;
     node->node = NULL;
     return node;
 }
@@ -99,6 +102,25 @@ cutil_SerialNode_get_child(
 extern inline cutil_Bool
 cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key);
 
+extern inline cutil_Bool
+cutil_SerialNode_set_string_value(cutil_SerialNode *node, const char *value);
+
+extern inline cutil_Bool
+cutil_SerialNode_set_number_value(cutil_SerialNode *node, double value);
+
+extern inline cutil_Bool
+cutil_SerialNode_set_bool_value(cutil_SerialNode *node, cutil_Bool value);
+
+extern inline cutil_Bool
+cutil_SerialNode_add_sequence_item(
+  cutil_SerialNode *node, cutil_SerialNode *val
+);
+
+extern inline cutil_Bool
+cutil_SerialNode_add_child(
+  cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
+);
+
 const char *
 cutil_SerialNode_get_string(
   const cutil_SerialNode *node, const char *key, const char *default_val
@@ -107,6 +129,8 @@ cutil_SerialNode_get_string(
     const char *const res = cutil_SerialNode_get_scalar_value_by_key(node, key);
     return (res != NULL) ? res : default_val;
 }
+
+#if 0
 
 double
 cutil_SerialNode_get_double(
@@ -134,6 +158,8 @@ cutil_SerialNode_get_bool(
     const char *const res = cutil_SerialNode_get_scalar_value_by_key(node, key);
     return (res != NULL) ? (cutil_atobool(res) == CUTIL_TRUE) : default_val;
 }
+
+#endif
 
 cutil_Status
 cutil_serial_read_file(

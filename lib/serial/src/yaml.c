@@ -1,17 +1,16 @@
-#include "cutil/core/debug/null.h"
-#include "cutil/core/std/stdbool.h"
-#include "cutil/serial/serial.h"
 #include <cutil/serial/yaml.h>
 
-#include <string.h>
 #include <yaml.h>
 
+#include <cutil/core/debug/null.h>
 #include <cutil/core/io/log.h>
 #include <cutil/core/status.h>
+#include <cutil/core/std/stdbool.h>
 #include <cutil/core/std/stdio.h>
 #include <cutil/core/std/stdlib.h>
 #include <cutil/core/std/string.h>
 #include <cutil/core/util/macro.h>
+#include <cutil/serial/serial.h>
 
 typedef struct {
     yaml_document_t *doc;
@@ -129,6 +128,10 @@ static void
 sf_cutil_SerialNode_yaml_free(cutil_SerialNode *node)
 {
     CUTIL_RETURN_IF_NULL(node);
+    free(node->key);
+    if (node->node_type == CUTIL_SERIAL_NODE_STRING) {
+        free(node->value.string);
+    }
     sf_YamlNode_free(node->node);
     free(node);
 }
@@ -188,15 +191,60 @@ sf_cutil_SerialNode_yaml_get_node_type(const cutil_SerialNode *node)
     }
 }
 
-static const char *
-sf_cutil_SerialNode_yaml_get_scalar_value(const cutil_SerialNode *node)
+static cutil_Bool
+sf_cutil_SerialNode_yaml_get_string_value(
+  const cutil_SerialNode *node, const char **res
+)
 {
-    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     const s_YamlNode *const ynode = node->node;
     if (ynode == NULL || ynode->node.type != YAML_SCALAR_NODE) {
-        return NULL;
+        return CUTIL_FALSE;
     }
-    return (const char *) ynode->node.data.scalar.value;
+    if (res != NULL) {
+        *res = (const char *) ynode->node.data.scalar.value;
+    }
+    return CUTIL_TRUE;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_yaml_get_number_value(
+  const cutil_SerialNode *node, double *res
+)
+{
+    const char *str = NULL;
+    if (!sf_cutil_SerialNode_yaml_get_string_value(node, &str)) {
+        return CUTIL_FALSE;
+    }
+    char *endptr = NULL;
+    const double val = strtod(str, &endptr);
+    if (str == endptr) {
+        return CUTIL_FALSE;
+    }
+    if (res != NULL) {
+        *res = val;
+    }
+    return CUTIL_TRUE;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_yaml_get_bool_value(
+  const cutil_SerialNode *node, cutil_Bool *res
+)
+{
+    const char *str = NULL;
+    if (!sf_cutil_SerialNode_yaml_get_string_value(node, &str)) {
+        return CUTIL_FALSE;
+    }
+    char *endptr = NULL;
+    const cutil_Bool val = sf_yaml_strtob(str, &endptr);
+    if (str == endptr) {
+        return CUTIL_FALSE;
+    }
+    if (res != NULL) {
+        *res = val;
+    }
+    return CUTIL_TRUE;
 }
 
 static size_t
@@ -280,34 +328,62 @@ sf_cutil_SerialNode_yaml_get_child(
     return sf_cutil_SerialNode_yaml_set_to_res(res, ynode->doc, child);
 }
 
-static const char *
-sf_cutil_SerialNode_yaml_get_scalar_value_by_key(
-  const cutil_SerialNode *node, const char *key
-)
-{
-    const s_YamlNode *const ynode = node->node;
-    const yaml_node_t *const child = sf_YamlNode_get_child_by_key(ynode, key);
-    if (child == NULL || child->type != YAML_SCALAR_NODE) {
-        return NULL;
-    }
-    return (const char *) child->data.scalar.value;
-}
-
 static cutil_Bool
-sf_cutil_SerialNode_yaml_set_scalar_value(
-  cutil_SerialNode *node, const char *val
+sf_cutil_SerialNode_yaml_set_string_value(
+  cutil_SerialNode *node, const char *key, const char *value
 )
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     s_YamlNode *const ynode = node->node;
-    if (ynode == NULL || ynode->node.type != YAML_SCALAR_NODE) {
+    if (ynode == NULL || ynode->node.type != YAML_MAPPING_NODE) {
         return CUTIL_FALSE;
     }
-    const int res = yaml_document_add_scalar(
-      ynode->doc, NULL, (const unsigned char *) val, (int) strlen(val),
-      YAML_ANY_SCALAR_STYLE
-    );
-    return (res != 0) ? CUTIL_TRUE : CUTIL_FALSE;
+    yaml_document_t *const doc = ynode->doc;
+    yaml_node_t *const yaml_node = &ynode->node;
+    yaml_node_pair_t *target_pair = NULL;
+    for (yaml_node_pair_t *pair = yaml_node->data.mapping.pairs.start;
+         pair < yaml_node->data.mapping.pairs.top; ++pair)
+    {
+        yaml_node_t *const key_node = yaml_document_get_node(doc, pair->key);
+        if (key_node != NULL && key_node->type == YAML_SCALAR_NODE) {
+            if (strcmp((const char *) key_node->data.scalar.value, key) == 0) {
+                target_pair = pair;
+                break;
+            }
+        }
+    }
+    if (target_pair == NULL) {
+        const int key_idx = yaml_document_add_scalar(
+          doc, NULL, (const unsigned char *) key, (int) strlen(key),
+          YAML_ANY_SCALAR_STYLE
+        );
+        if (key_idx == 0) {
+            return CUTIL_FALSE;
+        }
+        const int value_idx = yaml_document_add_scalar(
+          doc, NULL, (const unsigned char *) value, (int) strlen(value),
+          YAML_ANY_SCALAR_STYLE
+        );
+        if (value_idx == 0) {
+            return CUTIL_FALSE;
+        }
+        target_pair = yaml_document_append_mapping_pair(doc, yaml_node);
+        if (target_pair == NULL) {
+            return CUTIL_FALSE;
+        }
+        target_pair->key = key_idx;
+        target_pair->value = value_idx;
+    } else {
+        const int value_idx = yaml_document_add_scalar(
+          doc, NULL, (const unsigned char *) value, (int) strlen(value),
+          YAML_ANY_SCALAR_STYLE
+        );
+        if (value_idx == 0) {
+            return CUTIL_FALSE;
+        }
+        target_pair->value = value_idx;
+    }
+    return CUTIL_TRUE;
 }
 
 static const cutil_SerialType CUTIL_SERIAL_TYPE_YAML_OBJECT = {
@@ -316,13 +392,17 @@ static const cutil_SerialType CUTIL_SERIAL_TYPE_YAML_OBJECT = {
   .from_nstring = &sf_cutil_SerialNode_yaml_from_nstring,
   .dup = &sf_cutil_SerialNode_yaml_dup,
   .free = &sf_cutil_SerialNode_yaml_free,
-  .get_node_type = &sf_cutil_SerialNode_yaml_get_node_type,
-  .get_scalar_value = &sf_cutil_SerialNode_yaml_get_scalar_value,
+  .get_string_value = &sf_cutil_SerialNode_yaml_get_string_value,
+  .get_number_value = &sf_cutil_SerialNode_yaml_get_number_value,
+  .get_bool_value = &sf_cutil_SerialNode_yaml_get_bool_value,
   .get_sequence_length = &sf_cutil_SerialNode_yaml_get_sequence_length,
   .get_sequence_item = &sf_cutil_SerialNode_yaml_get_sequence_item,
   .get_child = &sf_cutil_SerialNode_yaml_get_child,
-  .get_scalar_value_by_key = &sf_cutil_SerialNode_yaml_get_scalar_value_by_key,
-  .set_scalar_value = &sf_cutil_SerialNode_yaml_set_scalar_value,
+  .set_string_value = &sf_cutil_SerialNode_yaml_set_string_value,
+  .set_number_value = &sf_cutil_SerialNode_yaml_set_number_value,
+  .set_bool_value = &sf_cutil_SerialNode_yaml_set_bool_value,
+  .add_sequence_item = &sf_cutil_SerialNode_yaml_add_sequence_item,
+  .add_child = &sf_cutil_SerialNode_yaml_add_child,
 };
 
 const cutil_SerialType *const CUTIL_SERIAL_TYPE_YAML

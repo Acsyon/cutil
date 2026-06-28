@@ -533,7 +533,6 @@ test_should_returnNestedString_when_navigatingViaChild(void)
     cutil_SerialNode_free(json);
 }
 
-
 int
 main(void)
 {

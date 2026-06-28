@@ -83,23 +83,45 @@ typedef struct {
     cutil_Bool (*const get_child)(
       const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
     );
-    cutil_Bool (*const set_scalar_value)(
-      cutil_SerialNode *node, const char *val
+    cutil_Bool (*const add_string_value)(
+      cutil_SerialNode *node, const char *key, const char *val
+    );
+    cutil_Bool (*const add_number_value)(
+      cutil_SerialNode *node, const char *key, double val
+    );
+    cutil_Bool (*const add_bool_value)(
+      cutil_SerialNode *node, const char *key, cutil_Bool val
     );
     cutil_Bool (*const add_sequence_item)(
-      cutil_SerialNode *node, const char *val
+      cutil_SerialNode *node, cutil_SerialNode *val
     );
     cutil_Bool (*const add_child)(
       cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
     );
 } cutil_SerialType;
 
+/*
+union cutil_SerialNodeScalarValue {
+    const char *string_view;
+    char *string;
+    double number;
+    cutil_Bool boolean;
+};
+*/
+
 /**
  * Opaque serial node type.
  */
 struct cutil_SerialNode {
     const cutil_SerialType *type;
-    const cutil_SerialNodeType node_type;
+    cutil_SerialNodeType node_type;
+    char *key;
+    union {
+        const char *string_view;
+        char *string;
+        double number;
+        cutil_Bool boolean;
+    } value;
     void *node;
 };
 
@@ -221,7 +243,7 @@ cutil_SerialNode_get_node_type(const cutil_SerialNode *node)
  * @param[in]  node serial node to get string value of
  * @param[out] res  output buffer to store the string value, may be NULL
  *
- * @return CUTIL_TRUE if node contains string value, CUTIL_FALSE otherwise
+ * @return CUTIL_TRUE if node contains a string value, CUTIL_FALSE otherwise
  */
 inline cutil_Bool
 cutil_SerialNode_get_string_value(
@@ -240,12 +262,10 @@ cutil_SerialNode_get_string_value(
  * @param[in]  node serial node to get number value of
  * @param[out] res  output buffer to store the number value, may be NULL
  *
- * @return CUTIL_TRUE if node contains number value, CUTIL_FALSE otherwise
+ * @return CUTIL_TRUE if node contains a number value, CUTIL_FALSE otherwise
  */
 inline cutil_Bool
-cutil_SerialNode_get_number_value(
-  const cutil_SerialNode *node, double *res
-)
+cutil_SerialNode_get_number_value(const cutil_SerialNode *node, double *res)
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
@@ -259,12 +279,10 @@ cutil_SerialNode_get_number_value(
  * @param[in]  node serial node to get bool value of
  * @param[out] res  output buffer to store the bool value, may be NULL
  *
- * @return CUTIL_TRUE if node contains bool value, CUTIL_FALSE otherwise
+ * @return CUTIL_TRUE if node contains a bool value, CUTIL_FALSE otherwise
  */
 inline cutil_Bool
-cutil_SerialNode_get_bool_value(
-  const cutil_SerialNode *node, cutil_Bool *res
-)
+cutil_SerialNode_get_bool_value(const cutil_SerialNode *node, cutil_Bool *res)
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
@@ -345,20 +363,63 @@ cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key)
 }
 
 /**
- * Sets the scalar string value of a serial scalar node.
+ * Adds a scalar string value to a composite node.
  *
- * @param[in,out] node  serial scalar node
- * @param[in]     value string value to set
+ * @param[in,out] node  serial composite node
+ * @param[in]     key   key of the value to add
+ * @param[in]     value string value to add
  *
- * @return CUTIL_TRUE if the value was set successfully, CUTIL_FALSE otherwise
+ * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
  */
 inline cutil_Bool
-cutil_SerialNode_set_scalar_value(cutil_SerialNode *node, const char *value)
+cutil_SerialNode_add_string_value(
+  cutil_SerialNode *node, const char *key, const char *value
+)
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, set_scalar_value);
-    return node->type->set_scalar_value(node, value);
+    CUTIL_NULL_CHECK_VTABLE(node->type, add_string_value);
+    return node->type->add_string_value(node, key, value);
+}
+
+/**
+ * Adds a scalar number value to a composite node.
+ *
+ * @param[in,out] node  serial composite node
+ * @param[in]     key   key of the value to add
+ * @param[in]     value number value to add
+ *
+ * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_add_number_value(
+  cutil_SerialNode *node, const char *key, double value
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, add_number_value);
+    return node->type->add_number_value(node, key, value);
+}
+
+/**
+ * Adds a scalar boolean value to a composite node.
+ *
+ * @param[in,out] node  serial composite node
+ * @param[in]     key   key of the value to add
+ * @param[in]     value boolean value to add
+ *
+ * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
+ */
+inline cutil_Bool
+cutil_SerialNode_add_bool_value(
+  cutil_SerialNode *node, const char *key, cutil_Bool value
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, add_bool_value);
+    return node->type->add_bool_value(node, key, value);
 }
 
 /**
@@ -370,7 +431,9 @@ cutil_SerialNode_set_scalar_value(cutil_SerialNode *node, const char *value)
  * @return CUTIL_TRUE if item is added successfully, CUTIL_FALSE otherwise
  */
 inline cutil_Bool
-cutil_SerialNode_add_sequence_item(cutil_SerialNode *node, const char *val)
+cutil_SerialNode_add_sequence_item(
+  cutil_SerialNode *node, cutil_SerialNode *val
+)
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);

@@ -132,7 +132,7 @@ sf_cutil_SerialNode_json_get_node_type(const cutil_SerialNode *node)
     if (cJSON_IsInvalid(json)) {
         return CUTIL_SERIAL_NODE_UNDEFINED;
     }
-    return CUTIL_SERIAL_NODE_SCALAR;
+    return CUTIL_SERIAL_NODE_UNDEFINED;
 }
 
 static const char *
