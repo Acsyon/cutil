@@ -28,6 +28,38 @@ cutil_SerialNode_calloc_yaml(void)
     return cutil_SerialNode_calloc(CUTIL_SERIAL_TYPE_YAML);
 }
 
+/**
+ * Creates a new root YAML mapping node (empty document).
+ *
+ * @return newly allocated root cutil_SerialNode, or NULL on error
+ */
+cutil_SerialNode *
+cutil_SerialNode_yaml_create_root(void);
+
+/**
+ * Creates a new YAML scalar string node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_yaml_create_string(const char *value);
+
+/**
+ * Creates a new YAML scalar number node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_yaml_create_number(double value);
+
+/**
+ * Creates a new YAML scalar boolean node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_yaml_create_bool(cutil_Bool value);
+
+/**
+ * Creates a new empty YAML sequence node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_yaml_create_empty_sequence(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -8,6 +8,7 @@
 
 #include <cutil/core/debug/null.h>
 #include <cutil/core/status.h>
+#include <cutil/core/std/inttypes.h>
 #include <cutil/core/std/stdbool.h>
 #include <cutil/core/std/stdio.h>
 #include <cutil/core/util/macro.h>
@@ -29,6 +30,13 @@ typedef enum {
     CUTIL_SERIAL_NODE_SEQUENCE,
     CUTIL_SERIAL_NODE_COMPOSITE,
 } cutil_SerialNodeType;
+
+/**
+ * Alias for cutil_SerialNodeType used as a scalar value type discriminator
+ * in write operations. Only STRING, NUMBER, and BOOL values are meaningful
+ * here.
+ */
+typedef cutil_SerialNodeType cutil_SerialNodeValueType;
 
 /**
  * Forward declaration of opaque serial node type.
@@ -83,21 +91,62 @@ typedef struct {
     cutil_Bool (*const get_child)(
       const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
     );
-    cutil_Bool (*const add_string_value)(
-      cutil_SerialNode *node, const char *key, const char *val
+    /* WRITE operations — construct-then-add pattern */
+
+    /**
+     * Construct a standalone scalar node.
+     * @param vtype  CUTIL_SERIAL_NODE_STRING, NUMBER, or BOOL
+     * @param value  for STRING: const char*; NUMBER: const double*; BOOL: const
+     * cutil_Bool*
+     */
+    cutil_SerialNode *(*const create_scalar)(
+      cutil_SerialNodeValueType vtype, const void *value
     );
-    cutil_Bool (*const add_number_value)(
-      cutil_SerialNode *node, const char *key, double val
+
+    /**
+     * Construct a sequence pre-populated with primitive items.
+     * @param types  array of value-type discriminators, length count
+     * @param values array of void* pointers to each item's value, length count
+     * @param count  number of items (0 creates an empty sequence)
+     */
+    cutil_SerialNode *(*const create_sequence)(
+      const cutil_SerialNodeValueType *types,
+      const void *const *values,
+      size_t count
     );
-    cutil_Bool (*const add_bool_value)(
-      cutil_SerialNode *node, const char *key, cutil_Bool val
-    );
+
+    /**
+     * Append one primitive item to an existing sequence node.
+     * @param seq    the target sequence node
+     * @param vtype  item type (STRING, NUMBER, or BOOL)
+     * @param value  pointer to the item value (same convention as
+     * create_scalar)
+     */
     cutil_Bool (*const add_sequence_item)(
-      cutil_SerialNode *node, cutil_SerialNode *val
+      cutil_SerialNode *seq, cutil_SerialNodeValueType vtype, const void *value
     );
+
+    /**
+     * Construct an empty mapping/object node.
+     */
+    cutil_SerialNode *(*const create_mapping)(void);
+
+    /**
+     * Attach a pre-built child node to a composite parent under key.
+     * The child's content is copied into the parent's backend document.
+     * Type validation: parent must be COMPOSITE, child may be any type.
+     */
     cutil_Bool (*const add_child)(
-      cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
+      cutil_SerialNode *parent, const char *key, cutil_SerialNode *child
     );
+
+    /**
+     * Serialise the node tree to a newly allocated NUL-terminated string.
+     * Caller must free() the returned pointer.
+     * @param write_opts  bitmap of CUTIL_SERIAL_WRITE_OPT_* flags (see
+     * serial.h)
+     */
+    char *(*const to_string)(cutil_SerialNode *node, uint32_t write_opts);
 } cutil_SerialType;
 
 /*
@@ -362,103 +411,68 @@ cutil_SerialNode_has_child(const cutil_SerialNode *node, const char *key)
     return cutil_SerialNode_get_child(node, key, NULL);
 }
 
-/**
- * Adds a scalar string value to a composite node.
- *
- * @param[in,out] node  serial composite node
- * @param[in]     key   key of the value to add
- * @param[in]     value string value to add
- *
- * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
- */
-inline cutil_Bool
-cutil_SerialNode_add_string_value(
-  cutil_SerialNode *node, const char *key, const char *value
+inline cutil_SerialNode *
+cutil_SerialNode_create_scalar(
+  const cutil_SerialType *type,
+  cutil_SerialNodeValueType vtype,
+  const void *value
 )
 {
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
-    CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, add_string_value);
-    return node->type->add_string_value(node, key, value);
+    CUTIL_RETURN_NULL_IF_NULL(type);
+    CUTIL_NULL_CHECK_VTABLE(type, create_scalar);
+    return type->create_scalar(vtype, value);
 }
 
-/**
- * Adds a scalar number value to a composite node.
- *
- * @param[in,out] node  serial composite node
- * @param[in]     key   key of the value to add
- * @param[in]     value number value to add
- *
- * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
- */
-inline cutil_Bool
-cutil_SerialNode_add_number_value(
-  cutil_SerialNode *node, const char *key, double value
+inline cutil_SerialNode *
+cutil_SerialNode_create_sequence(
+  const cutil_SerialType *type,
+  const cutil_SerialNodeValueType *types,
+  const void *const *values,
+  size_t count
 )
 {
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
-    CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, add_number_value);
-    return node->type->add_number_value(node, key, value);
+    CUTIL_RETURN_NULL_IF_NULL(type);
+    CUTIL_NULL_CHECK_VTABLE(type, create_sequence);
+    return type->create_sequence(types, values, count);
 }
 
-/**
- * Adds a scalar boolean value to a composite node.
- *
- * @param[in,out] node  serial composite node
- * @param[in]     key   key of the value to add
- * @param[in]     value boolean value to add
- *
- * @return CUTIL_TRUE if the value was added successfully, CUTIL_FALSE otherwise
- */
-inline cutil_Bool
-cutil_SerialNode_add_bool_value(
-  cutil_SerialNode *node, const char *key, cutil_Bool value
-)
+inline cutil_SerialNode *
+cutil_SerialNode_create_mapping(const cutil_SerialType *type)
 {
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
-    CUTIL_NULL_CHECKS_SERIAL(node);
-    CUTIL_NULL_CHECK_VTABLE(node->type, add_bool_value);
-    return node->type->add_bool_value(node, key, value);
+    CUTIL_RETURN_NULL_IF_NULL(type);
+    CUTIL_NULL_CHECK_VTABLE(type, create_mapping);
+    return type->create_mapping();
 }
 
-/**
- * Adds a sequence item to a serial sequence node.
- *
- * @param[in,out] node serial sequence node to add item to
- * @param[in]     val  item to add to the sequence
- *
- * @return CUTIL_TRUE if item is added successfully, CUTIL_FALSE otherwise
- */
 inline cutil_Bool
 cutil_SerialNode_add_sequence_item(
-  cutil_SerialNode *node, cutil_SerialNode *val
+  cutil_SerialNode *node, cutil_SerialNodeValueType vtype, const void *value
 )
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
     CUTIL_NULL_CHECK_VTABLE(node->type, add_sequence_item);
-    return node->type->add_sequence_item(node, val);
+    return node->type->add_sequence_item(node, vtype, value);
 }
 
-/**
- * Adds a child node by key to a serial node.
- *
- * @param[in,out] node  parent node to add child node to
- * @param[in]     key   key of the child node to add
- * @param[in]     child child node to add
- *
- * @return CUTIL_TRUE if child node is added successfully, CUTIL_FALSE otherwise
- */
 inline cutil_Bool
 cutil_SerialNode_add_child(
-  cutil_SerialNode *node, const char *key, const cutil_SerialNode *child
+  cutil_SerialNode *node, const char *key, cutil_SerialNode *child
 )
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
     CUTIL_NULL_CHECKS_SERIAL(node);
     CUTIL_NULL_CHECK_VTABLE(node->type, add_child);
     return node->type->add_child(node, key, child);
+}
+
+inline char *
+cutil_SerialNode_to_string(cutil_SerialNode *node, uint32_t write_opts)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    CUTIL_NULL_CHECKS_SERIAL(node);
+    CUTIL_NULL_CHECK_VTABLE(node->type, to_string);
+    return node->type->to_string(node, write_opts);
 }
 
 /**
@@ -515,6 +529,42 @@ cutil_serial_read_nstring(
   const char *str,
   size_t len,
   cutil_SerialReadCallback *cb
+);
+
+/**
+ * Gets a string child value by key. Returns default_val if not found or
+ * the value is not a string.
+ */
+const char *
+cutil_SerialNode_get_string(
+  const cutil_SerialNode *node, const char *key, const char *default_val
+);
+
+/**
+ * Gets a numeric child value by key, returned as double.
+ * Returns default_val if not found or not a number.
+ */
+double
+cutil_SerialNode_get_double(
+  const cutil_SerialNode *node, const char *key, double default_val
+);
+
+/**
+ * Gets a numeric child value by key, returned as int (truncates double).
+ * Returns default_val if not found or not a number.
+ */
+int
+cutil_SerialNode_get_int(
+  const cutil_SerialNode *node, const char *key, int default_val
+);
+
+/**
+ * Gets a boolean child value by key.
+ * Returns default_val if not found or not a bool.
+ */
+bool
+cutil_SerialNode_get_bool(
+  const cutil_SerialNode *node, const char *key, bool default_val
 );
 
 #ifdef __cplusplus

@@ -25,6 +25,38 @@ cutil_SerialNode_calloc_json(void)
     return cutil_SerialNode_calloc(CUTIL_SERIAL_TYPE_JSON);
 }
 
+/**
+ * Creates a new root JSON object node (empty document).
+ *
+ * @return newly allocated root cutil_SerialNode, or NULL on error
+ */
+cutil_SerialNode *
+cutil_SerialNode_json_create_root(void);
+
+/**
+ * Creates a new JSON scalar string node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_json_create_string(const char *value);
+
+/**
+ * Creates a new JSON scalar number node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_json_create_number(double value);
+
+/**
+ * Creates a new JSON scalar boolean node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_json_create_bool(cutil_Bool value);
+
+/**
+ * Creates a new empty JSON array node.
+ */
+cutil_SerialNode *
+cutil_SerialNode_json_create_empty_array(void);
+
 #include <cjson/cJSON.h>
 
 #include <cutil/core/std/inttypes.h>

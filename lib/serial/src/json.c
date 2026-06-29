@@ -112,40 +112,6 @@ sf_cutil_SerialNode_json_free(cutil_SerialNode *node)
     free(node);
 }
 
-static cutil_SerialNodeType
-sf_cutil_SerialNode_json_get_node_type(const cutil_SerialNode *node)
-{
-    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_SERIAL_NODE_UNDEFINED);
-    const s_JsonNode *const jnode = node->node;
-    CUTIL_RETURN_VAL_IF_NULL(jnode, CUTIL_SERIAL_NODE_UNDEFINED);
-    const cJSON *const json = jnode->json;
-    CUTIL_RETURN_VAL_IF_NULL(json, CUTIL_SERIAL_NODE_UNDEFINED);
-    if (cJSON_IsNull(json)) {
-        return CUTIL_SERIAL_NODE_EMPTY;
-    }
-    if (cJSON_IsArray(json)) {
-        return CUTIL_SERIAL_NODE_SEQUENCE;
-    }
-    if (cJSON_IsObject(json)) {
-        return CUTIL_SERIAL_NODE_COMPOSITE;
-    }
-    if (cJSON_IsInvalid(json)) {
-        return CUTIL_SERIAL_NODE_UNDEFINED;
-    }
-    return CUTIL_SERIAL_NODE_UNDEFINED;
-}
-
-static const char *
-sf_cutil_SerialNode_json_get_scalar_value(const cutil_SerialNode *node)
-{
-    CUTIL_RETURN_NULL_IF_NULL(node);
-    const s_JsonNode *const jnode = node->node;
-    if (jnode == NULL || !cJSON_IsString(jnode->json)) {
-        return NULL;
-    }
-    return cJSON_GetStringValue(jnode->json);
-}
-
 static size_t
 sf_cutil_SerialNode_json_get_sequence_length(const cutil_SerialNode *node)
 {
@@ -175,11 +141,14 @@ sf_cutil_SerialNode_json_get_sequence_item(
 )
 {
     CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
-    const cJSON *const jnode = node->node;
+    const s_JsonNode *const jnode = node->node;
     if (idx >= sf_cutil_SerialNode_json_get_sequence_length(node)) {
         return CUTIL_FALSE;
     }
-    cJSON *const item_node = cJSON_GetArrayItem(jnode, (int) idx);
+    if (jnode == NULL || !cJSON_IsArray(jnode->json)) {
+        return CUTIL_FALSE;
+    }
+    cJSON *const item_node = cJSON_GetArrayItem(jnode->json, (int) idx);
     return sf_cutil_SerialNode_json_set_to_res(res, item_node);
 }
 
@@ -188,22 +157,240 @@ sf_cutil_SerialNode_json_get_child(
   const cutil_SerialNode *node, const char *key, cutil_SerialNode *res
 )
 {
-    const cJSON *const jnode = node->node;
-    cJSON *const child = cJSON_GetObjectItemCaseSensitive(jnode, key);
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    const s_JsonNode *const jnode = node->node;
+    if (jnode == NULL) {
+        return CUTIL_FALSE;
+    }
+    cJSON *const child = cJSON_GetObjectItemCaseSensitive(jnode->json, key);
     return sf_cutil_SerialNode_json_set_to_res(res, child);
 }
 
-static const char *
-sf_cutil_SerialNode_json_get_scalar_value_by_key(
-  const cutil_SerialNode *node, const char *key
+static cutil_Bool
+sf_cutil_SerialNode_json_get_string_value(
+  const cutil_SerialNode *node, const char **res
 )
 {
-    const cJSON *const jnode = node->node;
-    cJSON *const child = cJSON_GetObjectItemCaseSensitive(jnode, key);
-    if (child == NULL) {
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    const s_JsonNode *const jnode = node->node;
+    if (jnode == NULL || !cJSON_IsString(jnode->json)) {
+        return CUTIL_FALSE;
+    }
+    if (res != NULL) {
+        *res = cJSON_GetStringValue(jnode->json);
+    }
+    return CUTIL_TRUE;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_json_get_number_value(
+  const cutil_SerialNode *node, double *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    const s_JsonNode *const jnode = node->node;
+    if (jnode == NULL || !cJSON_IsNumber(jnode->json)) {
+        return CUTIL_FALSE;
+    }
+    if (res != NULL) {
+        *res = cJSON_GetNumberValue(jnode->json);
+    }
+    return CUTIL_TRUE;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_json_get_bool_value(
+  const cutil_SerialNode *node, cutil_Bool *res
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(node, CUTIL_FALSE);
+    const s_JsonNode *const jnode = node->node;
+    if (jnode == NULL || !cJSON_IsBool(jnode->json)) {
+        return CUTIL_FALSE;
+    }
+    if (res != NULL) {
+        *res = cJSON_IsTrue(jnode->json) ? CUTIL_TRUE : CUTIL_FALSE;
+    }
+    return CUTIL_TRUE;
+}
+
+static cutil_SerialNode *
+sf_cutil_SerialNode_json_create_scalar(
+  cutil_SerialNodeValueType vtype, const void *value
+)
+{
+    cJSON *json = NULL;
+    switch (vtype) {
+    case CUTIL_SERIAL_NODE_STRING:
+        json = cJSON_CreateString((const char *) value);
+        break;
+    case CUTIL_SERIAL_NODE_NUMBER:
+        json = cJSON_CreateNumber(*(const double *) value);
+        break;
+    case CUTIL_SERIAL_NODE_BOOL:
+        json = cJSON_CreateBool(
+          (*(const cutil_Bool *) value) ? cJSON_True : cJSON_False
+        );
+        break;
+    default:
+        cutil_log_error(
+          "create_scalar: unsupported value type %d", (int) vtype
+        );
         return NULL;
     }
-    return cJSON_GetStringValue(child);
+    if (json == NULL) {
+        return NULL;
+    }
+    cutil_SerialNode *const node = cutil_SerialNode_calloc_json();
+    if (node == NULL) {
+        cJSON_Delete(json);
+        return NULL;
+    }
+    node->node = sf_JsonNode_create(json, CUTIL_TRUE);
+    node->node_type = vtype;
+    return node;
+}
+
+static cutil_SerialNode *
+sf_cutil_SerialNode_json_create_sequence(
+  const cutil_SerialNodeValueType *types,
+  const void *const *values,
+  size_t count
+)
+{
+    cJSON *const arr = cJSON_CreateArray();
+    if (arr == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < count; ++i) {
+        cJSON *item = NULL;
+        switch (types[i]) {
+        case CUTIL_SERIAL_NODE_STRING:
+            item = cJSON_CreateString((const char *) values[i]);
+            break;
+        case CUTIL_SERIAL_NODE_NUMBER:
+            item = cJSON_CreateNumber(*(const double *) values[i]);
+            break;
+        case CUTIL_SERIAL_NODE_BOOL:
+            item = cJSON_CreateBool(
+              (*(const cutil_Bool *) values[i]) ? cJSON_True : cJSON_False
+            );
+            break;
+        default:
+            cutil_log_error(
+              "create_sequence: unsupported item type at index %zu", i
+            );
+            cJSON_Delete(arr);
+            return NULL;
+        }
+        if (item == NULL || !cJSON_AddItemToArray(arr, item)) {
+            cJSON_Delete(arr);
+            return NULL;
+        }
+    }
+    cutil_SerialNode *const node = cutil_SerialNode_calloc_json();
+    if (node == NULL) {
+        cJSON_Delete(arr);
+        return NULL;
+    }
+    node->node = sf_JsonNode_create(arr, CUTIL_TRUE);
+    node->node_type = CUTIL_SERIAL_NODE_SEQUENCE;
+    return node;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_json_add_sequence_item(
+  cutil_SerialNode *seq, cutil_SerialNodeValueType vtype, const void *value
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(seq, CUTIL_FALSE);
+    s_JsonNode *const jnode = seq->node;
+    if (jnode == NULL || !cJSON_IsArray(jnode->json)) {
+        cutil_log_error("add_sequence_item: node is not an array");
+        return CUTIL_FALSE;
+    }
+    cJSON *item = NULL;
+    switch (vtype) {
+    case CUTIL_SERIAL_NODE_STRING:
+        item = cJSON_CreateString((const char *) value);
+        break;
+    case CUTIL_SERIAL_NODE_NUMBER:
+        item = cJSON_CreateNumber(*(const double *) value);
+        break;
+    case CUTIL_SERIAL_NODE_BOOL:
+        item = cJSON_CreateBool(
+          (*(const cutil_Bool *) value) ? cJSON_True : cJSON_False
+        );
+        break;
+    default:
+        cutil_log_error(
+          "add_sequence_item: unsupported value type %d", (int) vtype
+        );
+        return CUTIL_FALSE;
+    }
+    if (item == NULL) {
+        return CUTIL_FALSE;
+    }
+    return (cutil_Bool) cJSON_AddItemToArray(jnode->json, item);
+}
+
+static cutil_SerialNode *
+sf_cutil_SerialNode_json_create_mapping(void)
+{
+    cJSON *const obj = cJSON_CreateObject();
+    if (obj == NULL) {
+        return NULL;
+    }
+    cutil_SerialNode *const node = cutil_SerialNode_calloc_json();
+    if (node == NULL) {
+        cJSON_Delete(obj);
+        return NULL;
+    }
+    node->node = sf_JsonNode_create(obj, CUTIL_TRUE);
+    node->node_type = CUTIL_SERIAL_NODE_COMPOSITE;
+    return node;
+}
+
+static cutil_Bool
+sf_cutil_SerialNode_json_add_child(
+  cutil_SerialNode *parent, const char *key, cutil_SerialNode *child
+)
+{
+    CUTIL_RETURN_VAL_IF_NULL(parent, CUTIL_FALSE);
+    CUTIL_RETURN_VAL_IF_NULL(child, CUTIL_FALSE);
+    CUTIL_RETURN_VAL_IF_NULL(key, CUTIL_FALSE);
+    s_JsonNode *const parent_jnode = parent->node;
+    s_JsonNode *const child_jnode = child->node;
+    if (parent_jnode == NULL || !cJSON_IsObject(parent_jnode->json)) {
+        cutil_log_error("add_child: parent is not a JSON object");
+        return CUTIL_FALSE;
+    }
+    if (child_jnode == NULL || child_jnode->json == NULL) {
+        return CUTIL_FALSE;
+    }
+    cJSON *const child_copy = cJSON_Duplicate(child_jnode->json, cJSON_True);
+    if (child_copy == NULL) {
+        return CUTIL_FALSE;
+    }
+    if (!cJSON_AddItemToObject(parent_jnode->json, key, child_copy)) {
+        cJSON_Delete(child_copy);
+        return CUTIL_FALSE;
+    }
+    return CUTIL_TRUE;
+}
+
+static char *
+sf_cutil_SerialNode_json_to_string(cutil_SerialNode *node, uint32_t write_opts)
+{
+    CUTIL_RETURN_NULL_IF_NULL(node);
+    const s_JsonNode *const jnode = node->node;
+    if (jnode == NULL || jnode->json == NULL) {
+        return NULL;
+    }
+    if (write_opts & 0x0002u) {
+        return cJSON_PrintUnformatted(jnode->json);
+    }
+    return cJSON_Print(jnode->json);
 }
 
 static const cutil_SerialType CUTIL_SERIAL_TYPE_JSON_OBJECT = {
@@ -212,12 +399,18 @@ static const cutil_SerialType CUTIL_SERIAL_TYPE_JSON_OBJECT = {
   .from_nstring = &sf_cutil_SerialNode_json_from_nstring,
   .dup = &sf_cutil_SerialNode_json_dup,
   .free = &sf_cutil_SerialNode_json_free,
-  .get_node_type = &sf_cutil_SerialNode_json_get_node_type,
-  .get_scalar_value = &sf_cutil_SerialNode_json_get_scalar_value,
+  .get_string_value = &sf_cutil_SerialNode_json_get_string_value,
+  .get_number_value = &sf_cutil_SerialNode_json_get_number_value,
+  .get_bool_value = &sf_cutil_SerialNode_json_get_bool_value,
   .get_sequence_length = &sf_cutil_SerialNode_json_get_sequence_length,
   .get_sequence_item = &sf_cutil_SerialNode_json_get_sequence_item,
   .get_child = &sf_cutil_SerialNode_json_get_child,
-  .get_scalar_value_by_key = &sf_cutil_SerialNode_json_get_scalar_value_by_key,
+  .create_scalar = &sf_cutil_SerialNode_json_create_scalar,
+  .create_sequence = &sf_cutil_SerialNode_json_create_sequence,
+  .add_sequence_item = &sf_cutil_SerialNode_json_add_sequence_item,
+  .create_mapping = &sf_cutil_SerialNode_json_create_mapping,
+  .add_child = &sf_cutil_SerialNode_json_add_child,
+  .to_string = &sf_cutil_SerialNode_json_to_string,
 };
 
 const cutil_SerialType *const CUTIL_SERIAL_TYPE_JSON
@@ -225,6 +418,55 @@ const cutil_SerialType *const CUTIL_SERIAL_TYPE_JSON
 
 extern inline cutil_SerialNode *
 cutil_SerialNode_calloc_json(void);
+
+cutil_SerialNode *
+cutil_SerialNode_json_create_root(void)
+{
+    cJSON *const json = cJSON_CreateObject();
+    if (json == NULL) {
+        return NULL;
+    }
+    cutil_SerialNode *const node = cutil_SerialNode_calloc_json();
+    if (node == NULL) {
+        cJSON_Delete(json);
+        return NULL;
+    }
+    node->node = sf_JsonNode_create(json, CUTIL_TRUE);
+    node->node_type = CUTIL_SERIAL_NODE_COMPOSITE;
+    return node;
+}
+
+cutil_SerialNode *
+cutil_SerialNode_json_create_string(const char *value)
+{
+    return cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_STRING, value
+    );
+}
+
+cutil_SerialNode *
+cutil_SerialNode_json_create_number(double value)
+{
+    return cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_NUMBER, &value
+    );
+}
+
+cutil_SerialNode *
+cutil_SerialNode_json_create_bool(cutil_Bool value)
+{
+    return cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_BOOL, &value
+    );
+}
+
+cutil_SerialNode *
+cutil_SerialNode_json_create_empty_array(void)
+{
+    return cutil_SerialNode_create_sequence(
+      CUTIL_SERIAL_TYPE_JSON, NULL, NULL, 0
+    );
+}
 
 cutil_Json *
 cutil_Json_create(void)
