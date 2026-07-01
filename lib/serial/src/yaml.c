@@ -403,12 +403,19 @@ sf_yaml_write_handler(void *data, unsigned char *buffer, size_t size)
 }
 
 static cutil_Bool
-sf_yaml_emit_node(yaml_emitter_t *emitter, yaml_document_t *doc, int node_idx)
+sf_yaml_emit_node(
+  yaml_emitter_t *emitter,
+  yaml_document_t *doc,
+  int node_idx,
+  uint32_t write_opts
+)
 {
     yaml_node_t *const node = yaml_document_get_node(doc, node_idx);
     if (node == NULL) {
         return CUTIL_FALSE;
     }
+    const cutil_Bool flow
+      = (cutil_Bool) (write_opts & CUTIL_SERIAL_WRITE_OPT_YAML_FLOW);
     yaml_event_t ev;
     switch (node->type) {
     case YAML_SCALAR_NODE:
@@ -421,9 +428,11 @@ sf_yaml_emit_node(yaml_emitter_t *emitter, yaml_document_t *doc, int node_idx)
         }
         return (cutil_Bool) yaml_emitter_emit(emitter, &ev);
 
-    case YAML_SEQUENCE_NODE:
+    case YAML_SEQUENCE_NODE: {
+        const yaml_sequence_style_t seq_style
+          = flow ? YAML_FLOW_SEQUENCE_STYLE : node->data.sequence.style;
         if (!yaml_sequence_start_event_initialize(
-              &ev, NULL, node->tag, 1, node->data.sequence.style
+              &ev, NULL, node->tag, 1, seq_style
             ))
         {
             return CUTIL_FALSE;
@@ -434,16 +443,19 @@ sf_yaml_emit_node(yaml_emitter_t *emitter, yaml_document_t *doc, int node_idx)
         for (yaml_node_item_t *item = node->data.sequence.items.start;
              item < node->data.sequence.items.top; ++item)
         {
-            if (!sf_yaml_emit_node(emitter, doc, *item)) {
+            if (!sf_yaml_emit_node(emitter, doc, *item, write_opts)) {
                 return CUTIL_FALSE;
             }
         }
         yaml_sequence_end_event_initialize(&ev);
         return (cutil_Bool) yaml_emitter_emit(emitter, &ev);
+    }
 
-    case YAML_MAPPING_NODE:
+    case YAML_MAPPING_NODE: {
+        const yaml_mapping_style_t map_style
+          = flow ? YAML_FLOW_MAPPING_STYLE : node->data.mapping.style;
         if (!yaml_mapping_start_event_initialize(
-              &ev, NULL, node->tag, 1, node->data.mapping.style
+              &ev, NULL, node->tag, 1, map_style
             ))
         {
             return CUTIL_FALSE;
@@ -455,8 +467,8 @@ sf_yaml_emit_node(yaml_emitter_t *emitter, yaml_document_t *doc, int node_idx)
              pair < node->data.mapping.pairs.top; ++pair)
         {
             if (
-              !sf_yaml_emit_node(emitter, doc, pair->key)
-              || !sf_yaml_emit_node(emitter, doc, pair->value)
+              !sf_yaml_emit_node(emitter, doc, pair->key, write_opts)
+              || !sf_yaml_emit_node(emitter, doc, pair->value, write_opts)
             )
             {
                 return CUTIL_FALSE;
@@ -464,6 +476,7 @@ sf_yaml_emit_node(yaml_emitter_t *emitter, yaml_document_t *doc, int node_idx)
         }
         yaml_mapping_end_event_initialize(&ev);
         return (cutil_Bool) yaml_emitter_emit(emitter, &ev);
+    }
 
     default:
         return CUTIL_FALSE;
@@ -709,14 +722,14 @@ sf_cutil_SerialNode_yaml_to_string(cutil_SerialNode *node, uint32_t write_opts)
     yaml_emitter_t emitter;
     yaml_emitter_initialize(&emitter);
     yaml_emitter_set_output(&emitter, sf_yaml_write_handler, &buf);
-    CUTIL_UNUSED(write_opts); /* flow-style option reserved for future step */
     yaml_event_t ev;
     cutil_Bool ok = CUTIL_TRUE;
     yaml_stream_start_event_initialize(&ev, YAML_UTF8_ENCODING);
     ok = ok && (cutil_Bool) yaml_emitter_emit(&emitter, &ev);
     yaml_document_start_event_initialize(&ev, NULL, NULL, NULL, 1);
     ok = ok && (cutil_Bool) yaml_emitter_emit(&emitter, &ev);
-    ok = ok && sf_yaml_emit_node(&emitter, ynode->doc, ynode->node_idx);
+    ok = ok
+      && sf_yaml_emit_node(&emitter, ynode->doc, ynode->node_idx, write_opts);
     yaml_document_end_event_initialize(&ev, 1);
     ok = ok && (cutil_Bool) yaml_emitter_emit(&emitter, &ev);
     yaml_stream_end_event_initialize(&ev);

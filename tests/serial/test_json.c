@@ -533,6 +533,276 @@ test_should_returnNestedString_when_navigatingViaChild(void)
     cutil_SerialNode_free(json);
 }
 
+/* ------------------------------------------------------------------ */
+/* Write tests                                                          */
+/* ------------------------------------------------------------------ */
+
+static void
+test_json_createRoot_should_returnNonNull(void)
+{
+    cutil_SerialNode *const root = cutil_SerialNode_json_create_root();
+    TEST_ASSERT_NOT_NULL(root);
+    cutil_SerialNode_free(root);
+}
+
+static void
+test_json_createScalar_should_returnStringNode_when_typeIsString(void)
+{
+    const char *const val = "hello";
+    cutil_SerialNode *const node = cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_STRING, val
+    );
+    TEST_ASSERT_NOT_NULL(node);
+    const char *str = NULL;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_string_value(node, &str));
+    TEST_ASSERT_EQUAL_STRING("hello", str);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createScalar_should_returnNumberNode_when_typeIsNumber(void)
+{
+    const double val = 2.718;
+    cutil_SerialNode *const node = cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_NUMBER, &val
+    );
+    TEST_ASSERT_NOT_NULL(node);
+    double result = 0.0;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_number_value(node, &result));
+    TEST_ASSERT_EQUAL_DOUBLE(2.718, result);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createScalar_should_returnBoolNode_when_typeIsBool(void)
+{
+    const cutil_Bool val = CUTIL_FALSE;
+    cutil_SerialNode *const node = cutil_SerialNode_create_scalar(
+      CUTIL_SERIAL_TYPE_JSON, CUTIL_SERIAL_NODE_BOOL, &val
+    );
+    TEST_ASSERT_NOT_NULL(node);
+    cutil_Bool result = CUTIL_TRUE;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_bool_value(node, &result));
+    TEST_ASSERT_FALSE(result);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createString_should_returnValidNode(void)
+{
+    cutil_SerialNode *const node = cutil_SerialNode_json_create_string("foo");
+    TEST_ASSERT_NOT_NULL(node);
+    const char *str = NULL;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_string_value(node, &str));
+    TEST_ASSERT_EQUAL_STRING("foo", str);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createNumber_should_returnValidNode(void)
+{
+    cutil_SerialNode *const node = cutil_SerialNode_json_create_number(7.0);
+    TEST_ASSERT_NOT_NULL(node);
+    double result = 0.0;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_number_value(node, &result));
+    TEST_ASSERT_EQUAL_DOUBLE(7.0, result);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createBool_should_returnValidNode(void)
+{
+    cutil_SerialNode *const node
+      = cutil_SerialNode_json_create_bool(CUTIL_TRUE);
+    TEST_ASSERT_NOT_NULL(node);
+    cutil_Bool result = CUTIL_FALSE;
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_bool_value(node, &result));
+    TEST_ASSERT_TRUE(result);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createMapping_should_returnCompositeNode(void)
+{
+    cutil_SerialNode *const node
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    TEST_ASSERT_NOT_NULL(node);
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_addChild_should_returnTrue_when_addingScalarToObject(void)
+{
+    cutil_SerialNode *const parent
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode *const child = cutil_SerialNode_json_create_string("val");
+    const cutil_Bool ok = cutil_SerialNode_add_child(parent, "key", child);
+    TEST_ASSERT_TRUE(ok);
+    cutil_SerialNode_free(child);
+    cutil_SerialNode_free(parent);
+}
+
+static void
+test_json_addChild_should_returnFalse_when_parentIsNull(void)
+{
+    cutil_SerialNode *const child = cutil_SerialNode_json_create_string("v");
+    TEST_ASSERT_FALSE(cutil_SerialNode_add_child(NULL, "k", child));
+    cutil_SerialNode_free(child);
+}
+
+static void
+test_json_addChild_should_returnFalse_when_childIsNull(void)
+{
+    cutil_SerialNode *const parent
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    TEST_ASSERT_FALSE(cutil_SerialNode_add_child(parent, "k", NULL));
+    cutil_SerialNode_free(parent);
+}
+
+static void
+test_json_createEmptyArray_should_returnSequenceNode(void)
+{
+    cutil_SerialNode *const node = cutil_SerialNode_json_create_empty_array();
+    TEST_ASSERT_NOT_NULL(node);
+    TEST_ASSERT_EQUAL_INT(0, (int) cutil_SerialNode_get_sequence_length(node));
+    cutil_SerialNode_free(node);
+}
+
+static void
+test_json_createSequence_should_populateItems_when_countIsNonzero(void)
+{
+    const cutil_SerialNodeValueType types[2]
+      = {CUTIL_SERIAL_NODE_NUMBER, CUTIL_SERIAL_NODE_NUMBER};
+    const double d0 = 1.0;
+    const double d1 = 2.0;
+    const void *const values[2] = {&d0, &d1};
+    cutil_SerialNode *const seq = cutil_SerialNode_create_sequence(
+      CUTIL_SERIAL_TYPE_JSON, types, values, 2
+    );
+    TEST_ASSERT_NOT_NULL(seq);
+    TEST_ASSERT_EQUAL_INT(2, (int) cutil_SerialNode_get_sequence_length(seq));
+    cutil_SerialNode_free(seq);
+}
+
+static void
+test_json_addSequenceItem_should_increaseLength(void)
+{
+    cutil_SerialNode *const arr = cutil_SerialNode_json_create_empty_array();
+    const double val = 5.0;
+    const cutil_Bool ok
+      = cutil_SerialNode_add_sequence_item(arr, CUTIL_SERIAL_NODE_NUMBER, &val);
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_INT(1, (int) cutil_SerialNode_get_sequence_length(arr));
+    cutil_SerialNode_free(arr);
+}
+
+static void
+test_json_roundTrip_should_preserveStringValue(void)
+{
+    cutil_SerialNode *const obj
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode *const val
+      = cutil_SerialNode_json_create_string("roundtrip_value");
+    cutil_SerialNode_add_child(obj, "mykey", val);
+    cutil_SerialNode_free(val);
+
+    char *const json_str
+      = cutil_SerialNode_to_string(obj, CUTIL_SERIAL_WRITE_OPT_NONE);
+    TEST_ASSERT_NOT_NULL(json_str);
+
+    cutil_SerialNode *const parsed
+      = cutil_SerialNode_from_string(CUTIL_SERIAL_TYPE_JSON, json_str);
+    TEST_ASSERT_NOT_NULL(parsed);
+
+    const char *const result
+      = cutil_SerialNode_get_string(parsed, "mykey", "MISSING");
+    TEST_ASSERT_EQUAL_STRING("roundtrip_value", result);
+
+    cutil_SerialNode_free(parsed);
+    free(json_str);
+    cutil_SerialNode_free(obj);
+}
+
+static void
+test_json_roundTrip_should_preserveNumberValue(void)
+{
+    cutil_SerialNode *const obj
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode *const val = cutil_SerialNode_json_create_number(1234.5);
+    cutil_SerialNode_add_child(obj, "num", val);
+    cutil_SerialNode_free(val);
+
+    char *const json_str
+      = cutil_SerialNode_to_string(obj, CUTIL_SERIAL_WRITE_OPT_NONE);
+    TEST_ASSERT_NOT_NULL(json_str);
+
+    cutil_SerialNode *const parsed
+      = cutil_SerialNode_from_string(CUTIL_SERIAL_TYPE_JSON, json_str);
+    TEST_ASSERT_NOT_NULL(parsed);
+
+    const double result = cutil_SerialNode_get_double(parsed, "num", 0.0);
+    TEST_ASSERT_EQUAL_DOUBLE(1234.5, result);
+
+    cutil_SerialNode_free(parsed);
+    free(json_str);
+    cutil_SerialNode_free(obj);
+}
+
+static void
+test_json_roundTrip_should_preserveNestedObject(void)
+{
+    cutil_SerialNode *const inner
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode *const inner_val
+      = cutil_SerialNode_json_create_string("deep");
+    cutil_SerialNode_add_child(inner, "inner", inner_val);
+    cutil_SerialNode_free(inner_val);
+
+    cutil_SerialNode *const outer
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode_add_child(outer, "outer", inner);
+    cutil_SerialNode_free(inner);
+
+    char *const json_str
+      = cutil_SerialNode_to_string(outer, CUTIL_SERIAL_WRITE_OPT_NONE);
+    TEST_ASSERT_NOT_NULL(json_str);
+
+    cutil_SerialNode *const parsed
+      = cutil_SerialNode_from_string(CUTIL_SERIAL_TYPE_JSON, json_str);
+    TEST_ASSERT_NOT_NULL(parsed);
+
+    cutil_SerialNode *const outer_child
+      = cutil_SerialNode_calloc(CUTIL_SERIAL_TYPE_JSON);
+    TEST_ASSERT_TRUE(cutil_SerialNode_get_child(parsed, "outer", outer_child));
+    const char *const result
+      = cutil_SerialNode_get_string(outer_child, "inner", "MISSING");
+    TEST_ASSERT_EQUAL_STRING("deep", result);
+
+    cutil_SerialNode_free(outer_child);
+    cutil_SerialNode_free(parsed);
+    free(json_str);
+    cutil_SerialNode_free(outer);
+}
+
+static void
+test_json_toString_should_produceCompact_when_optCompactSet(void)
+{
+    cutil_SerialNode *const obj
+      = cutil_SerialNode_create_mapping(CUTIL_SERIAL_TYPE_JSON);
+    cutil_SerialNode *const val = cutil_SerialNode_json_create_string("v");
+    cutil_SerialNode_add_child(obj, "k", val);
+    cutil_SerialNode_free(val);
+
+    char *const json_str
+      = cutil_SerialNode_to_string(obj, CUTIL_SERIAL_WRITE_OPT_COMPACT);
+    TEST_ASSERT_NOT_NULL(json_str);
+    /* Compact output must not contain newline */
+    TEST_ASSERT_NULL(strchr(json_str, '\n'));
+
+    free(json_str);
+    cutil_SerialNode_free(obj);
+}
+
 int
 main(void)
 {
@@ -571,6 +841,25 @@ main(void)
     RUN_TEST(test_should_returnNonNull_when_childKeyExists);
     RUN_TEST(test_should_returnNull_when_childKeyMissing);
     RUN_TEST(test_should_returnNestedString_when_navigatingViaChild);
+
+    RUN_TEST(test_json_createRoot_should_returnNonNull);
+    RUN_TEST(test_json_createScalar_should_returnStringNode_when_typeIsString);
+    RUN_TEST(test_json_createScalar_should_returnNumberNode_when_typeIsNumber);
+    RUN_TEST(test_json_createScalar_should_returnBoolNode_when_typeIsBool);
+    RUN_TEST(test_json_createString_should_returnValidNode);
+    RUN_TEST(test_json_createNumber_should_returnValidNode);
+    RUN_TEST(test_json_createBool_should_returnValidNode);
+    RUN_TEST(test_json_createMapping_should_returnCompositeNode);
+    RUN_TEST(test_json_addChild_should_returnTrue_when_addingScalarToObject);
+    RUN_TEST(test_json_addChild_should_returnFalse_when_parentIsNull);
+    RUN_TEST(test_json_addChild_should_returnFalse_when_childIsNull);
+    RUN_TEST(test_json_createEmptyArray_should_returnSequenceNode);
+    RUN_TEST(test_json_createSequence_should_populateItems_when_countIsNonzero);
+    RUN_TEST(test_json_addSequenceItem_should_increaseLength);
+    RUN_TEST(test_json_roundTrip_should_preserveStringValue);
+    RUN_TEST(test_json_roundTrip_should_preserveNumberValue);
+    RUN_TEST(test_json_roundTrip_should_preserveNestedObject);
+    RUN_TEST(test_json_toString_should_produceCompact_when_optCompactSet);
 
     return UNITY_END();
 }

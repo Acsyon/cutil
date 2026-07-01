@@ -39,6 +39,31 @@ typedef enum {
 typedef cutil_SerialNodeType cutil_SerialNodeValueType;
 
 /**
+ * Bitmap flags for cutil_SerialNode_to_string() and the to_string vtable
+ * entry.
+ *
+ * Unknown flags are silently ignored by each backend.
+ * Flags that are not applicable to a backend are silently ignored.
+ */
+
+/** Default: no options. Produces human-readable, backend-default formatting. */
+#define CUTIL_SERIAL_WRITE_OPT_NONE ((uint32_t) 0x0000U)
+
+/**
+ * YAML only: emit sequences and mappings in flow style (inline, on one line)
+ * rather than block style.
+ * Example: {key: value, list: [1, 2, 3]}
+ * Ignored by the JSON backend.
+ */
+#define CUTIL_SERIAL_WRITE_OPT_YAML_FLOW ((uint32_t) 0x0001U)
+
+/**
+ * JSON only: emit compact (unformatted) JSON without whitespace or newlines.
+ * Ignored by the YAML backend.
+ */
+#define CUTIL_SERIAL_WRITE_OPT_COMPACT ((uint32_t) 0x0002U)
+
+/**
  * Forward declaration of opaque serial node type.
  */
 typedef struct cutil_SerialNode cutil_SerialNode;

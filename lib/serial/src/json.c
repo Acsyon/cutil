@@ -228,9 +228,7 @@ sf_cutil_SerialNode_json_create_scalar(
         json = cJSON_CreateNumber(*(const double *) value);
         break;
     case CUTIL_SERIAL_NODE_BOOL:
-        json = cJSON_CreateBool(
-          (*(const cutil_Bool *) value) ? cJSON_True : cJSON_False
-        );
+        json = cJSON_CreateBool(*(const cutil_Bool *) value != CUTIL_FALSE);
         break;
     default:
         cutil_log_error(
@@ -273,7 +271,7 @@ sf_cutil_SerialNode_json_create_sequence(
             break;
         case CUTIL_SERIAL_NODE_BOOL:
             item = cJSON_CreateBool(
-              (*(const cutil_Bool *) values[i]) ? cJSON_True : cJSON_False
+              *(const cutil_Bool *) values[i] != CUTIL_FALSE
             );
             break;
         default:
@@ -318,9 +316,7 @@ sf_cutil_SerialNode_json_add_sequence_item(
         item = cJSON_CreateNumber(*(const double *) value);
         break;
     case CUTIL_SERIAL_NODE_BOOL:
-        item = cJSON_CreateBool(
-          (*(const cutil_Bool *) value) ? cJSON_True : cJSON_False
-        );
+        item = cJSON_CreateBool(*(const cutil_Bool *) value != CUTIL_FALSE);
         break;
     default:
         cutil_log_error(
@@ -387,7 +383,7 @@ sf_cutil_SerialNode_json_to_string(cutil_SerialNode *node, uint32_t write_opts)
     if (jnode == NULL || jnode->json == NULL) {
         return NULL;
     }
-    if (write_opts & 0x0002u) {
+    if (write_opts & CUTIL_SERIAL_WRITE_OPT_COMPACT) {
         return cJSON_PrintUnformatted(jnode->json);
     }
     return cJSON_Print(jnode->json);
