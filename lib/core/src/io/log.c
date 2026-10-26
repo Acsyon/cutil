@@ -176,9 +176,9 @@ sf_cutil_LogHandler_vmessage(
  */
 struct s_cutil_Logger {
     enum cutil_LogLevel level; /**< Minimum log level for message processing */
-    int num_handlers;          /**< Current number of active handlers */
+    size_t num_handlers;       /**< Current number of active handlers */
     struct s_cutil_LogHandler *handlers; /**< Array of log output handlers */
-    int capacity; /**< Allocated size of handlers array */
+    size_t capacity; /**< Allocated size of handlers array */
 };
 
 cutil_Logger *
@@ -200,18 +200,18 @@ cutil_Logger_create_with_handler(FILE *stream, enum cutil_LogLevel level)
 {
     CUTIL_NULL_CHECK(stream);
     cutil_Logger *const log = cutil_Logger_create(level);
-    cutil_Logger_add_handler_full(log, stream, level, false);
+    cutil_Logger_add_handler_full(log, stream, level, CUTIL_FALSE);
     return log;
 }
 
 cutil_Logger *
 cutil_Logger_create(enum cutil_LogLevel level)
 {
-    cutil_Logger *const log = malloc(sizeof *log);
+    cutil_Logger *const log = CUTIL_MALLOC_OBJECT(log);
 
     log->level = level;
     log->capacity = DEFAULT_CAPACITY;
-    log->handlers = malloc(log->capacity * sizeof *log->handlers);
+    log->handlers = CUTIL_MALLOC_MULT(log->handlers, log->capacity);
     log->num_handlers = 0;
 
     return log;
@@ -222,7 +222,7 @@ cutil_Logger_free(cutil_Logger *log)
 {
     CUTIL_RETURN_IF_NULL(log);
 
-    for (int i = 0; i < log->num_handlers; ++i) {
+    for (size_t i = 0; i < log->num_handlers; ++i) {
         sf_cutil_LogHandler_close(&log->handlers[i]);
     }
     free(log->handlers);
@@ -257,7 +257,7 @@ cutil_Logger_add_handler(
 {
     CUTIL_NULL_CHECK(log);
     CUTIL_NULL_CHECK(stream);
-    cutil_Logger_add_handler_full(log, stream, level, true);
+    cutil_Logger_add_handler_full(log, stream, level, CUTIL_TRUE);
 }
 
 void
@@ -299,8 +299,13 @@ sf_cutil_Logger_vmessage(
     if (level < log->level) {
         return;
     }
-    for (int i = 0; i < log->num_handlers; ++i) {
-        sf_cutil_LogHandler_vmessage(&log->handlers[i], level, format, args);
+    for (size_t i = 0; i < log->num_handlers; ++i) {
+        va_list args_copy;
+        va_copy(args_copy, args);
+        sf_cutil_LogHandler_vmessage(
+          &log->handlers[i], level, format, args_copy
+        );
+        va_end(args_copy);
     }
 }
 
