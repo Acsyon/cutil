@@ -246,7 +246,7 @@ cutil_StringBuilder_copy_string_to_buf(
     CUTIL_NULL_CHECK(buf);
     const size_t len = sb->length + 1UL;
     if (buflen < len) {
-        cutil_log_error(
+        CUTIL_LOG_ERROR(
           "Cannot copy string: buffer too small (have %zu, need %zu)", buflen,
           len
         );
@@ -460,7 +460,7 @@ cutil_StringBuilder_delete(cutil_StringBuilder *sb, size_t pos, size_t num)
         return;
     }
     if (pos > sb->length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot delete string: position %zu is out of bounds (length %zu)",
           pos, sb->length
         );
@@ -480,14 +480,14 @@ cutil_StringBuilder_delete_from_to(
 {
     CUTIL_NULL_CHECK(sb);
     if (end > sb->length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "End position %zu is out of bounds, truncating to length %zu", end,
           sb->length
         );
         end = sb->length;
     }
     if (end < begin) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot delete string: end position %zu is before begin position %zu",
           end, begin
         );
@@ -591,7 +591,7 @@ cutil_StringBuilder_to_string_generic(const void *vsb, char *buf, size_t buflen)
         return (res >= 0) ? (size_t) res : CUTIL_ERROR_SIZE;
     }
     if (sb->length + 1UL > buflen) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot serialize cutil_StringBuilder: buffer too small"
           " (have %zu, need %zu)",
           buflen, sb->length + 1UL

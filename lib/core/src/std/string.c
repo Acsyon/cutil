@@ -23,7 +23,7 @@ cutil_strdup(const char *str)
     const size_t len = strlen(str) + 1;
     char *cpy = malloc(len);
     if (cpy == NULL) {
-        cutil_log_error("strdup: malloc(%zu) failed", len);
+        CUTIL_LOG_ERROR("strdup: malloc(%zu) failed", len);
         return NULL;
     }
     cpy = memcpy(cpy, str, len);
@@ -39,7 +39,7 @@ cutil_strndup(const char *str, size_t maxlen)
     const size_t len = cutil_strnlen(str, maxlen) + 1;
     char *cpy = malloc(len);
     if (cpy == NULL) {
-        cutil_log_error("strndup: malloc(%zu) failed", len);
+        CUTIL_LOG_ERROR("strndup: malloc(%zu) failed", len);
         return NULL;
     }
     cpy = memcpy(cpy, str, len);
@@ -55,7 +55,7 @@ cutil_memdup(const void *ptr, size_t size, size_t num)
 
     char *cpy = malloc(size * num);
     if (cpy == NULL) {
-        cutil_log_error("memdup: malloc(%zu) failed", size * num);
+        CUTIL_LOG_ERROR("memdup: malloc(%zu) failed", size * num);
         return NULL;
     }
     cpy = memcpy(cpy, ptr, size * num);

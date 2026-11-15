@@ -120,7 +120,7 @@ cutil_getopt_long(
                     cutil_optarg = optend + 1;
                 } else {
                     if (cutil_opterr != 0) {
-                        cutil_log_warn(
+                        CUTIL_LOG_WARN(
                           _("Option '--%s' doesn't allow an argument\n"),
                           opt->name
                         );
@@ -135,7 +135,7 @@ cutil_getopt_long(
                     ++cutil_optind;
                 } else {
                     if (cutil_opterr != 0) {
-                        cutil_log_warn(
+                        CUTIL_LOG_WARN(
                           _("Option '%s' requires an argument\n"),
                           argv[cutil_optind - 1]
                         );
@@ -159,7 +159,7 @@ cutil_getopt_long(
         if (cutil_opterr != 0) {
             const char tmp = *optend;
             *optend = '\0';
-            cutil_log_warn(_("Unrecognized option '--%s'\n"), sv_nextchar);
+            CUTIL_LOG_WARN(_("Unrecognized option '--%s'\n"), sv_nextchar);
             *optend = tmp;
         }
         sv_nextchar = NULL;
@@ -184,7 +184,7 @@ cutil_getopt_long(
         /* Invalid option */
         if (tmp == NULL || c == ':') {
             if (cutil_opterr != 0) {
-                cutil_log_warn(_("Unrecognized option -- '-%c'\n"), c);
+                CUTIL_LOG_WARN(_("Unrecognized option -- '-%c'\n"), c);
             }
             cutil_optopt = c;
             return '?';
@@ -198,7 +198,7 @@ cutil_getopt_long(
                 ++cutil_optind;
             } else if (cutil_optind == argc) {
                 if (cutil_opterr != 0) {
-                    cutil_log_warn(
+                    CUTIL_LOG_WARN(
                       _("Option requires an argument -- '%c'\n"), c
                     );
                 }

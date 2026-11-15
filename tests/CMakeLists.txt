@@ -128,6 +128,36 @@ set(MODULE_DEPENDENCIES_DATA ${CUTIL_LIB_CORE} ${CUTIL_LIB_DATA})
 create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_CORE MODULE_DEPENDENCIES_CORE)
 create_c_tests(CUTIL_TEST_TARGETS C_TEST_SOURCES_DATA MODULE_DEPENDENCIES_DATA)
 
+# --- Disabled-build log macro tests ---
+set(_log_disable_variants
+    LOGGING
+    LOG_TRACE
+    LOG_DEBUG
+    LOG_INFO
+    LOG_WARN
+    LOG_ERROR
+    LOG_FATAL
+)
+set(_log_macro_test_src "core/io/test_log_macros_disabled.c")
+
+foreach (_variant IN LISTS _log_disable_variants)
+    string(TOLOWER "${_variant}" _variant_lower)
+    set(_test_name "test_core_io_log_disabled_${_variant_lower}")
+
+    add_executable("${_test_name}" "${_log_macro_test_src}")
+    add_test(NAME "${_test_name}" COMMAND "${_test_name}")
+    target_link_libraries("${_test_name}" PRIVATE unity ${CUTIL_LIB_CORE})
+    target_compile_definitions(
+        "${_test_name}" PRIVATE UNITY_INCLUDE_DOUBLE "CUTIL_DISABLE_${_variant}"
+    )
+    list(APPEND CUTIL_TEST_TARGETS "${_test_name}")
+endforeach ()
+unset(_log_disable_variants)
+unset(_log_macro_test_src)
+unset(_variant)
+unset(_variant_lower)
+unset(_test_name)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)

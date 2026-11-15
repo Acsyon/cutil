@@ -1,5 +1,8 @@
 @PACKAGE_INIT@
 
+# Minimum compile-time log level used when this library was built
+set(CUTIL_COMPILE_MIN_LOG_LEVEL "@CUTIL_COMPILE_MIN_LOG_LEVEL@")
+
 include("${CMAKE_CURRENT_LIST_DIR}/cutil-targets.cmake")
 
 # Verify all required targets are available

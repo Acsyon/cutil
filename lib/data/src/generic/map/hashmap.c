@@ -146,7 +146,7 @@ _cutil_HashMap_set_entry_aux(
     if (check) {
         const size_t num_total = hashmap->num_entries + hashmap->num_tombstones;
         if (num_total >= hashmap->capacity * HASHMAP_RESIZE_CAPACITY) {
-            cutil_log_debug(
+            CUTIL_LOG_DEBUG(
               "HashMap: load factor threshold reached (%zu/%zu), rehashing",
               num_total, hashmap->capacity
             );
@@ -211,11 +211,11 @@ cutil_HashMap_alloc(
 )
 {
     if (!cutil_GenericType_is_valid(key_type)) {
-        cutil_log_warn("Key type is not valid");
+        CUTIL_LOG_WARN("Key type is not valid");
         return NULL;
     }
     if (!cutil_GenericType_is_valid(val_type)) {
-        cutil_log_warn("Value type is not valid");
+        CUTIL_LOG_WARN("Value type is not valid");
         return NULL;
     }
 
@@ -264,7 +264,7 @@ _cutil_HashMap_remove(void *data, const void *key)
     _cutil_HashMap *const hashmap = data;
     const size_t idx = _cutil_HashMap_locate_key(hashmap, key);
     if (idx == CUTIL_ERROR_INDEX) {
-        cutil_log_warn("HashMap remove: key not found");
+        CUTIL_LOG_WARN("HashMap remove: key not found");
         return CUTIL_STATUS_FAILURE;
     }
     --hashmap->num_entries;
@@ -288,7 +288,7 @@ _cutil_HashMap_get(const void *data, const void *key, void *val)
     const _cutil_HashMap *const hashmap = data;
     const size_t idx = _cutil_HashMap_locate_key(hashmap, key);
     if (idx == CUTIL_ERROR_INDEX) {
-        cutil_log_warn("HashMap get: key not found");
+        CUTIL_LOG_WARN("HashMap get: key not found");
         return CUTIL_STATUS_FAILURE;
     }
     cutil_Array_get(hashmap->vals, idx, val);
@@ -453,7 +453,7 @@ _cutil_HashMap_get_const_iterator(const void *data)
     it->vtable = CUTIL_CONST_ITERATOR_TYPE_HASHMAP;
     it->data = it_data;
 
-    cutil_log_debug("HashMap: created const iterator");
+    CUTIL_LOG_DEBUG("HashMap: created const iterator");
     return it;
 }
 
@@ -504,7 +504,7 @@ _cutil_HashMap_get_iterator(void *data)
     it->vtable = CUTIL_ITERATOR_TYPE_HASHMAP;
     it->data = it_data;
 
-    cutil_log_debug("HashMap: created iterator");
+    CUTIL_LOG_DEBUG("HashMap: created iterator");
     return it;
 }
 

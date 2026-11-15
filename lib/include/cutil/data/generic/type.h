@@ -230,7 +230,7 @@ cutil_GenericType_apply_deep_equals(
 {
     CUTIL_NULL_CHECK(type);
     if (type->deep_equals == NULL) {
-        cutil_log_debug("No deep equals function specified, use fallback");
+        CUTIL_LOG_DEBUG("No deep equals function specified, use fallback");
         return cutil_GenericType_fallback_deep_equals(type, lhs, rhs);
     }
     return type->deep_equals(lhs, rhs);
@@ -268,7 +268,7 @@ cutil_GenericType_apply_compare(
 {
     CUTIL_NULL_CHECK(type);
     if (type->comp == NULL) {
-        cutil_log_debug("No comparison function specified, use fallback");
+        CUTIL_LOG_DEBUG("No comparison function specified, use fallback");
         return cutil_GenericType_fallback_comp(type, lhs, rhs);
     }
     return type->comp(lhs, rhs);
@@ -301,7 +301,7 @@ cutil_GenericType_apply_hash(const cutil_GenericType *type, const void *data)
 {
     CUTIL_NULL_CHECK(type);
     if (type->hash == NULL) {
-        cutil_log_debug("No hash function specified, use fallback");
+        CUTIL_LOG_DEBUG("No hash function specified, use fallback");
         return cutil_GenericType_fallback_hash(type, data);
     }
     return type->hash(data);
@@ -350,7 +350,7 @@ cutil_GenericType_apply_to_string(
 {
     CUTIL_NULL_CHECK(type);
     if (type->to_string == NULL) {
-        cutil_log_debug("No serialization function specified, use fallback");
+        CUTIL_LOG_DEBUG("No serialization function specified, use fallback");
         return cutil_GenericType_fallback_to_string(type, data, buf, buflen);
     }
     return type->to_string(data, buf, buflen);

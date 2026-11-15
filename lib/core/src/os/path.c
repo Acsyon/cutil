@@ -24,7 +24,7 @@ sf_cutil_smkdir(const char *path, unsigned int mode, struct stat *pst)
 {
     if (stat(path, pst) == -1) {
         if (mkdir(path, mode) && errno != EEXIST) {
-            cutil_log_error("Could not create path '%s'", path);
+            CUTIL_LOG_ERROR("Could not create path '%s'", path);
             return CUTIL_STATUS_FAILURE;
         }
     }
@@ -84,7 +84,7 @@ cutil_rm(const char *path, cutil_Bool recursive)
 
     if (cutil_isfile(path)) {
         if (unlink(path) != 0) {
-            cutil_log_error("Could not remove file '%s'", path);
+            CUTIL_LOG_ERROR("Could not remove file '%s'", path);
             return CUTIL_STATUS_FAILURE;
         }
         return CUTIL_STATUS_SUCCESS;
@@ -92,7 +92,7 @@ cutil_rm(const char *path, cutil_Bool recursive)
 
     if (!recursive) {
         if (rmdir(path) != 0) {
-            cutil_log_error("Could not remove directory '%s'", path);
+            CUTIL_LOG_ERROR("Could not remove directory '%s'", path);
             return CUTIL_STATUS_FAILURE;
         }
         return CUTIL_STATUS_SUCCESS;
@@ -101,7 +101,7 @@ cutil_rm(const char *path, cutil_Bool recursive)
     /* Recursive removal */
     DIR *const dir = opendir(path);
     if (!dir) {
-        cutil_log_error("Could not open directory '%s'", path);
+        CUTIL_LOG_ERROR("Could not open directory '%s'", path);
         return CUTIL_STATUS_FAILURE;
     }
 
@@ -125,7 +125,7 @@ cutil_rm(const char *path, cutil_Bool recursive)
 
     if (result == CUTIL_STATUS_SUCCESS) {
         if (rmdir(path) != 0) {
-            cutil_log_error("Could not remove directory '%s'", path);
+            CUTIL_LOG_ERROR("Could not remove directory '%s'", path);
             result = CUTIL_STATUS_FAILURE;
         }
     }
@@ -141,7 +141,7 @@ sf_cutil_stat(const char *path)
 {
     struct stat st;
     if (stat(path, &st) == -1) {
-        cutil_log_error("Could not stat '%s'", path);
+        CUTIL_LOG_ERROR("Could not stat '%s'", path);
         st.st_mode = ERROR_STAT_MODE;
     }
     return st;

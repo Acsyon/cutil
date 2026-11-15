@@ -137,7 +137,7 @@ cutil_ConstIterator_to_string(
         return req;
     }
     if (req + 1UL > buflen) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot serialize sequence: buffer too small"
           " (have %zu, need %zu)",
           buflen, req + 1UL

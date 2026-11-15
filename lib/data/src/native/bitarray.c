@@ -48,7 +48,7 @@ cutil_BitArray_copy(cutil_BitArray *dst, const cutil_BitArray *src)
 {
 #ifdef CUTIL_DEBUG
     if (dst->capacity != src->capacity) {
-        cutil_log_debug("Copying unequal bit arrays");
+        CUTIL_LOG_DEBUG("Copying unequal bit arrays");
     }
 #endif /* CUTIL_DEBUG */
     const size_t capacity = CUTIL_MIN(dst->capacity, src->capacity);

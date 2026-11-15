@@ -401,6 +401,78 @@ cutil_log_vfatal(const char *format, va_list args);
 void
 cutil_log_fatal(const char *format, ...);
 
+/**
+ * Blanket disable: defining CUTIL_DISABLE_LOGGING suppresses all levels.
+ */
+#ifdef CUTIL_DISABLE_LOGGING
+    #ifndef CUTIL_DISABLE_LOG_TRACE
+        #define CUTIL_DISABLE_LOG_TRACE
+    #endif
+    #ifndef CUTIL_DISABLE_LOG_DEBUG
+        #define CUTIL_DISABLE_LOG_DEBUG
+    #endif
+    #ifndef CUTIL_DISABLE_LOG_INFO
+        #define CUTIL_DISABLE_LOG_INFO
+    #endif
+    #ifndef CUTIL_DISABLE_LOG_WARN
+        #define CUTIL_DISABLE_LOG_WARN
+    #endif
+    #ifndef CUTIL_DISABLE_LOG_ERROR
+        #define CUTIL_DISABLE_LOG_ERROR
+    #endif
+    #ifndef CUTIL_DISABLE_LOG_FATAL
+        #define CUTIL_DISABLE_LOG_FATAL
+    #endif
+#endif
+
+/**
+ * Per-level compile-time wrappers around the global logging functions.
+ *
+ * When the corresponding CUTIL_DISABLE_LOG_<LEVEL> is defined, the macro
+ * expands to a no-op, eliminating both the function call overhead and any
+ * argument evaluation side-effects.
+ *
+ * @note These are function-like macros (require parentheses to expand) and
+ *       coexist safely with the identically-named enum constants in
+ *       enum cutil_LogLevel (which are used without parentheses), per
+ *       C99 §6.10.3.
+ */
+#ifndef CUTIL_DISABLE_LOG_TRACE
+    #define CUTIL_LOG_TRACE(...) cutil_log_trace(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_TRACE(...) ((void) 0)
+#endif
+
+#ifndef CUTIL_DISABLE_LOG_DEBUG
+    #define CUTIL_LOG_DEBUG(...) cutil_log_debug(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_DEBUG(...) ((void) 0)
+#endif
+
+#ifndef CUTIL_DISABLE_LOG_INFO
+    #define CUTIL_LOG_INFO(...) cutil_log_info(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_INFO(...) ((void) 0)
+#endif
+
+#ifndef CUTIL_DISABLE_LOG_WARN
+    #define CUTIL_LOG_WARN(...) cutil_log_warn(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_WARN(...) ((void) 0)
+#endif
+
+#ifndef CUTIL_DISABLE_LOG_ERROR
+    #define CUTIL_LOG_ERROR(...) cutil_log_error(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_ERROR(...) ((void) 0)
+#endif
+
+#ifndef CUTIL_DISABLE_LOG_FATAL
+    #define CUTIL_LOG_FATAL(...) cutil_log_fatal(__VA_ARGS__)
+#else
+    #define CUTIL_LOG_FATAL(...) ((void) 0)
+#endif
+
 #ifdef __cplusplus
 }
 #endif

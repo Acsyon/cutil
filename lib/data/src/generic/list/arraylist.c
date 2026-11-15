@@ -18,7 +18,7 @@
     #define CUTIL_ARRAYLIST_TYPE_CHECK(LIST)                                   \
         do {                                                                   \
             if (LIST->vtable != CUTIL_LIST_TYPE_ARRAYLIST) {                   \
-                cutil_log_warn(                                                \
+                CUTIL_LOG_WARN(                                                \
                   "%s: expected list of type %s, got %s", __func__,            \
                   CUTIL_LIST_TYPE_ARRAYLIST->name, LIST->vtable->name          \
                 );                                                             \
@@ -55,7 +55,7 @@ _arraylist_ensure_capacity(_cutil_ArrayListData *ald, size_t needed)
         return CUTIL_STATUS_SUCCESS;
     }
     const size_t new_cap = _arraylist_next_capacity(old_cap, needed);
-    cutil_log_debug("ArrayList: capacity grow %zu to %zu", old_cap, new_cap);
+    CUTIL_LOG_DEBUG("ArrayList: capacity grow %zu to %zu", old_cap, new_cap);
     cutil_Array_resize(ald->arr, new_cap);
     return CUTIL_STATUS_SUCCESS;
 }
@@ -140,7 +140,7 @@ _cutil_ArrayList_get(const void *data, size_t idx, void *out)
     const _cutil_ArrayListData *const ald = data;
     const size_t length = ald->length;
     if (idx >= length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "ArrayList get: index %zu out of bounds (length=%zu)", idx, length
         );
         return CUTIL_STATUS_FAILURE;
@@ -188,7 +188,7 @@ _cutil_ArrayList_insert_mult(
 
     _cutil_ArrayListData *const ald = data;
     if (pos > ald->length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "ArrayList insert: pos %zu > length %zu", pos, ald->length
         );
         return CUTIL_STATUS_FAILURE;
@@ -217,7 +217,7 @@ _cutil_ArrayList_set(void *data, size_t idx, const void *elem)
     const _cutil_ArrayListData *const ald = data;
     const size_t length = ald->length;
     if (idx >= length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "ArrayList set: index %zu out of bounds (length=%zu)", idx, length
         );
         return CUTIL_STATUS_FAILURE;
@@ -243,7 +243,7 @@ _cutil_ArrayList_remove_mult(void *data, size_t pos, size_t num)
     _cutil_ArrayListData *const ald = data;
     CUTIL_RETURN_VAL_IF_VAL(num, 0UL, CUTIL_STATUS_SUCCESS);
     if (pos + num > ald->length || pos > ald->length) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "ArrayList remove: range [%zu, %zu) exceeds length %zu", pos,
           pos + num, ald->length
         );
@@ -428,7 +428,7 @@ _cutil_ArrayList_get_const_iterator(const void *data)
     it->vtable = CUTIL_CONST_ITERATOR_TYPE_ARRAYLIST;
     it->data = iter;
 
-    cutil_log_debug("ArrayList: created const iterator");
+    CUTIL_LOG_DEBUG("ArrayList: created const iterator");
     return it;
 }
 
@@ -445,7 +445,7 @@ _cutil_ArrayList_get_iterator(void *data)
     it->vtable = CUTIL_ITERATOR_TYPE_ARRAYLIST;
     it->data = iter;
 
-    cutil_log_debug("ArrayList: created iterator");
+    CUTIL_LOG_DEBUG("ArrayList: created iterator");
     return it;
 }
 
@@ -475,7 +475,7 @@ cutil_List *
 cutil_ArrayList_alloc(const cutil_GenericType *type)
 {
     if (!cutil_GenericType_is_valid(type)) {
-        cutil_log_warn("cutil_ArrayList_alloc: invalid type");
+        CUTIL_LOG_WARN("cutil_ArrayList_alloc: invalid type");
         return NULL;
     }
     cutil_List *const list = CUTIL_MALLOC_OBJECT(list);

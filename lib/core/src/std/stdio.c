@@ -29,7 +29,7 @@ cutil_dfopen(
 
     FILE *const out = fopen(fname, modes);
     if (out == NULL) {
-        cutil_log_error(
+        CUTIL_LOG_ERROR(
           "fopen(%s, %s) failed! %s:%i", fname, modes, file, line
         );
     }

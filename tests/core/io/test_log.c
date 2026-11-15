@@ -46,6 +46,16 @@ sf_read_file_contents(FILE *stream)
     return buffer;
 }
 
+/* Sets a global logger writing at TRACE level to 'stream'; caller owns cleanup.
+ */
+static void
+sf_setup_global_logger(FILE *stream)
+{
+    cutil_Logger *log = cutil_Logger_create(CUTIL_LOG_TRACE);
+    cutil_Logger_add_handler_full(log, stream, CUTIL_LOG_TRACE, CUTIL_FALSE);
+    cutil_set_global_logger(log);
+}
+
 static void
 test_should_createLoggerCorrectly_when_useDefault(void)
 {
@@ -207,6 +217,58 @@ test_should_autoCloseStream_when_destroyLogger(void)
     TEST_ASSERT_EQUAL(EBADF, errno);
 }
 
+static void
+test_should_writeToGlobalLogger_when_macroEnabled(void)
+{
+    /* Arrange */
+    FILE *const stream = sf_create_test_file();
+    sf_setup_global_logger(stream);
+
+    /* Act */
+    CUTIL_LOG_TRACE("macro-trace-test");
+    CUTIL_LOG_DEBUG("macro-debug-test");
+    CUTIL_LOG_INFO("macro-info-test");
+    CUTIL_LOG_WARN("macro-warn-test");
+    CUTIL_LOG_ERROR("macro-error-test");
+    CUTIL_LOG_FATAL("macro-fatal-test");
+
+    /* Assert */
+    fflush(stream);
+    char *const content = sf_read_file_contents(stream);
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-trace-test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-debug-test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-info-test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-warn-test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-error-test"));
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-fatal-test"));
+
+    /* Cleanup */
+    free(content);
+    cutil_Logger_free(cutil_set_global_logger(NULL));
+    sf_destroy_test_file(stream);
+}
+
+static void
+test_should_formatArgsCorrectly_when_calledViaMacro(void)
+{
+    /* Arrange */
+    FILE *const stream = sf_create_test_file();
+    sf_setup_global_logger(stream);
+
+    /* Act */
+    CUTIL_LOG_WARN("macro-fmt-%d", 42);
+
+    /* Assert */
+    fflush(stream);
+    char *const content = sf_read_file_contents(stream);
+    TEST_ASSERT_NOT_NULL(strstr(content, "macro-fmt-42"));
+
+    /* Cleanup */
+    free(content);
+    cutil_Logger_free(cutil_set_global_logger(NULL));
+    sf_destroy_test_file(stream);
+}
+
 void
 setUp(void)
 {}
@@ -227,6 +289,8 @@ main(void)
     RUN_TEST(test_should_outputCorrectly_when_haveMultipleHandlers);
     RUN_TEST(test_should_formatCorrectly_when_callMessageFunctions);
     RUN_TEST(test_should_autoCloseStream_when_destroyLogger);
+    RUN_TEST(test_should_writeToGlobalLogger_when_macroEnabled);
+    RUN_TEST(test_should_formatArgsCorrectly_when_calledViaMacro);
 
     return UNITY_END();
 }

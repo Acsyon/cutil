@@ -137,7 +137,7 @@ cutil_Map_copy(cutil_Map *dst, const cutil_Map *src)
     CUTIL_NULL_CHECKS_MAP(dst);
     CUTIL_NULL_CHECKS_MAP(src);
     if (!cutil_MapType_equals(dst->vtable, src->vtable)) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Incompatible map types: '%s' vs. '%s'", dst->vtable->name,
           src->vtable->name
         );

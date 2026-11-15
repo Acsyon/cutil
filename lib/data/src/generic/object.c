@@ -29,7 +29,7 @@ cutil_GenericObject *
 cutil_GenericObject_create(const cutil_GenericType *type, const void *data)
 {
     if (!cutil_GenericType_is_valid(type)) {
-        cutil_log_warn("Invalid type for GenericObject");
+        CUTIL_LOG_WARN("Invalid type for GenericObject");
         return NULL;
     }
 

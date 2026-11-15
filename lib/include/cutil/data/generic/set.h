@@ -134,7 +134,7 @@ cutil_Set_copy(cutil_Set *dst, const cutil_Set *src)
     CUTIL_NULL_CHECKS_SET(dst);
     CUTIL_NULL_CHECKS_SET(src);
     if (!cutil_SetType_equals(dst->vtable, src->vtable)) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Incompatible set types: '%s' vs. '%s'", dst->vtable->name,
           src->vtable->name
         );

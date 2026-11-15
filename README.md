@@ -106,6 +106,54 @@ cmake --build .
 ctest --output-on-failure
 ```
 
+### Compile-Time Logging Configuration
+
+#### When to log
+
+Use the `CUTIL_LOG_*()` macros in all library implementation files and public headers. Never call `cutil_log_*()` functions directly in library code — macros are the canonical interface.
+
+| Level | When to use |
+|-------|-------------|
+| TRACE | Extremely detailed execution flow; rarely used |
+| DEBUG | Performance events: capacity growth, iterator creation, rehash triggers, fallback selections |
+| INFO  | General operational messages (reserved; not currently used) |
+| WARN  | Invalid parameters, boundary violations, type mismatches, non-critical lookup failures |
+| ERROR | I/O failures, allocation failures, validation errors |
+| FATAL | Unrecoverable errors (reserved; not currently used) |
+
+#### Macro usage patterns
+
+```c
+CUTIL_LOG_DEBUG("ArrayList: capacity grow %zu to %zu", old_cap, new_cap);
+CUTIL_LOG_WARN("Key type is not valid");
+CUTIL_LOG_ERROR("Could not create path '%s'", path);
+```
+
+Always use the `CUTIL_LOG_*()` macros (not direct `cutil_log_*()` functions) for all logging in library implementation files and public headers.
+
+#### CMake configuration
+
+Pass `CUTIL_COMPILE_MIN_LOG_LEVEL` at configure time to suppress logging below a chosen level:
+
+```
+cmake -DCUTIL_COMPILE_MIN_LOG_LEVEL=WARN ..
+```
+
+| Value  | Disabled levels (compiled out) |
+|--------|-------------------------------|
+| TRACE  | (none — all logging compiled in, default) |
+| DEBUG  | TRACE |
+| INFO   | TRACE, DEBUG |
+| WARN   | TRACE, DEBUG, INFO |
+| ERROR  | TRACE, DEBUG, INFO, WARN |
+| FATAL  | TRACE, DEBUG, INFO, WARN, ERROR |
+
+The option affects both `cutilcore` and `cutildata` targets (shared and static variants).
+
+#### Performance note
+
+Logging disabled via `CUTIL_COMPILE_MIN_LOG_LEVEL` has zero runtime overhead — calls are eliminated entirely by the C preprocessor before compilation.
+
 ## Roadmap
 
 - Expand data structure offerings and utility functions

@@ -65,7 +65,7 @@ _cutil_HashSet_add(void *data, const void *elem)
 {
     cutil_Map *const map = data;
     if (cutil_Map_contains(map, elem)) {
-        cutil_log_warn("HashSet add: element already in set, skipping");
+        CUTIL_LOG_WARN("HashSet add: element already in set, skipping");
         return CUTIL_STATUS_SUCCESS;
     }
     return cutil_Map_set(map, elem, &CUTIL_UNIT_VALUE);

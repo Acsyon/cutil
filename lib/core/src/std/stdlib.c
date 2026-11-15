@@ -19,7 +19,7 @@ cutil_calloc(size_t num, size_t size)
         return NULL;
     }
     if (size == 0UL) {
-        cutil_log_warn("size of calloc is 0");
+        CUTIL_LOG_WARN("size of calloc is 0");
         return NULL;
     }
     return calloc(num, size);
@@ -56,7 +56,7 @@ cutil_dmalloc(size_t size, const char *file, int line)
 {
     void *const ptr = malloc(size);
     if (ptr == NULL) {
-        cutil_log_error("malloc(%zu) failed (%s:%i)", size, file, line);
+        CUTIL_LOG_ERROR("malloc(%zu) failed (%s:%i)", size, file, line);
     }
     return ptr;
 }
@@ -66,7 +66,7 @@ cutil_dcalloc(size_t num, size_t size, const char *file, int line)
 {
     void *const ptr = calloc(num, size);
     if (ptr == NULL) {
-        cutil_log_error(
+        CUTIL_LOG_ERROR(
           "calloc(%zu, %zu) failed (%s:%i)", num, size, file, line
         );
     }
@@ -83,7 +83,7 @@ cutil_drealloc(
 {
     ptr = realloc(ptr, size);
     if (ptr == NULL) {
-        cutil_log_error("realloc(ptr, %zu) failed (%s:%i)", size, file, line);
+        CUTIL_LOG_ERROR("realloc(ptr, %zu) failed (%s:%i)", size, file, line);
     }
     return ptr;
 }

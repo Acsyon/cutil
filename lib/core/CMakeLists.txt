@@ -38,6 +38,10 @@ if (CUTIL_BUILD_SHARED_LIB)
                "$<INSTALL_INTERFACE:include>"
     )
 
+    if (CUTIL_LOGGING_DISABLE_FLAGS)
+        target_compile_definitions("${CUTIL_LIBRARY_CORE}" PRIVATE ${CUTIL_LOGGING_DISABLE_FLAGS})
+    endif ()
+
     install(
         TARGETS "${CUTIL_LIBRARY_CORE}"
         EXPORT "${CUTIL_EXPORT_SET}"
@@ -68,6 +72,12 @@ if (CUTIL_BUILD_STATIC_LIB)
         PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/include>"
                "$<INSTALL_INTERFACE:include>"
     )
+
+    if (CUTIL_LOGGING_DISABLE_FLAGS)
+        target_compile_definitions(
+            "${CUTIL_LIBRARY_CORE}-static" PRIVATE ${CUTIL_LOGGING_DISABLE_FLAGS}
+        )
+    endif ()
 
     install(
         TARGETS "${CUTIL_LIBRARY_CORE}-static"

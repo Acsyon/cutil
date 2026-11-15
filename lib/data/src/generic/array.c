@@ -30,14 +30,14 @@ cutil_Array *
 cutil_Array_alloc(const cutil_GenericType *type, size_t num)
 {
     if (!cutil_GenericType_is_valid(type)) {
-        cutil_log_warn("Invalid type for array");
+        CUTIL_LOG_WARN("Invalid type for array");
         return NULL;
     }
 
     cutil_Array *const arr = _cutil_Array_calloc(type);
     cutil_Array_resize(arr, num);
     if (num > 0UL && arr->data == NULL) {
-        cutil_log_error(
+        CUTIL_LOG_ERROR(
           "cutil_Array: failed to allocate %zu element(s) of type '%s'", num,
           type->name
         );
@@ -74,12 +74,12 @@ _cutil_Array_copy_generic(void *vdst, const void *vsrc)
     cutil_Array *const dst = vdst;
     const cutil_Array *const src = vsrc;
     if (!cutil_GenericType_equals(dst->type, src->type)) {
-        cutil_log_warn("Trying to copy arrays with unequal types");
+        CUTIL_LOG_WARN("Trying to copy arrays with unequal types");
         return;
     }
 #ifdef CUTIL_DEBUG
     if (dst->capacity != src->capacity) {
-        cutil_log_debug("Copying unequal arrays");
+        CUTIL_LOG_DEBUG("Copying unequal arrays");
     }
 #endif /* CUTIL_DEBUG */
     const size_t capacity = CUTIL_MIN(dst->capacity, src->capacity);
@@ -109,7 +109,7 @@ cutil_Array_resize(cutil_Array *arr, size_t num)
       arr->type, arr->data, arr->capacity, num
     );
     if (num > 0UL && arr->data == NULL) {
-        cutil_log_error(
+        CUTIL_LOG_ERROR(
           "cutil_Array: resize to %zu element(s) failed for type '%s'", num,
           arr->type->name
         );
@@ -131,11 +131,11 @@ cutil_Array_get_mult(const cutil_Array *arr, size_t idx, size_t num, void *res)
 {
 #ifdef CUTIL_DEBUG
     if (idx >= arr->capacity) {
-        cutil_log_warn("Trying to get array index out of bounds");
+        CUTIL_LOG_WARN("Trying to get array index out of bounds");
         return;
     }
     if (idx + num - 1UL >= arr->capacity) {
-        cutil_log_warn("Trying to get too many array elements");
+        CUTIL_LOG_WARN("Trying to get too many array elements");
         return;
     }
 #endif /* CUTIL_DEBUG */
@@ -154,11 +154,11 @@ cutil_Array_set_mult(cutil_Array *arr, size_t idx, size_t num, const void *val)
 {
 #ifdef CUTIL_DEBUG
     if (idx >= arr->capacity) {
-        cutil_log_warn("Trying to set array index out of bounds");
+        CUTIL_LOG_WARN("Trying to set array index out of bounds");
         return;
     }
     if (idx + num - 1UL >= arr->capacity) {
-        cutil_log_warn("Trying to set too many array elements");
+        CUTIL_LOG_WARN("Trying to set too many array elements");
         return;
     }
 #endif /* CUTIL_DEBUG */

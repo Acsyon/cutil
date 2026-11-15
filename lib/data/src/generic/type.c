@@ -48,7 +48,7 @@ _cutil_GenericType_apply_callback(
     CUTIL_NULL_CHECK(type);
     CUTIL_RETURN_IF_VAL(num, 0UL);
     if (callback == NULL) {
-        cutil_log_debug(
+        CUTIL_LOG_DEBUG(
           "GenericType '%s': NULL callback, skipping %zu element(s)",
           type->name, num
         );

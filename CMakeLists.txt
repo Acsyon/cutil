@@ -17,6 +17,44 @@ option(ENABLE_TESTS "Build and enable unit tests" OFF)
 option(CUTIL_MARCH_NATIVE "Build for native architecture" OFF)
 option(CUTIL_FAST_MATH "Enable certain flags for fast math" OFF)
 
+set(CUTIL_COMPILE_MIN_LOG_LEVEL "TRACE"
+    CACHE STRING
+          "Minimum compile-time log level. Calls below this level become no-ops at compile time."
+)
+set_property(
+    CACHE CUTIL_COMPILE_MIN_LOG_LEVEL
+    PROPERTY STRINGS
+             TRACE
+             DEBUG
+             INFO
+             WARN
+             ERROR
+             FATAL
+)
+
+# Ordered list must match cutil_LogLevel enum order in log.h
+set(_CUTIL_ALL_LOG_LEVELS TRACE DEBUG INFO WARN ERROR FATAL)
+list(FIND _CUTIL_ALL_LOG_LEVELS "${CUTIL_COMPILE_MIN_LOG_LEVEL}" _cutil_log_min_idx)
+if (_cutil_log_min_idx EQUAL -1)
+    message(
+        FATAL_ERROR "Invalid CUTIL_COMPILE_MIN_LOG_LEVEL value '${CUTIL_COMPILE_MIN_LOG_LEVEL}'. "
+                    "Allowed values: TRACE DEBUG INFO WARN ERROR FATAL"
+    )
+endif ()
+
+set(CUTIL_LOGGING_DISABLE_FLAGS "")
+set(_cutil_log_i 0)
+foreach (_cutil_log_level IN LISTS _CUTIL_ALL_LOG_LEVELS)
+    if (_cutil_log_i LESS _cutil_log_min_idx)
+        list(APPEND CUTIL_LOGGING_DISABLE_FLAGS "CUTIL_DISABLE_LOG_${_cutil_log_level}")
+    endif ()
+    math(EXPR _cutil_log_i "${_cutil_log_i} + 1")
+endforeach ()
+unset(_CUTIL_ALL_LOG_LEVELS)
+unset(_cutil_log_min_idx)
+unset(_cutil_log_i)
+unset(_cutil_log_level)
+
 # Set compiler flags (UNIX)
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     if (CUTIL_FAST_MATH)

@@ -144,7 +144,7 @@ cutil_List_copy(cutil_List *dst, const cutil_List *src)
     CUTIL_NULL_CHECKS_LIST(dst);
     CUTIL_NULL_CHECKS_LIST(src);
     if (!cutil_ListType_equals(dst->vtable, src->vtable)) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Incompatible list types: '%s' vs. '%s'", dst->vtable->name,
           src->vtable->name
         );

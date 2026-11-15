@@ -20,7 +20,7 @@
     #define CUTIL_NULL_CHECK(VAR)                                              \
         do {                                                                   \
             if ((VAR) == NULL) {                                               \
-                cutil_log_error(                                               \
+                CUTIL_LOG_ERROR(                                               \
                   "'%s' cannot be NULL (%s:%i)", CUTIL_STRINGIFY_VAL(VAR),     \
                   __FILE__, __LINE__                                           \
                 );                                                             \
@@ -37,7 +37,7 @@
     #define CUTIL_NULL_CHECK_VTABLE(VTABLE, FNC)                               \
         do {                                                                   \
             if ((VTABLE->FNC) == NULL) {                                       \
-                cutil_log_warn(                                                \
+                CUTIL_LOG_WARN(                                                \
                   "Function '%s' not supported for '%s'",                      \
                   CUTIL_STRINGIFY_VAL(FNC), (VTABLE->name)                     \
                 );                                                             \

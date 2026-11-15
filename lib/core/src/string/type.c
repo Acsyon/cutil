@@ -174,7 +174,7 @@ cutil_String_to_string_generic(const void *vs, char *buf, size_t buflen)
         return (res >= 0) ? (size_t) res : CUTIL_ERROR_SIZE;
     }
     if (s->length + 1UL > buflen) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot serialize cutil_String: buffer too small"
           " (have %zu, need %zu)",
           buflen, s->length + 1UL
@@ -350,7 +350,7 @@ cutil_StringView_to_string_generic(const void *vsv, char *buf, size_t buflen)
         return (res >= 0) ? (size_t) res : CUTIL_ERROR_SIZE;
     }
     if (sv->length + 1UL > buflen) {
-        cutil_log_warn(
+        CUTIL_LOG_WARN(
           "Cannot serialize cutil_StringView: buffer too small"
           " (have %zu, need %zu)",
           buflen, sv->length + 1UL
